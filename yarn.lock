@@ -837,7 +837,7 @@
     "@react-types/grid" "^3.2.1"
     "@react-types/table" "^3.8.1"
 
-"@nextui-org/tabs@2.0.21":
+"@nextui-org/tabs@2.0.21", "@nextui-org/tabs@^2.0.21":
   version "2.0.21"
   resolved "https://registry.yarnpkg.com/@nextui-org/tabs/-/tabs-2.0.21.tgz#f8d5c267f5743eae5665d7c91119f9b59045f0bd"
   integrity sha512-2/5QTAAspG1BvIdadtuW0cBfcZt2PTfd84gucUygpBHv5VJ+FBDGAyorhe+1XZW7DUZzhx5US4wc97mF78oMwg==
