@@ -1,29 +1,60 @@
 'use client';
 
-import React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   Button,
+  Input,
 } from '@nextui-org/react';
-
-export default function Filter() {
-  const [zone, setZone] = React.useState('zone');
-  const [department, setDepartment] = React.useState('department');
-  const [empShift, setEmpShift] = React.useState('empShift');
-  const [date, setDate] = React.useState('date');
-
+import { SearchIcon } from './SearchIcon';
+export default function Filter({ onFilterChange }) {
+  const [filterValue, setFilterValue] = useState('');
+  const [zone, setZone] = useState('zone');
+  const [department, setDepartment] = useState('department');
+  const [empShift, setEmpShift] = useState('empShift');
+  const [date, setDate] = useState('date');
+  const [status, setStatus] = useState('status');
+  useEffect(() => {
+    onFilterChange({
+      zone,
+      department,
+      empShift,
+      date,
+      status,
+      empId: filterValue,
+    });
+  }, [zone, department, empShift, date, status, filterValue]);
+  const onSearchChange = useCallback((value?: string) => {
+    if (value) {
+      setFilterValue(value);
+    } else {
+      setFilterValue('');
+    }
+  }, []);
+  const onClear = useCallback(() => {
+    setFilterValue('');
+  }, []);
   return (
-    <div >
+    <div>
       <div className="flex flex-row justify-around  ">
+        <Input
+          isClearable
+          className="w-[13rem] "
+          placeholder="Search by empId"
+          value={filterValue}
+          startContent={<SearchIcon />}
+          onClear={() => onClear()}
+          onValueChange={onSearchChange}
+        />
         <div className="">
           <Dropdown>
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] capitalize text-white border border-gray-700"
+                className="h-[2.62644rem] w-[9.9995rem] border border-gray-700 capitalize text-white"
               >
                 {zone.replace('_', ' ')}
               </Button>
@@ -42,12 +73,12 @@ export default function Filter() {
           </Dropdown>
         </div>
 
-        <div className="">
+        <div>
           <Dropdown>
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] capitalize text-white border-gray-700"
+                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
               >
                 {department.replace('_', ' ')}
               </Button>
@@ -73,7 +104,7 @@ export default function Filter() {
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] capitalize text-white border-gray-700"
+                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
               >
                 {empShift}
               </Button>
@@ -86,13 +117,32 @@ export default function Filter() {
               selectedKeys={new Set([empShift])}
               onSelectionChange={(keys) => setEmpShift(Array.from(keys)[0])}
             >
-              <DropdownItem key="06:30">06:30</DropdownItem>
-              <DropdownItem key="07:00">07:00</DropdownItem>
-              <DropdownItem key="07:30">07:30</DropdownItem>
-              <DropdownItem key="08:00">08:00</DropdownItem>
-              <DropdownItem key="08:30">08:30</DropdownItem>
-              <DropdownItem key="09:00">09:00</DropdownItem>
-              <DropdownItem key="09:30">09:30</DropdownItem>
+              <DropdownItem key="6:30">6:30</DropdownItem>
+              <DropdownItem key="7:30">7:30</DropdownItem>
+              <DropdownItem key="8:30">8:30</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
+        <div>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button
+                variant="bordered"
+                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
+              >
+                {status}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="EmpShift selection"
+              variant="flat"
+              disallowEmptySelection
+              selectionMode="single"
+              selectedKeys={new Set([status])}
+              onSelectionChange={(keys) => setStatus(Array.from(keys)[0])}
+            >
+              <DropdownItem key="On time">On time</DropdownItem>
+              <DropdownItem key="Late">Late</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -101,7 +151,7 @@ export default function Filter() {
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] capitalize text-white border-gray-700"
+                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
               >
                 {date}
               </Button>
