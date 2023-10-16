@@ -9,7 +9,7 @@ import {
   Button,
   Input,
 } from '@nextui-org/react';
-import SearchIcon  from './SearchIcon';
+import  SearchIcon  from './SearchIcon';
 
 type FilterChangeProps = {
   zone: string;
@@ -32,15 +32,15 @@ export default function Filter({
   const [date, setDate] = useState('date');
   const [status, setStatus] = useState('status');
   useEffect(() => {
-  onFilterChange({
-    zone,
-    department,
-    empShift,
-    date,
-    status,
-    empId: filterValue,
-  });
-}, [zone, department, empShift, date, status, filterValue, onFilterChange]);
+    onFilterChange({
+      zone,
+      department,
+      empShift,
+      date,
+      status,
+      empId: filterValue,
+    });
+  }, [zone, department, empShift, date, status, filterValue]);
   const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);

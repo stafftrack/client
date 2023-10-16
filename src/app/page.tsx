@@ -13,26 +13,6 @@ import {
 import Filter from '../components/Fiter/index';
 import fakeData from './fakedata';
 
-function renderStatusChip(status: string) {
-  if (status === 'On time') {
-    return (
-      <Chip color="success" variant="bordered">
-        On time
-      </Chip>
-    );
-  }
-
-  if (status === 'Late') {
-    return (
-      <Chip color="warning" variant="bordered">
-        Late
-      </Chip>
-    );
-  }
-
-  return null;
-}
-
 export default function App() {
   const [filters, setFilters] = useState({
     zone: 'zone',
@@ -86,13 +66,24 @@ export default function App() {
           </TableHeader>
           <TableBody>
             {filteredData.map((data) => (
-              <TableRow key={data.EmpId + data.DateTime}>
+              <TableRow key={data.EmpId}>
                 <TableCell>{data.EmpId}</TableCell>
                 <TableCell>{data.EmpShift}</TableCell>
                 <TableCell>{data.DeptId}</TableCell>
                 <TableCell>{data.Zone}</TableCell>
                 <TableCell>{data.DateTime}</TableCell>
-                <TableCell>{renderStatusChip(data.Status)}</TableCell>
+                <TableCell>
+                  {data.Status === 'On time' && (
+                    <Chip color="success" variant="bordered">
+                      On time
+                    </Chip>
+                  )}
+                  {data.Status === 'Late' && (
+                    <Chip color="warning" variant="bordered">
+                      Late
+                    </Chip>
+                  )}
+                </TableCell>
                 <TableCell>
                   {data.Contraband === 'Yes' ? (
                     <Chip color="danger" variant="shadow">
