@@ -9,8 +9,22 @@ import {
   Button,
   Input,
 } from '@nextui-org/react';
-import { SearchIcon } from './SearchIcon';
-export default function Filter({ onFilterChange }) {
+import SearchIcon  from './SearchIcon';
+
+type FilterChangeProps = {
+  zone: string;
+  department: string;
+  empShift: string;
+  date: string;
+  status: string;
+  empId: string;
+};
+
+export default function Filter({
+  onFilterChange,
+}: {
+  onFilterChange: (props: FilterChangeProps) => void;
+}) {
   const [filterValue, setFilterValue] = useState('');
   const [zone, setZone] = useState('zone');
   const [department, setDepartment] = useState('department');
@@ -18,15 +32,15 @@ export default function Filter({ onFilterChange }) {
   const [date, setDate] = useState('date');
   const [status, setStatus] = useState('status');
   useEffect(() => {
-    onFilterChange({
-      zone,
-      department,
-      empShift,
-      date,
-      status,
-      empId: filterValue,
-    });
-  }, [zone, department, empShift, date, status, filterValue]);
+  onFilterChange({
+    zone,
+    department,
+    empShift,
+    date,
+    status,
+    empId: filterValue,
+  });
+}, [zone, department, empShift, date, status, filterValue, onFilterChange]);
   const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
@@ -65,7 +79,7 @@ export default function Filter({ onFilterChange }) {
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([zone])}
-              onSelectionChange={(keys) => setZone(Array.from(keys)[0])}
+              onSelectionChange={(keys) => setZone(String(Array.from(keys)[0]))}
             >
               <DropdownItem key="hq">HQ</DropdownItem>
               <DropdownItem key="az">AZ</DropdownItem>
@@ -89,7 +103,7 @@ export default function Filter({ onFilterChange }) {
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([department])}
-              onSelectionChange={(keys) => setDepartment(Array.from(keys)[0])}
+              onSelectionChange={(keys) => setDepartment(String(Array.from(keys)[0]))}
             >
               <DropdownItem key="dept1">Dept1</DropdownItem>
               <DropdownItem key="dept2">Dept2</DropdownItem>
@@ -115,7 +129,7 @@ export default function Filter({ onFilterChange }) {
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([empShift])}
-              onSelectionChange={(keys) => setEmpShift(Array.from(keys)[0])}
+              onSelectionChange={(keys) => setEmpShift(String(Array.from(keys)[0]))}
             >
               <DropdownItem key="6:30">6:30</DropdownItem>
               <DropdownItem key="7:30">7:30</DropdownItem>
@@ -139,7 +153,7 @@ export default function Filter({ onFilterChange }) {
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([status])}
-              onSelectionChange={(keys) => setStatus(Array.from(keys)[0])}
+              onSelectionChange={(keys) => setStatus(String(Array.from(keys)[0]))}
             >
               <DropdownItem key="On time">On time</DropdownItem>
               <DropdownItem key="Late">Late</DropdownItem>
@@ -162,7 +176,7 @@ export default function Filter({ onFilterChange }) {
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([date])}
-              onSelectionChange={(keys) => setDate(Array.from(keys)[0])}
+              onSelectionChange={(keys) => setDate(String(Array.from(keys)[0]))}
             >
               <DropdownItem key="today">Today</DropdownItem>
               <DropdownItem key="last 7 days">Last 7 days</DropdownItem>

@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import {
   Table,
@@ -10,7 +11,27 @@ import {
   Chip,
 } from '@nextui-org/react';
 import Filter from '../components/Fiter/index';
-import { fakeData } from './fakedata.js';
+import fakeData from './fakedata';
+
+function renderStatusChip(status: string) {
+  if (status === 'On time') {
+    return (
+      <Chip color="success" variant="bordered">
+        On time
+      </Chip>
+    );
+  }
+
+  if (status === 'Late') {
+    return (
+      <Chip color="warning" variant="bordered">
+        Late
+      </Chip>
+    );
+  }
+
+  return null;
+}
 
 export default function App() {
   const [filters, setFilters] = useState({
@@ -64,24 +85,14 @@ export default function App() {
             <TableColumn>Contraband</TableColumn>
           </TableHeader>
           <TableBody>
-            {filteredData.map((data, index) => (
-              <TableRow key={index}>
+            {filteredData.map((data) => (
+              <TableRow key={data.EmpId + data.DateTime}>
                 <TableCell>{data.EmpId}</TableCell>
                 <TableCell>{data.EmpShift}</TableCell>
                 <TableCell>{data.DeptId}</TableCell>
                 <TableCell>{data.Zone}</TableCell>
                 <TableCell>{data.DateTime}</TableCell>
-                <TableCell>
-                  {data.Status === 'On time' ? (
-                    <Chip color="success" variant="bordered">
-                      On time
-                    </Chip>
-                  ) : data.Status === 'Late' ? (
-                    <Chip color="warning" variant="bordered">
-                      Late
-                    </Chip>
-                  ) : null}
-                </TableCell>
+                <TableCell>{renderStatusChip(data.Status)}</TableCell>
                 <TableCell>
                   {data.Contraband === 'Yes' ? (
                     <Chip color="danger" variant="shadow">

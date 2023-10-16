@@ -1,4 +1,4 @@
-export const  fakeData = [
+const  fakeData = [
     {
       EmpId: 'EMP017',
       EmpShift: '7:30',
@@ -171,3 +171,5 @@ export const  fakeData = [
         Contraband: 'No',       
       },
   ];
+
+  export default fakeData;
