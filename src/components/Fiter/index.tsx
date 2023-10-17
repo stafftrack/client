@@ -34,18 +34,22 @@ export default function Filter({
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.get('zone')) setZone(searchParams.get('zone') || 'zone');
-    if (searchParams.get('department')) setDepartment(searchParams.get('department') || 'department');
-    if (searchParams.get('empShift')) setEmpShift(searchParams.get('empShift') || 'empShift');
+    if (searchParams.get('department'))
+      setDepartment(searchParams.get('department') || 'department');
+    if (searchParams.get('empShift'))
+      setEmpShift(searchParams.get('empShift') || 'empShift');
     if (searchParams.get('date')) setDate(searchParams.get('date') || 'date');
-    if (searchParams.get('status')) setStatus(searchParams.get('status') || 'status');
-    if (searchParams.get('empId')) setFilterValue(searchParams.get('empId') || '');
-
+    if (searchParams.get('status'))
+      setStatus(searchParams.get('status') || 'status');
+    if (searchParams.get('empId'))
+      setFilterValue(searchParams.get('empId') || '');
   }, []);
-  
+
   useEffect(() => {
     const newSearchParams = new URLSearchParams();
     if (zone !== 'zone') newSearchParams.set('zone', zone);
-    if (department !== 'department') newSearchParams.set('department', department);
+    if (department !== 'department')
+      newSearchParams.set('department', department);
     if (empShift !== 'empShift') newSearchParams.set('empShift', empShift);
     if (date !== 'date') newSearchParams.set('date', date);
     if (status !== 'status') newSearchParams.set('status', status);
@@ -60,7 +64,7 @@ export default function Filter({
       empId: filterValue,
     });
   }, [zone, department, empShift, date, status, filterValue, onFilterChange]);
-  
+
   const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
@@ -72,23 +76,33 @@ export default function Filter({
     setFilterValue('');
   }, []);
   return (
-    <div>
-      <div className="flex flex-row justify-around  ">
+    <div className="w-full">
+      <div className="flex flex-row justify-between">
         <Input
           isClearable
-          className="w-[13rem] "
+          className="w-52"
+          variant="bordered"
           placeholder="Search by empId"
           value={filterValue}
           startContent={<SearchIcon />}
           onClear={() => onClear()}
           onValueChange={onSearchChange}
+          radius="sm"
+          classNames={{
+            inputWrapper: 'border border-[#2f3037] bg-[#191a24]',
+          }}
         />
-        <div className="">
-          <Dropdown>
+        <div>
+          <Dropdown
+            classNames={{
+              base: 'bg-primary border border-[#2f3037]',
+            }}
+          >
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] border border-gray-700 capitalize text-white"
+                radius="sm"
+                className="w-[9.5rem] border border-[#2f3037] bg-[#191a24] capitalize text-white"
               >
                 {zone.replace('_', ' ')}
               </Button>
@@ -116,11 +130,16 @@ export default function Filter({
         </div>
 
         <div>
-          <Dropdown>
+          <Dropdown
+            classNames={{
+              base: 'bg-primary border border-[#2f3037]',
+            }}
+          >
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
+                radius="sm"
+                className="w-[9.5rem] border border-[#2f3037] bg-[#191a24] capitalize text-white"
               >
                 {department.replace('_', ' ')}
               </Button>
@@ -150,11 +169,16 @@ export default function Filter({
         </div>
 
         <div className="">
-          <Dropdown>
+          <Dropdown
+            classNames={{
+              base: 'bg-primary border border-[#2f3037]',
+            }}
+          >
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
+                radius="sm"
+                className="w-[9.5rem] border border-[#2f3037] bg-[#191a24] capitalize text-white"
               >
                 {empShift}
               </Button>
@@ -182,11 +206,16 @@ export default function Filter({
           </Dropdown>
         </div>
         <div>
-          <Dropdown>
+          <Dropdown
+            classNames={{
+              base: 'bg-primary border border-[#2f3037]',
+            }}
+          >
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
+                radius="sm"
+                className="w-[9.5rem] border border-[#2f3037] bg-[#191a24] capitalize text-white"
               >
                 {status}
               </Button>
@@ -213,11 +242,16 @@ export default function Filter({
           </Dropdown>
         </div>
         <div className="">
-          <Dropdown>
+          <Dropdown
+            classNames={{
+              base: 'bg-primary border border-[#2f3037]',
+            }}
+          >
             <DropdownTrigger>
               <Button
                 variant="bordered"
-                className="h-[2.62644rem] w-[9.9995rem] border-gray-700 capitalize text-white"
+                radius="sm"
+                className="w-[9.5rem] border border-[#2f3037] bg-[#191a24] capitalize text-white"
               >
                 {date}
               </Button>
