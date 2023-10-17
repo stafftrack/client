@@ -42,12 +42,16 @@ type ContrabandChipProps = {
 function ContrabandChip({ contraband }: ContrabandChipProps) {
   if (contraband === 'Yes') {
     return (
-      <Chip color="danger" variant="shadow">
+      <Chip color="danger" variant="bordered">
         Yes
       </Chip>
     );
   }
-  return <Chip>No</Chip>;
+  return (
+    <Chip color="default" variant="bordered">
+      No
+    </Chip>
+  );
 }
 export default function App() {
   const [filters, setFilters] = useState({
@@ -92,46 +96,43 @@ export default function App() {
   });
 
   return (
-    <div>
-      <div className="mt-5">
-        <Filter onFilterChange={setFilters} />
-      </div>
-      <div className="mt-9">
-        <Table
-          classNames={{
-            wrapper:
-              'w-[72.375rem] max-h-[38rem] rounded-xl  bg-[#171821] text-white',
-            th: 'text-[15px] bg-opacity-20 text-white',
-          }}
-        >
-          <TableHeader>
-            <TableColumn>EmpId</TableColumn>
-            <TableColumn>EmpShift</TableColumn>
-            <TableColumn>DeptId</TableColumn>
-            <TableColumn>Zone</TableColumn>
-            <TableColumn>DateTime</TableColumn>
-            <TableColumn>Status</TableColumn>
-            <TableColumn>Contraband</TableColumn>
-          </TableHeader>
-          <TableBody>
-            {filteredData.map((data) => (
-              <TableRow key={data.EmpId}>
-                <TableCell>{data.EmpId}</TableCell>
-                <TableCell>{data.EmpShift}</TableCell>
-                <TableCell>{data.DeptId}</TableCell>
-                <TableCell>{data.Zone}</TableCell>
-                <TableCell>{data.DateTime}</TableCell>
-                <TableCell>
-                  <StatusChip status={data.Status} />
-                </TableCell>
-                <TableCell>
-                  <ContrabandChip contraband={data.Contraband} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+    <div className="mx-auto flex w-[65rem] flex-col gap-4 pt-10">
+      <Filter onFilterChange={setFilters} />
+      <Table
+        classNames={{
+          wrapper:
+            'w-full max-h-[38rem] border border-[#2f3037] rounded-md p-0 bg-[#191a24] text-white',
+          th: 'text-base bg-transparent text-white',
+          td: 'border-t border-t-[#2f3037]',
+        }}
+      >
+        <TableHeader>
+          <TableColumn>EmpId</TableColumn>
+          <TableColumn>EmpShift</TableColumn>
+          <TableColumn>DeptId</TableColumn>
+          <TableColumn>Zone</TableColumn>
+          <TableColumn>DateTime</TableColumn>
+          <TableColumn>Status</TableColumn>
+          <TableColumn>Contraband</TableColumn>
+        </TableHeader>
+        <TableBody>
+          {filteredData.map((data) => (
+            <TableRow key={data.EmpId}>
+              <TableCell>{data.EmpId}</TableCell>
+              <TableCell>{data.EmpShift}</TableCell>
+              <TableCell>{data.DeptId}</TableCell>
+              <TableCell>{data.Zone}</TableCell>
+              <TableCell>{data.DateTime}</TableCell>
+              <TableCell>
+                <StatusChip status={data.Status} />
+              </TableCell>
+              <TableCell>
+                <ContrabandChip contraband={data.Contraband} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
