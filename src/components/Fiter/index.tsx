@@ -49,7 +49,7 @@ export default function Filter({
       status,
       empId: filterValue,
     });
-  }, [zone, department, empShift, date, status, filterValue]);
+  }, [zone, department, empShift, date, status, filterValue, onFilterChange]);
   const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
