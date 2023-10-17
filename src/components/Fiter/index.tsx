@@ -32,15 +32,25 @@ export default function Filter({
   const [date, setDate] = useState('date');
   const [status, setStatus] = useState('status');
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('zone')) setZone(searchParams.get('zone') || 'zone');
+    if (searchParams.get('department')) setDepartment(searchParams.get('department') || 'department');
+    if (searchParams.get('empShift')) setEmpShift(searchParams.get('empShift') || 'empShift');
+    if (searchParams.get('date')) setDate(searchParams.get('date') || 'date');
+    if (searchParams.get('status')) setStatus(searchParams.get('status') || 'status');
+    if (searchParams.get('empId')) setFilterValue(searchParams.get('empId') || '');
+
+  }, []);
+  
+  useEffect(() => {
     const newSearchParams = new URLSearchParams();
     if (zone !== 'zone') newSearchParams.set('zone', zone);
-    if (department !== 'department')
-      newSearchParams.set('department', department);
+    if (department !== 'department') newSearchParams.set('department', department);
     if (empShift !== 'empShift') newSearchParams.set('empShift', empShift);
     if (date !== 'date') newSearchParams.set('date', date);
     if (status !== 'status') newSearchParams.set('status', status);
     if (filterValue) newSearchParams.set('empId', filterValue);
-    window.history.pushState({}, '', `?${  newSearchParams.toString()}`);
+    window.history.pushState({}, '', `?${newSearchParams.toString()}`);
     onFilterChange({
       zone,
       department,
@@ -50,6 +60,7 @@ export default function Filter({
       empId: filterValue,
     });
   }, [zone, department, empShift, date, status, filterValue, onFilterChange]);
+  
   const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
