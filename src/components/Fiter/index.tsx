@@ -9,7 +9,7 @@ import {
   Button,
   Input,
 } from '@nextui-org/react';
-import  SearchIcon  from './SearchIcon';
+import SearchIcon from './SearchIcon';
 
 type FilterChangeProps = {
   zone: string;
@@ -32,6 +32,15 @@ export default function Filter({
   const [date, setDate] = useState('date');
   const [status, setStatus] = useState('status');
   useEffect(() => {
+    const newSearchParams = new URLSearchParams();
+    if (zone !== 'zone') newSearchParams.set('zone', zone);
+    if (department !== 'department')
+      newSearchParams.set('department', department);
+    if (empShift !== 'empShift') newSearchParams.set('empShift', empShift);
+    if (date !== 'date') newSearchParams.set('date', date);
+    if (status !== 'status') newSearchParams.set('status', status);
+    if (filterValue) newSearchParams.set('empId', filterValue);
+    window.history.pushState({}, '', `?${  newSearchParams.toString()}`);
     onFilterChange({
       zone,
       department,
@@ -79,10 +88,18 @@ export default function Filter({
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([zone])}
-              onSelectionChange={(keys) => setZone(String(Array.from(keys)[0]))}
+              onSelectionChange={(keys) => {
+                const selectedKey = String(Array.from(keys)[0]);
+                if (selectedKey === 'all') {
+                  setZone('zone');
+                } else {
+                  setZone(selectedKey);
+                }
+              }}
             >
               <DropdownItem key="hq">HQ</DropdownItem>
               <DropdownItem key="az">AZ</DropdownItem>
+              <DropdownItem key="all">All</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -103,12 +120,20 @@ export default function Filter({
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([department])}
-              onSelectionChange={(keys) => setDepartment(String(Array.from(keys)[0]))}
+              onSelectionChange={(keys) => {
+                const selectedKey = String(Array.from(keys)[0]);
+                if (selectedKey === 'all') {
+                  setDepartment('department');
+                } else {
+                  setDepartment(selectedKey);
+                }
+              }}
             >
               <DropdownItem key="dept1">Dept1</DropdownItem>
               <DropdownItem key="dept2">Dept2</DropdownItem>
               <DropdownItem key="dept3">Dept3</DropdownItem>
               <DropdownItem key="dept4">Dept4</DropdownItem>
+              <DropdownItem key="all">All</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -129,11 +154,19 @@ export default function Filter({
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([empShift])}
-              onSelectionChange={(keys) => setEmpShift(String(Array.from(keys)[0]))}
+              onSelectionChange={(keys) => {
+                const selectedKey = String(Array.from(keys)[0]);
+                if (selectedKey === 'all') {
+                  setEmpShift('empShift');
+                } else {
+                  setEmpShift(selectedKey);
+                }
+              }}
             >
               <DropdownItem key="6:30">6:30</DropdownItem>
               <DropdownItem key="7:30">7:30</DropdownItem>
               <DropdownItem key="8:30">8:30</DropdownItem>
+              <DropdownItem key="all">All</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -148,15 +181,23 @@ export default function Filter({
               </Button>
             </DropdownTrigger>
             <DropdownMenu
-              aria-label="EmpShift selection"
+              aria-label="Status selection"
               variant="flat"
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([status])}
-              onSelectionChange={(keys) => setStatus(String(Array.from(keys)[0]))}
+              onSelectionChange={(keys) => {
+                const selectedKey = String(Array.from(keys)[0]);
+                if (selectedKey === 'all') {
+                  setStatus('status');
+                } else {
+                  setStatus(selectedKey);
+                }
+              }}
             >
               <DropdownItem key="On time">On time</DropdownItem>
               <DropdownItem key="Late">Late</DropdownItem>
+              <DropdownItem key="all">All</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -171,16 +212,24 @@ export default function Filter({
               </Button>
             </DropdownTrigger>
             <DropdownMenu
-              aria-label="Single selection example"
+              aria-label="Date selection"
               variant="flat"
               disallowEmptySelection
               selectionMode="single"
               selectedKeys={new Set([date])}
-              onSelectionChange={(keys) => setDate(String(Array.from(keys)[0]))}
+              onSelectionChange={(keys) => {
+                const selectedKey = String(Array.from(keys)[0]);
+                if (selectedKey === 'all') {
+                  setDate('date');
+                } else {
+                  setDate(selectedKey);
+                }
+              }}
             >
               <DropdownItem key="today">Today</DropdownItem>
               <DropdownItem key="last 7 days">Last 7 days</DropdownItem>
               <DropdownItem key="last 14 days">Last 14 days</DropdownItem>
+              <DropdownItem key="all">All</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
