@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className="bg-primary">
       <body className={inter.className}>
         <Providers>
-          <div className="h-scren flex font-sans">
+          <div className="h-screen flex font-sans">
             <Sidebar />
             {children}
           </div>
