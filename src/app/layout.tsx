@@ -26,7 +26,9 @@ export default function RootLayout({
         <Providers>
           <div className="h-screen flex font-sans">
             <Sidebar />
-            {children}
+            <div className='w-full h-screen overflow-y-scroll'>
+              {children}
+            </div>
           </div>
         </Providers>
       </body>
