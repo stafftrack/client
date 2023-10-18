@@ -32,7 +32,7 @@ export default function ChatRoom() {
       <Button
         onPress={onOpen}
         isIconOnly
-        className="absolute bottom-5 right-5 rounded-full bg-white"
+        className="absolute bottom-5 right-5 rounded-full bg-white z-10"
       >
         <ChatIcon />
       </Button>
