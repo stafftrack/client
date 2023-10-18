@@ -22,3 +22,15 @@ export interface SecurityData extends BaseData {
   contraband: Contraband;
   fileName: string;
 }
+
+export interface DataRow {
+  DateTime: string | null;
+  DeptId: string | null;
+  EmpId: string | null;
+  EmpShift: string;
+  id: number;
+  Img: string | null;
+  ToolScanTime: number | null;
+  Zone: string | null;
+  Status: string;
+}
