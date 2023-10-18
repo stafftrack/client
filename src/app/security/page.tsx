@@ -3,45 +3,19 @@
 import { useEffect, useState } from 'react';
 import LineChart from '@/components/Security/LineChart';
 import DoughnutChart from '@/components/Security/DoughnutChart';
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Chip,
-  Input,
-} from '@nextui-org/react';
+import { Input } from '@nextui-org/react';
 import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
 import { DataRow } from '@/types';
+import CustomTable from '@/components/Security/CustomTable';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
-type ContrabandChipProps = {
-  contraband: 'Yes' | 'No' | string; // 其他可能的值也可以在此添加
-};
-
-function ContrabandChip({ contraband }: ContrabandChipProps) {
-  if (contraband === 'Yes') {
-    return (
-      <Chip color="danger" variant="bordered">
-        Yes
-      </Chip>
-    );
-  }
-  return (
-    <Chip color="default" variant="bordered">
-      No
-    </Chip>
-  );
-}
 export default function SecurityPage() {
   const [data, setData] = useState<DataRow[]>([]);
 
@@ -146,9 +120,7 @@ export default function SecurityPage() {
         query.like('EmpId', `%${inputValue}%`);
       }
 
-      console.log(`%${inputValue}%`);
-
-      const { data: d, error } = await query.range(0, 9);
+      const { data: d, error } = await query.range(0, 99);
 
       if (!error) {
         setData(d);
@@ -189,47 +161,7 @@ export default function SecurityPage() {
         <DoughnutChart />
         <LineChart />
       </div>
-      <Table
-        aria-label="Table with employee security data"
-        classNames={{
-          wrapper:
-            'w-full table-fixed max-h-[38rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
-          th: 'text-base bg-transparent text-white',
-          td: 'border-t border-t-[#2f3037]',
-        }}
-      >
-        <TableHeader>
-          <TableColumn className="w-32">Employee</TableColumn>
-          <TableColumn className="w-20">Shift</TableColumn>
-          <TableColumn className="w-32">Department</TableColumn>
-          <TableColumn className="w-20">Zone</TableColumn>
-          <TableColumn className="w-32">Date Time</TableColumn>
-          <TableColumn className="w-40">Status</TableColumn>
-          <TableColumn className="w-32">Contraband</TableColumn>
-        </TableHeader>
-        <TableBody>
-          {data.map((d) => (
-            <TableRow key={d.id}>
-              <TableCell>{d.EmpId}</TableCell>
-              <TableCell>{d.EmpShift}</TableCell>
-              <TableCell>{d.DeptId}</TableCell>
-              <TableCell>{d.Zone}</TableCell>
-              <TableCell>{d.DateTime}</TableCell>
-              <TableCell>
-                <Chip
-                  variant="bordered"
-                  color={d.Status === 'On Time' ? 'success' : 'warning'}
-                >
-                  {d.Status}
-                </Chip>
-              </TableCell>
-              <TableCell>
-                <ContrabandChip contraband="No" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <CustomTable data={data} />
     </div>
   );
 }

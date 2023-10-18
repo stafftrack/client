@@ -15,6 +15,18 @@ const contrabandKeys: (keyof Contraband)[] = [
   'gun',
 ];
 
+const plugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart: any) => {
+    const { ctx } = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = '#191a24';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  },
+};
+
 export default function DoughnutChart() {
   const securityData = useSecurityData();
   const contrabandCounts: number[] = contrabandKeys.map((key) =>
@@ -34,7 +46,7 @@ export default function DoughnutChart() {
           '#74c7ec',
           '#b4befe',
         ],
-        borderColor: '#171821',
+        borderColor: '#191a24',
         borderWidth: 5,
         borderRadius: 13,
       },
@@ -42,7 +54,7 @@ export default function DoughnutChart() {
   };
 
   return (
-    <div className="relative h-max rounded-xl border border-[#30303E] p-5">
+    <div className="relative h-max rounded-xl border border-[#30303E] bg-[#191a24] p-5">
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2
             transform text-4xl font-semibold text-white"
@@ -50,7 +62,7 @@ export default function DoughnutChart() {
         {data.datasets[0].data.reduce((a, b) => a + b, 0)}
       </div>
       <div className="w-[20rem]">
-        <Doughnut data={data} />
+        <Doughnut data={data} plugins={[plugin]} />
       </div>
     </div>
   );

@@ -23,6 +23,18 @@ ChartJS.register(
   Legend,
 );
 
+const plugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart: any) => {
+    const { ctx } = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = '#191a24';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  },
+};
+
 export default function BarChart() {
   const securityData = useSecurityData();
 
@@ -50,9 +62,9 @@ export default function BarChart() {
   };
 
   return (
-    <div className="relative h-max rounded-xl border border-[#30303E] p-5">
+    <div className="relative h-max rounded-xl border border-[#30303E] bg-[#191a24] p-5">
       <div className="w-[20rem]">
-        <Line data={data} />
+        <Line data={data} plugins={[plugin]} />
       </div>
     </div>
   );
