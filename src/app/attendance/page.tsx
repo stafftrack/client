@@ -2,7 +2,10 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import LineChart from '@/components/Attendance/LineChart';
+import LineWeekChart from '@/components/Attendance/LineWeekChart';
+import LineMonthChart from '@/components/Attendance/LineMonthChart';
 import DoughnutChart from '@/components/Attendance/DoughnutChart';
 import {
   Table,
@@ -18,7 +21,6 @@ import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
-import { DataRow } from '@/types';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -35,7 +37,7 @@ export default function AttendancePage({
 }: {
   searchParams: any;
 }) {
-  const [data, setData] = useState<DataRow[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
@@ -57,8 +59,8 @@ export default function AttendancePage({
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
-    value: searchParams.Date ?? 'All',
+    values: ['All', 'Today', 'Last Week', 'Last Month'],
+    value: searchParams.Date ?? 'Today',
   });
   const [status, setStatus] = useState({
     label: 'status',
@@ -68,7 +70,7 @@ export default function AttendancePage({
 
   useEffect(() => {
     (async () => {
-      const query = supabase.from('Entry Data').select('*');
+      const query = supabase.from('Entry Data').select('Zone, DeptId, EmpShift, EmpId, date, time, status, id, DateTime');
 
       if (zone.value !== 'All') {
         query.eq('Zone', zone.value);
@@ -83,14 +85,18 @@ export default function AttendancePage({
       }
 
       if (date.value !== 'All') {
+        const today = dayjs('2023-09-22');
         if (date.value === 'Today') {
-          query.eq('date', '2023-09-22');
-        } else if (date.value === 'Last 7 days') {
-          query.gt('date', '2023-09-15');
-          query.lte('date', '2023-09-22');
-        } else if (date.value === 'Last 14 days') {
-          query.gt('date', '2023-09-08');
-          query.lte('date', '2023-09-22');
+          query.eq('date', today);
+        } else if (date.value === 'Last Week') {
+          const lastWeek = today.subtract(1, 'week');
+          console.log(lastWeek);
+          query.gt('date', lastWeek);
+          query.lte('date', today);
+        } else if (date.value === 'Last Month') {
+          const lastMonth = today.subtract(1, 'month');
+          query.gt('date', lastMonth);
+          query.lte('date', today);
         }
       }
 
@@ -103,16 +109,19 @@ export default function AttendancePage({
         query.like('EmpId', `%${inputValue}%`);
       }
 
-      const { data: d, error } = await query
-        .range(0, 49)
+      const queryResult = query
         .order('date', { ascending: false })
         .order('time', { ascending: false });
+
+      const { data: d, error } = await queryResult;
+      console.log(d);
 
       if (!error) {
         setData(d);
       }
     })();
-  }, [zone, department, empShift, date, status, inputValue]);
+  }, [searchParams]);
+
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-5">
       <ChatRoom />
@@ -170,8 +179,18 @@ export default function AttendancePage({
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        {data.length > 0 && <DoughnutChart database={data} />}
-        {data.length > 0 && <LineChart database={data} />}
+        {data.length > 0 && (
+          <DoughnutChart database={data} period={date.value} />
+        )}
+        {date.value === 'Today' && data.length > 0 && (
+          <LineChart database={data} />
+        )}
+        {date.value === 'Last Week' && data.length > 0 && (
+          <LineWeekChart database={data} />
+        )}
+        {date.value === 'Last Month' && data.length > 0 && (
+          <LineMonthChart database={data} />
+        )}
       </div>
       <Table
         aria-label="Table with employee security data"
@@ -202,7 +221,10 @@ export default function AttendancePage({
               <TableCell>{new Date(d.date).toLocaleDateString()}</TableCell>
               <TableCell>
                 {d.status === 'Early' ? (
-                  <Chip variant="bordered" className="text-[#0070F0] border-[#0070F0]">
+                  <Chip
+                    variant="bordered"
+                    className="border-[#0070F0] text-[#0070F0]"
+                  >
                     {d.status}
                   </Chip>
                 ) : (

@@ -36,30 +36,34 @@ interface AttendData {
   status: string;
 }
 
-export default function LineChart({ database }: { database: any }) {
+export default function LineWeekChart({ database }: { database: any }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
     console.log(database);
   }, [database]);
 
-  const labels = ['6:30', '7:30', '8:30', '9:30'];
-  const countForLabel = (label: string, status?: string) =>
+  const today = dayjs(database[0].DateTime, 'MM/DD/YYYY HH:mm');
+  const labels = [
+    today.subtract(6, 'day').format('MM/DD'),
+    today.subtract(5, 'day').format('MM/DD'),
+    today.subtract(4, 'day').format('MM/DD'),
+    today.subtract(3, 'day').format('MM/DD'),
+    today.subtract(2, 'day').format('MM/DD'),
+    today.subtract(1, 'day').format('MM/DD'),
+    today.format('MM/DD'),
+  ];
+  const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {
-      const date = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
-      const shiftHour = parseInt(label.split(':')[0], 10);
-      const shiftMinute = parseInt(label.split(':')[1], 10);
-      const onTime = date.hour(shiftHour).minute(shiftMinute);
-      const diffMinutes = date.diff(onTime, 'minute');
-      if (status) {
-        return (
-          diffMinutes <= 30 && diffMinutes >= -30 && item.status === status
-        );
+      const day = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
+      const date = day.format('MM/DD');
+      if (date !== label) {
+        return false;
       }
-      return diffMinutes <= 30 && diffMinutes >= -30;
+      const { status } = item;
+      return status === checkStatus;
     });
 
-  const hourCount = labels.map((label) => countForLabel(label).length);
   const delayCount = labels.map((label) => countForLabel(label, 'Late').length);
   const onTimeCount = labels.map(
     (label) => countForLabel(label, 'On Time').length,
@@ -67,6 +71,7 @@ export default function LineChart({ database }: { database: any }) {
   const earlyCount = labels.map(
     (label) => countForLabel(label, 'Early').length,
   );
+  const dailyCount = delayCount .map((item, index) => item + onTimeCount[index] + earlyCount[index]);
   const data = {
     labels,
     datasets: [
@@ -76,7 +81,7 @@ export default function LineChart({ database }: { database: any }) {
         borderColor: 'rgb(250,250,250)',
         borderWidth: 2,
         fill: false,
-        data: hourCount,
+        data: dailyCount,
       },
       {
         type: 'bar' as const,
@@ -140,7 +145,7 @@ export default function LineChart({ database }: { database: any }) {
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
       <div className="text-2xl font-semibold text-white">
-        Today Check-in Flow
+        Last Week Check-in Flow
       </div>
       <Chart type="bar" data={data} options={options} />
     </div>

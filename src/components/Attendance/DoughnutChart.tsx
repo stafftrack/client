@@ -15,7 +15,13 @@ interface AttendData {
   status: string;
 }
 
-export default function DoughnutChart({ database }: { database: any }) {
+export default function DoughnutChart({
+  database,
+  period,
+}: {
+  database: any;
+  period: any;
+}) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
@@ -67,6 +73,8 @@ export default function DoughnutChart({ database }: { database: any }) {
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
@@ -75,8 +83,12 @@ export default function DoughnutChart({ database }: { database: any }) {
   };
 
   return (
-    <div className="relative flex h-72 w-[60%] justify-evenly rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle">
-      <div className="relative flex items-center justify-center gap-3">
+    <div className="relative flex w-[40%] flex-col items-center gap-2 rounded-xl border border-[#30303E] bg-[#191a24] p-5 ">
+      <div className="text-center text-2xl font-semibold text-white">
+        {`${period} Attendance Status`}
+      </div>
+
+      <div className="relative flex flex-grow items-center justify-center">
         {attendData.length > 0 && (
           <div
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
@@ -87,7 +99,7 @@ export default function DoughnutChart({ database }: { database: any }) {
         )}
         <Doughnut data={data} options={options} />
       </div>
-      <div className="flex flex-col items-center justify-center gap-3">
+      <div className="flex  min-w-unit-24 flex-row items-center justify-center gap-4">
         {labels.map((label) => (
           <Chip
             key={label.name}
