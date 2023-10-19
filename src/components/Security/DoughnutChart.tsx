@@ -3,6 +3,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Contraband } from '@/types';
 import useSecurityData from '@/hooks/useSecurityData';
 import { Chip } from '@nextui-org/react';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -26,7 +28,14 @@ const plugin = {
   },
 };
 
-export default function DoughnutChart() {
+export default function DoughnutChart({
+  supabase,
+}: {
+  supabase: SupabaseClient<any, 'public', any>;
+}) {
+
+  const [tmp, setTmp] = useState();
+
   const securityData = useSecurityData();
   const contrabandCounts: number[] = contrabandKeys.map((key) =>
     securityData.reduce((total, entry) => total + entry.contraband[key], 0),

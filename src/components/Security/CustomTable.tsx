@@ -7,7 +7,6 @@ import {
   TableCell,
   Chip,
 } from '@nextui-org/react';
-import { DataRow } from '@/types';
 
 type ContrabandChipProps = {
   contraband: 'Yes' | 'No' | string; // 其他可能的值也可以在此添加
@@ -33,7 +32,7 @@ function formatTime(time: string) {
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function CustomTable({ data }: { data: DataRow[] }) {
+export default function CustomTable({ data }: { data: any[] }) {
   return (
     <Table
       aria-label="Table with employee security data"
@@ -55,7 +54,7 @@ export default function CustomTable({ data }: { data: DataRow[] }) {
         <TableColumn className="w-32">Contrabands</TableColumn>
       </TableHeader>
       <TableBody>
-        {data.map((d) => (
+        {data && data.map((d) => (
           <TableRow key={d.id}>
             <TableCell>{d.EmpId}</TableCell>
             <TableCell>{d.Zone}</TableCell>
