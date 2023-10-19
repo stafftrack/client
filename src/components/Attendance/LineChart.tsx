@@ -11,7 +11,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import userAttendanceData from '../../app/attendance/attendance.json';
 
 ChartJS.register(
   CategoryScale,
@@ -25,28 +24,35 @@ ChartJS.register(
 
 interface AttendData {
   id: string;
-  shift: string;
-  departmentId: string;
-  zone: string;
-  dateTime: string;
-  hasContraband: boolean;
+  EmpId: string;
+  EmpShift: string;
+  DeptId: string;
+  Zone: string;
+  DateTime: string;
+  Status: string;
 }
 
-export default function LineChart() {
+export default function LineChart({database}: {database: any}) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
-    setAttendData(userAttendanceData);
-  }, []);
+    setAttendData(database);
+    console.log(database);
+  }, [database]);
+
 
   const labels = Array.from(
     new Set(
       attendData.map((item) => {
-        const date = dayjs(item.dateTime, 'MM/DD/YYYY HH:mm');
+        const date = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
         const hour = date.format('HH');
         return `${hour}:00`;
       }),
     ),
   );
+
+  if (labels.length === 1) {
+    labels.push(`${Number(labels[0].split(':')[0]) + 1}:00`);
+  } 
 
   labels.sort((a, b) => {
     const [hourA] = a.split(':');
@@ -57,12 +63,11 @@ export default function LineChart() {
   const hourCount = labels.map((label) => {
     const [hour] = label.split(':');
     return attendData.filter((item) => {
-      const date = dayjs(item.dateTime, 'MM/DD/YYYY HH:mm');
-      return date.format('HH') === hour;
+      const date = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
+      const hourInData = date.format('HH');
+      return hourInData === hour;
     }).length;
   });
-
-  console.log(hourCount);
   const data = {
     labels,
     datasets: [

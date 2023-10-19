@@ -1,51 +1,44 @@
 import { useState, useEffect } from 'react';
-import dayjs from 'dayjs';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import userAttendanceData from '../../app/attendance/attendance.json';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface AttendData {
   id: string;
-  shift: string;
-  departmentId: string;
-  zone: string;
-  dateTime: string;
-  hasContraband: boolean;
+  EmpId: string;
+  EmpShift: string;
+  DeptId: string;
+  Zone: string;
+  DateTime: string;
+  Status: string;
 }
 
-export default function LineChart() {
+export default function DoughnutChart({database}: {database: any}) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
-    setAttendData(userAttendanceData);
-  }, []);
+    setAttendData(database);
+    console.log(database);
+  }, [database]);
 
   const checkInStatus = ['On Time', 'Late', 'Absent', 'Early Check-In'];
 
   const checkInCount = checkInStatus.map(
     (status) =>
       attendData.filter((item) => {
-        if (!item.dateTime || item.shift === '') {
-          return status === 'Absent';
-        }
-        const date = dayjs(item.dateTime, 'MM/DD/YYYY HH:mm');
-        const shiftHour = parseInt(item.shift.split(':')[0], 10);
-        const shiftMinute = parseInt(item.shift.split(':')[1], 10);
-        const onTime = date.hour(shiftHour).minute(shiftMinute);
-        const diffMinutes = date.diff(onTime, 'minute');
-        console.log(item.dateTime, diffMinutes);
-        if (diffMinutes > 30) {
-          return status === 'Late';
-        }
-        if (diffMinutes < -30) {
+        if (item.Status === 'Early Check-In') {
           return status === 'Early Check-In';
         }
-        return status === 'On Time';
+        if (item.Status === 'Late') {
+          return status === 'Late';
+        }
+        if (item.Status === 'On Time') {
+          return status === 'On Time';
+        }
+        return status === 'Absent';
       }).length,
   );
 
-  console.log(checkInCount);
 
   const data = {
     labels: checkInStatus,
