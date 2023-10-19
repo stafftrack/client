@@ -129,6 +129,7 @@ export default function LineChart({ database }: { database: any }) {
         labels: {
           color: '#ffffff',
           usePointStyle: true,
+          padding: 20,
         },
       },
     },

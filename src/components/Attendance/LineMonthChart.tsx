@@ -44,27 +44,30 @@ export default function LineWeekChart({ database }: { database: any }) {
   }, [database]);
 
   const today = dayjs(database[0].DateTime, 'MM/DD/YYYY HH:mm');
-  const labels = [
-    today.subtract(6, 'day').format('MM/DD'),
-    today.subtract(5, 'day').format('MM/DD'),
-    today.subtract(4, 'day').format('MM/DD'),
-    today.subtract(3, 'day').format('MM/DD'),
-    today.subtract(2, 'day').format('MM/DD'),
-    today.subtract(1, 'day').format('MM/DD'),
-    today.format('MM/DD'),
-  ];
+  const labels = [];
+  for (let i = 0; i < 4; i += 1) {
+    const startOfWeek = today
+      .subtract(i, 'week')
+      .startOf('week')
+      .format('MM/DD');
+    const endOfWeek = today.subtract(i, 'week').endOf('week').format('MM/DD');
+    const weekLabel = `${startOfWeek} - ${endOfWeek}`;
+    labels.unshift(weekLabel);
+  }
+
   const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {
       const day = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
-      const date = day.format('MM/DD');
-      if (date !== label) {
+      const startOfWeek = day.startOf('week').format('MM/DD');
+      const endOfWeek = day.endOf('week').format('MM/DD');
+      const weekLabel = `${startOfWeek} - ${endOfWeek}`;
+      if (weekLabel !== label) {
         return false;
       }
-      const {status} = item;
+      const { status } = item;
       return status === checkStatus;
     });
 
-  const dailyCount = labels.map((label) => countForLabel(label).length);
   const delayCount = labels.map((label) => countForLabel(label, 'Late').length);
   const onTimeCount = labels.map(
     (label) => countForLabel(label, 'On Time').length,
@@ -72,7 +75,8 @@ export default function LineWeekChart({ database }: { database: any }) {
   const earlyCount = labels.map(
     (label) => countForLabel(label, 'Early').length,
   );
-  console.log(dailyCount, delayCount, onTimeCount, earlyCount);
+  const weeklyCount = delayCount.map((item, index) => item + onTimeCount[index] + earlyCount[index]);
+  console.log(weeklyCount, delayCount, onTimeCount, earlyCount);
   const data = {
     labels,
     datasets: [
@@ -82,7 +86,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         borderColor: 'rgb(250,250,250)',
         borderWidth: 2,
         fill: false,
-        data: dailyCount,
+        data: weeklyCount,
       },
       {
         type: 'bar' as const,
@@ -135,6 +139,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         labels: {
           color: '#ffffff',
           usePointStyle: true,
+          padding: 20,
         },
       },
     },
@@ -146,7 +151,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
       <div className="text-2xl font-semibold text-white">
-        Last Week Check-in Flow
+        Last Month Check-in Flow
       </div>
       <Chart type="bar" data={data} options={options} />
     </div>

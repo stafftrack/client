@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Chip } from '@nextui-org/react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -27,21 +26,6 @@ export default function DoughnutChart({
     setAttendData(database);
     console.log(database);
   }, [database]);
-
-  const labels = [
-    {
-      name: 'On Time',
-      style: 'bg-[#187964]',
-    },
-    {
-      name: 'Late',
-      style: 'bg-[#F5A524]',
-    },
-    {
-      name: 'Early',
-      style: 'bg-[#0070F0]',
-    },
-  ];
 
   const checkInStatus = ['On Time', 'Late', 'Early'];
 
@@ -77,7 +61,14 @@ export default function DoughnutChart({
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: 'bottom' as const,
+        align: 'center' as const,
+        labels: {
+          color: '#fff',
+          usePointStyle: true,
+          padding: 20,
+        },
       },
     },
   };
@@ -91,26 +82,13 @@ export default function DoughnutChart({
       <div className="relative flex flex-grow items-center justify-center">
         {attendData.length > 0 && (
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+            className="top-2/5 absolute left-1/2 -translate-x-1/2 -translate-y-1/2
             transform text-4xl font-semibold text-white"
           >
             {attendData.length}
           </div>
         )}
         <Doughnut data={data} options={options} />
-      </div>
-      <div className="flex  min-w-unit-24 flex-row items-center justify-center gap-4">
-        {labels.map((label) => (
-          <Chip
-            key={label.name}
-            variant="dot"
-            classNames={{
-              dot: label.style,
-            }}
-          >
-            {label.name}
-          </Chip>
-        ))}
       </div>
     </div>
   );

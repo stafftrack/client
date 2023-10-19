@@ -134,6 +134,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         labels: {
           color: '#ffffff',
           usePointStyle: true,
+          padding: 20,
         },
       },
     },
