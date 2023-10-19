@@ -1,0 +1,90 @@
+[
+  {
+    "id": "EMP020",
+    "shift": "9:30",
+    "departmentId": "DEPT3",
+    "zone": "HQ",
+    "dateTime": "9/11/2023 9:21",
+    "hasContraband": false
+  },
+  {
+    "id": "EMP033",
+    "shift": "8:30",
+    "departmentId": "DEPT3",
+    "zone": "HQ",
+    "dateTime": "9/11/2023 8:22",
+    "hasContraband": false
+  },
+  {
+    "id": "EMP190",
+    "shift": "7:30",
+    "departmentId": "DEPT3",
+    "zone": "AZ",
+    "dateTime": "9/11/2023 7:27",
+    "hasContraband": false
+  },
+  {
+    "id": "EMP017",
+    "shift": "7:30",
+    "departmentId": "DEPT1",
+    "zone": "HQ",
+    "dateTime": "9/11/2023 8:29",
+    "hasContraband": false
+  },
+  {
+    "id": "EMP002",
+    "shift": "8:30",
+    "departmentId": "DEPT4",
+    "zone": "HQ",
+    "dateTime": "9/11/2023 8:25",
+    "hasContraband": false
+  },
+  {
+    "id": "EMP030",
+    "shift": "7:30",
+    "departmentId": "DEPT3",
+    "zone": "HQ",
+    "dateTime": "9/11/2023 6:21",
+    "hasContraband": false
+  },
+  {
+    "id": "EMP017",
+    "shift": "8:30",
+    "departmentId": "DEPT2",
+    "zone": "HQ",
+    "dateTime": "9/11/2023 7:14",
+    "hasContraband": true
+  },
+  {
+    "id": "EMP018",
+    "shift": "8:30",
+    "departmentId": "DEPT2",
+    "zone": "AZ",
+    "dateTime": "9/11/2023 9:54",
+    "hasContraband": true
+  },
+  {
+    "id": "EMP019",
+    "shift": "7:30",
+    "departmentId": "DEPT2",
+    "zone": "AZ",
+    "dateTime": "9/11/2023 7:54",
+    "hasContraband": true
+  },
+  {
+    "id": "EMP019",
+    "shift": "9:30",
+    "departmentId": "DEPT2",
+    "zone": "AZ",
+    "dateTime": "9/11/2023 10:54",
+    "hasContraband": true
+  },
+  {
+    "id": "EMP219",
+    "shift": "9:30",
+    "departmentId": "DEPT2",
+    "zone": "AZ",
+    "dateTime": "",
+    "hasContraband": true
+  }
+]
