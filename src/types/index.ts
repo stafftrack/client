@@ -36,3 +36,8 @@ export interface DataRow {
   date: string;
   time: string;
 }
+
+export interface AsyncListResult {
+  items: EntryData[];
+  cursor?: string;
+}

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useInfiniteScroll } from '@nextui-org/use-infinite-scroll';
+import { useAsyncList } from '@react-stately/data';
 import {
   Table,
   TableHeader,
@@ -11,6 +13,7 @@ import {
   TableCell,
   Chip,
   Input,
+  Spinner,
 } from '@nextui-org/react';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
@@ -28,6 +31,11 @@ type ContrabandChipProps = {
 type StatusChipProps = {
   status: 'On Time' | 'Late' | 'Early' | string;
 };
+type ListOptions = {
+  signal: AbortSignal;
+  cursor?: string;
+};
+
 function ContrabandChip({ contraband }: ContrabandChipProps) {
   if (contraband === 'Yes') {
     return (
@@ -76,6 +84,8 @@ export default function App({ searchParams }: { searchParams: any }) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const [zone, setZone] = useState({
     label: 'Zone',
     values: ['All', 'AZ', 'HQ'],
@@ -134,10 +144,11 @@ export default function App({ searchParams }: { searchParams: any }) {
     }
   }, []);
 
-  useEffect(() => {
-    (async () => {
+  const list = useAsyncList<DataRow[]>({
+    async load({ signal, cursor }: ListOptions) {
+      const start = cursor ? parseInt(cursor, 10) : 0; // Convert string cursor to number
+      const end = start + 50;
       const query = supabase.from('Entry Data').select('*');
-
       if (zone.value !== 'All') {
         query.eq('Zone', zone.value);
       }
@@ -170,17 +181,36 @@ export default function App({ searchParams }: { searchParams: any }) {
         }
       }
 
-      const { data: d, error } = await query
-        .range(0, 49)
+      query
+        .range(start, end)
         .order('date', { ascending: false })
         .order('time', { ascending: false });
 
-      if (!error) {
-        setData(d);
-      }
-    })();
-  }, [zone, department, empShift, date, status, inputValue]);
+      const { data: d, error } = await query;
 
+      if (error) {
+        throw error;
+      }
+      setData((prevData) => [...prevData, ...d]);
+      const hasMoreData = !(d.length < 50);
+
+      setHasMore(hasMoreData);
+      console.log('Cursor:', start, 'Has More:', hasMoreData);
+
+      return {
+        items: d,
+        cursor: hasMoreData ? (end + 1).toString() : undefined,
+      };
+    },
+  });
+  const [loaderRef, scrollerRef] = useInfiniteScroll({
+    hasMore,
+    onLoadMore: list.loadMore,
+  });
+  const fetchData = () => {
+    list.reload(); // 重新加載資料
+    setData([]); // 清空當前的資料
+  };
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
       <div className="flex h-12 gap-5">
@@ -197,13 +227,7 @@ export default function App({ searchParams }: { searchParams: any }) {
           }}
           onValueChange={(value) => {
             setInputValue(value);
-            const newSearchParams = new URLSearchParams(searchParams);
-            if (value !== '') {
-              newSearchParams.set('empId', value);
-            } else {
-              newSearchParams.delete('empId');
-            }
-            router.push(`${pathname}?${newSearchParams.toString()}`);
+            fetchData(); 
           }}
           classNames={{
             inputWrapper: 'h-full border border-[#2f3037] bg-[#191a24] w-52',
@@ -244,6 +268,14 @@ export default function App({ searchParams }: { searchParams: any }) {
           td: 'border-y border-y-[#2f3037]',
         }}
         isHeaderSticky
+        baseRef={scrollerRef}
+        bottomContent={
+          hasMore ? (
+            <div className="flex w-full justify-center">
+              <Spinner ref={loaderRef} color="white" />
+            </div>
+          ) : null
+        }
       >
         <TableHeader>
           <TableColumn>EmpId</TableColumn>
