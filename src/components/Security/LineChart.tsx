@@ -50,8 +50,10 @@ export default function BarChart() {
   };
 
   return (
-    <div className="w-[20rem]">
-      <Line data={data} />
+    <div className="relative h-max rounded-xl border border-[#30303E] p-5">
+      <div className="w-[20rem]">
+        <Line data={data} />
+      </div>
     </div>
   );
 }

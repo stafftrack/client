@@ -5,6 +5,7 @@ import Attendance from '../icons/Attendance';
 import Home from '../icons/Home';
 import Security from '../icons/Security';
 import Tab from './Tab';
+import Upload from '../icons/Upload';
 
 export default function Sidebar() {
   const currentPage = usePathname();
@@ -24,6 +25,10 @@ export default function Sidebar() {
         <Tab link="attendance" isSelected={currentPage === '/attendance'}>
           <Attendance />
           Attendance
+        </Tab>
+        <Tab link="upload" isSelected={currentPage === '/upload'}>
+          <Upload />
+          Upload
         </Tab>
       </div>
     </div>

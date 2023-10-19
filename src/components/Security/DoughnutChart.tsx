@@ -42,7 +42,7 @@ export default function DoughnutChart() {
   };
 
   return (
-    <div className="relative h-max">
+    <div className="relative h-max rounded-xl border border-[#30303E] p-5">
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2
             transform text-4xl font-semibold text-white"
