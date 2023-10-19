@@ -11,7 +11,7 @@ interface AttendData {
   DeptId: string;
   Zone: string;
   DateTime: string;
-  Status: string;
+  status: string;
 }
 
 export default function DoughnutChart({database}: {database: any}) {
@@ -26,13 +26,13 @@ export default function DoughnutChart({database}: {database: any}) {
   const checkInCount = checkInStatus.map(
     (status) =>
       attendData.filter((item) => {
-        if (item.Status === 'Early Check-In') {
+        if (item.status === 'Early Check-In') {
           return status === 'Early Check-In';
         }
-        if (item.Status === 'Late') {
+        if (item.status === 'Late') {
           return status === 'Late';
         }
-        if (item.Status === 'On Time') {
+        if (item.status === 'On Time') {
           return status === 'On Time';
         }
         return status === 'Absent';
@@ -83,7 +83,7 @@ export default function DoughnutChart({database}: {database: any}) {
           className="absolute left-1/2 top-1/2 -translate-x-1/2
             transform text-4xl font-semibold text-white"
         >
-          {data.datasets[0].data.reduce((a, b) => a + b, 0)}
+          {attendData.length}
         </div>
       )}
       <Doughnut data={data} options={options} />

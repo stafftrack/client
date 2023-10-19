@@ -32,5 +32,5 @@ export interface DataRow {
   Img: string | null;
   ToolScanTime: number | null;
   Zone: string | null;
-  Status: string;
+  status: string;
 }

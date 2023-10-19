@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
 import LineChart from '@/components/Attendance/LineChart';
 import DoughnutChart from '@/components/Attendance/DoughnutChart';
 import {
@@ -25,15 +24,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
-type AttendData = {
-  id: string;
-  shift: string;
-  departmentId: string;
-  zone: string;
-  dateTime: string;
-  hasContraband: boolean;
-};
-
 type ContrabandChipProps = {
   contraband: 'Yes' | 'No' | string; // 其他可能的值也可以在此添加
 };
@@ -52,34 +42,6 @@ function ContrabandChip({ contraband }: ContrabandChipProps) {
     </Chip>
   );
 }
-
-const setCheckInStatus = (attendData: AttendData[]) => {
-  const checkInStatus = ['On Time', 'Late', 'Absent', 'Early Check-In'];
-
-  const checkInCount = checkInStatus.map(
-    (status) =>
-      attendData.filter((item) => {
-        if (!item.dateTime || item.shift === '') {
-          return status === 'Absent';
-        }
-        const date = dayjs(item.dateTime, 'MM/DD/YYYY HH:mm');
-        const shiftHour = parseInt(item.shift.split(':')[0], 10);
-        const shiftMinute = parseInt(item.shift.split(':')[1], 10);
-        const onTime = date.hour(shiftHour).minute(shiftMinute);
-        const diffMinutes = date.diff(onTime, 'minute');
-        console.log(item.dateTime, diffMinutes);
-        if (diffMinutes > 30) {
-          return status === 'Late';
-        }
-        if (diffMinutes < -30) {
-          return status === 'Early Check-In';
-        }
-        return status === 'On Time';
-      }).length,
-  );
-
-  return checkInCount;
-};
 
 export default function AttendancePage() {
   const [data, setData] = useState<DataRow[]>([]);
@@ -173,7 +135,7 @@ export default function AttendancePage() {
       }
 
       if (status.value !== 'All') {
-        query.eq('Status', status.value);
+        query.eq('status', status.value);
       }
 
       if (inputValue !== '') {
@@ -183,7 +145,6 @@ export default function AttendancePage() {
       console.log(`%${inputValue}%`);
 
       const { data: d, error } = await query.range(0, 9);
-      console.log(d);
       if (!error) {
         setData(d);
       }
@@ -252,9 +213,9 @@ export default function AttendancePage() {
               <TableCell>
                 <Chip
                   variant="bordered"
-                  color={d.Status === 'On Time' ? 'success' : 'warning'}
+                  color={d.status === 'On Time' ? 'success' : 'warning'}
                 >
-                  {d.Status}
+                  {d.status}
                 </Chip>
               </TableCell>
               <TableCell>
