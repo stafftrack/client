@@ -4,11 +4,14 @@ import React, { useState, useRef } from 'react';
 import { Input, Select, SelectItem, Button } from '@nextui-org/react';
 
 export default function UploadPage() {
-  const [selectImage, setSelectImage] = useState(null);
-  const fileInputRef = useRef(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectImage, setSelectImage] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event) => {
-    setSelectImage(event.target.files[0]);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setSelectImage(event.target.files[0]);
+    }
   };
 
   const EmpShiftSelect = [
@@ -82,7 +85,11 @@ export default function UploadPage() {
           <Button
             color="default"
             variant="faded"
-            onClick={() => fileInputRef.current.click()}
+            onClick={() => {
+              if (fileInputRef.current) {
+                fileInputRef.current.click();
+              }
+            }}
           >
             Upload Image
           </Button>
