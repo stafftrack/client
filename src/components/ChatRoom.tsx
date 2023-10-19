@@ -1,5 +1,5 @@
-'use client';
-
+import { useEffect, useRef } from 'react';
+import { useChat } from 'ai/react';
 import { Button } from '@nextui-org/button';
 import ChatIcon from '@/components/icons/Chat';
 import {
@@ -10,14 +10,16 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@nextui-org/modal';
-import { useChat } from 'ai/react';
 import { Input } from '@nextui-org/input';
-import { useEffect, useRef } from 'react';
 import SendIcon from './icons/Send';
 
-export default function ChatRoom() {
+export default function ChatRoom(/* { data }: { data: DataRow[] } */) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    // body: {
+    //   data: JSON.stringify(data),
+    // },
+  });
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -32,7 +34,8 @@ export default function ChatRoom() {
       <Button
         onPress={onOpen}
         isIconOnly
-        className="absolute bottom-5 right-5 rounded-full bg-white z-10"
+        size="lg"
+        className="absolute bottom-3 right-3 z-10 rounded-full bg-white"
       >
         <ChatIcon />
       </Button>
@@ -51,7 +54,8 @@ export default function ChatRoom() {
               className="flex h-96 max-h-96 flex-col gap-5 overflow-y-scroll px-5"
             >
               <div className="w-max max-w-sm rounded-xl bg-[#2c2e3f] px-4 py-2">
-                Hi, how can I help you?
+                Hi, I&apos;m an AI asssistant to help you understand the data.
+                How can I help you?
               </div>
               {messages.map((m) => (
                 <div

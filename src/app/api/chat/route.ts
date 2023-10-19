@@ -11,7 +11,8 @@ const openai = new OpenAIApi(apiConfig);
 
 export async function POST(req: Request) {
   // Extract the `messages` from the body of the request
-  const { messages } = await req.json();
+  const { messages/* , data */ } = await req.json();
+  // TODO: use data
 
   // Request the OpenAI API for the response based on the prompt
   const response = await openai.createChatCompletion({
@@ -20,8 +21,7 @@ export async function POST(req: Request) {
     messages: [
       {
         role: 'system',
-        content:
-          'You are an assistant to help interpret the data of staff entry and contraband data of an company.',
+        content: `You are an assistant to help interpret the data of staff entry and contraband data of an company.`,
       },
       ...messages,
     ],
