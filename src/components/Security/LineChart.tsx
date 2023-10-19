@@ -62,9 +62,22 @@ export default function BarChart() {
   };
 
   return (
-    <div className="relative h-max rounded-xl border border-[#30303E] bg-[#191a24] p-5">
-      <div className="w-[20rem]">
-        <Line data={data} plugins={[plugin]} />
+    <div className="flex h-72 w-full flex-col items-center justify-center gap-5 rounded-xl border border-[#30303E] bg-[#191a24] px-10">
+      <div className="text-lg font-semibold text-white">
+        Contrabands Per Day
+      </div>
+      <div className="mx-auto w-[80%]">
+        <Line
+          data={data}
+          plugins={[plugin]}
+          options={{
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+          }}
+        />
       </div>
     </div>
   );

@@ -46,8 +46,7 @@ export default function CustomTable({ data }: { data: DataRow[] }) {
         <TableColumn className="w-32">Department</TableColumn>
         <TableColumn className="w-20">Zone</TableColumn>
         <TableColumn className="w-32">Date Time</TableColumn>
-        <TableColumn className="w-40">Status</TableColumn>
-        <TableColumn className="w-32">Contraband</TableColumn>
+        <TableColumn className="w-32">Contrabands</TableColumn>
       </TableHeader>
       <TableBody>
         {data.map((d) => (
@@ -57,14 +56,6 @@ export default function CustomTable({ data }: { data: DataRow[] }) {
             <TableCell>{d.DeptId}</TableCell>
             <TableCell>{d.Zone}</TableCell>
             <TableCell>{d.DateTime}</TableCell>
-            <TableCell>
-              <Chip
-                variant="bordered"
-                color={d.Status === 'On Time' ? 'success' : 'warning'}
-              >
-                {d.Status}
-              </Chip>
-            </TableCell>
             <TableCell>
               <ContrabandChip contraband="No" />
             </TableCell>

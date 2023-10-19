@@ -13,11 +13,16 @@ import {
 import { useChat } from 'ai/react';
 import { Input } from '@nextui-org/input';
 import { useEffect, useRef } from 'react';
+// import { DataRow } from '@/types';
 import SendIcon from './icons/Send';
 
-export default function ChatRoom() {
+export default function ChatRoom(/* { data }: { data: DataRow[] } */) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    // body: {
+    //   data: JSON.stringify(data),
+    // },
+  });
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -32,7 +37,7 @@ export default function ChatRoom() {
       <Button
         onPress={onOpen}
         isIconOnly
-        className="absolute bottom-5 right-5 rounded-full bg-white z-10"
+        className="absolute bottom-5 right-5 z-10 rounded-full bg-white"
       >
         <ChatIcon />
       </Button>

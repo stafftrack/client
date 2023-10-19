@@ -40,11 +40,6 @@ export default function SecurityPage() {
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
     value: 'All',
   });
-  const [status, setStatus] = useState({
-    label: 'Status',
-    values: ['All', 'On Time', 'Late'],
-    value: 'All',
-  });
   const [date, setDate] = useState({
     label: 'Date',
     values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
@@ -74,11 +69,6 @@ export default function SecurityPage() {
       setDate({ ...date, value: searchDate });
     }
 
-    const searchStatus = searchParams.get('status');
-    if (searchStatus) {
-      setStatus({ ...status, value: searchStatus });
-    }
-
     const searchEmpId = searchParams.get('empId');
     if (searchEmpId) {
       setInputValue(searchEmpId);
@@ -93,7 +83,6 @@ export default function SecurityPage() {
     if (empShift.value !== 'All')
       newSearchParams.set('empShift', empShift.value);
     if (date.value !== 'All') newSearchParams.set('date', date.value);
-    if (status.value !== 'All') newSearchParams.set('status', status.value);
     if (inputValue) newSearchParams.set('empId', inputValue);
     window.history.pushState({}, '', `?${newSearchParams.toString()}`);
 
@@ -112,21 +101,17 @@ export default function SecurityPage() {
         query.eq('EmpShift', empShift.value);
       }
 
-      if (status.value !== 'All') {
-        query.eq('Status', status.value);
-      }
-
       if (inputValue !== '') {
         query.like('EmpId', `%${inputValue}%`);
       }
 
-      const { data: d, error } = await query.range(0, 99);
+      const { data: d, error } = await query.range(0, 19);
 
       if (!error) {
         setData(d);
       }
     })();
-  }, [zone, department, empShift, date, status, inputValue]);
+  }, [zone, department, empShift, date, inputValue]);
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-5">
@@ -154,10 +139,9 @@ export default function SecurityPage() {
         <CustomSelect state={zone} onChange={setZone} />
         <CustomSelect state={department} onChange={setDepartment} />
         <CustomSelect state={empShift} onChange={setEmpShift} />
-        <CustomSelect state={status} onChange={setStatus} />
         <CustomSelect state={date} onChange={setDate} />
       </div>
-      <div className="flex w-full justify-center gap-10">
+      <div className="flex w-full justify-center gap-5">
         <DoughnutChart />
         <LineChart />
       </div>
