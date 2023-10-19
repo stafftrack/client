@@ -64,7 +64,7 @@ export default function LineChart({ database }: { database: any }) {
     (label) => countForLabel(label, 'On Time').length,
   );
   const earlyCount = labels.map(
-    (label) => countForLabel(label, 'Early Check-In').length,
+    (label) => countForLabel(label, 'Early').length,
   );
   console.log(hourCount, delayCount, onTimeCount, earlyCount);
   const data = {
@@ -73,7 +73,7 @@ export default function LineChart({ database }: { database: any }) {
       {
         type: 'line' as const,
         label: 'Total',
-        borderColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(250,250,250)',
         borderWidth: 2,
         fill: false,
         data: hourCount,
@@ -81,44 +81,42 @@ export default function LineChart({ database }: { database: any }) {
       {
         type: 'bar' as const,
         label: 'Late',
-        backgroundColor: 'rgb(75, 192, 192)',
+        backgroundColor: '#F5A524',
         data: delayCount,
         borderColor: 'white',
-        borderWidth: 2,
       },
       {
         type: 'bar' as const,
         label: 'On Time',
-        backgroundColor: 'rgb(53, 162, 235)',
+        backgroundColor: '#187964',
         data: onTimeCount,
       },
       {
         type: 'bar' as const,
-        label: 'Early Check-In',
-        backgroundColor: 'rgb(255, 205, 86)',
+        label: 'Early',
+        backgroundColor: '#0070F0',
         data: earlyCount,
       },
     ],
   };
 
   const options = {
-    responsive: true,
-    maintainAspectRatio: true,
     scales: {
       x: {
         grid: {
           display: false,
         },
         ticks: {
-          padding: 10,
+          padding: 5,
         },
         stacked: true,
       },
       y: {
         beginAtZero: true,
         ticks: {
+          padding: 5,
           stepSize: 1,
-          padding: 20,
+          maxTicksLimit: 8,
         },
         stacked: true,
       },
@@ -137,7 +135,10 @@ export default function LineChart({ database }: { database: any }) {
   };
 
   return (
-    <div className="relative w-[60%]">
+    <div
+      className="flex h-72 w-full flex-col items-center justify-center
+        gap-5 rounded-xl border border-[#30303E] bg-[#191a24]"
+    >
        <Chart type='bar' data={data} options={options} />
     </div>
   );

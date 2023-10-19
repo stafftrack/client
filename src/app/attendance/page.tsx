@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LineChart from '@/components/Attendance/LineChart';
 import DoughnutChart from '@/components/Attendance/DoughnutChart';
@@ -24,101 +25,48 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
-type ContrabandChipProps = {
-  contraband: 'Yes' | 'No' | string; // 其他可能的值也可以在此添加
-};
-
-function ContrabandChip({ contraband }: ContrabandChipProps) {
-  if (contraband === 'Yes') {
-    return (
-      <Chip color="danger" variant="bordered">
-        Yes
-      </Chip>
-    );
-  }
-  return (
-    <Chip color="default" variant="bordered">
-      No
-    </Chip>
-  );
+function formatTime(time: string) {
+  const [hours, minutes] = time.split(':');
+  return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function AttendancePage() {
+export default function AttendancePage({
+  searchParams,
+}: {
+  searchParams: any;
+}) {
   const [data, setData] = useState<DataRow[]>([]);
+  const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const [inputValue, setInputValue] = useState('');
   const [zone, setZone] = useState({
     label: 'Zone',
     values: ['All', 'AZ', 'HQ'],
-    value: 'All',
+    value: searchParams.Zone ?? 'All',
   });
   const [department, setDepartment] = useState({
     label: 'Department',
     values: ['All', 'DEPT1', 'DEPT2', 'DEPT3', 'DEPT4'],
-    value: 'All',
+    value: searchParams.Department ?? 'All',
   });
   const [empShift, setEmpShift] = useState({
-    label: 'EmpShift',
+    label: 'Shift',
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
-    value: 'All',
-  });
-  const [status, setStatus] = useState({
-    label: 'Status',
-    values: ['All', 'On Time', 'Late', 'Absent', 'Early Check-In'],
-    value: 'All',
+    value: searchParams.Shift ?? 'All',
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['Today', 'Last 7 days', 'Last 14 days'],
-    value: 'Today',
+    values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
+    value: searchParams.Date ?? 'All',
+  });
+  const [status, setStatus] = useState({
+    label: 'status',
+    values: ['All', 'On Time', 'Late', 'Early'],
+    value: searchParams.status ?? 'All',
   });
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-
-    const searchZone = searchParams.get('zone');
-    if (searchZone) {
-      setZone({ ...zone, value: searchZone });
-    }
-
-    const searchDepartment = searchParams.get('department');
-    if (searchDepartment) {
-      setDepartment({ ...department, value: searchDepartment });
-    }
-
-    const searchEmpShift = searchParams.get('empShift');
-    if (searchEmpShift) {
-      setEmpShift({ ...empShift, value: searchEmpShift });
-    }
-
-    const searchDate = searchParams.get('date');
-    if (searchDate) {
-      setDate({ ...date, value: searchDate });
-    }
-
-    const searchStatus = searchParams.get('status');
-    if (searchStatus) {
-      setStatus({ ...status, value: searchStatus });
-    }
-
-    const searchEmpId = searchParams.get('empId');
-    if (searchEmpId) {
-      setInputValue(searchEmpId);
-    }
-  }, []);
-
-  useEffect(() => {
-    const newSearchParams = new URLSearchParams();
-    if (zone.value !== 'All') newSearchParams.set('zone', zone.value);
-    if (department.value !== 'All')
-      newSearchParams.set('department', department.value);
-    if (empShift.value !== 'All')
-      newSearchParams.set('empShift', empShift.value);
-    if (date.value !== 'All') newSearchParams.set('date', date.value);
-    if (status.value !== 'All') newSearchParams.set('status', status.value);
-    if (inputValue) newSearchParams.set('empId', inputValue);
-    window.history.pushState({}, '', `?${newSearchParams.toString()}`);
-
     (async () => {
       const query = supabase.from('Entry Data').select('*');
 
@@ -134,7 +82,20 @@ export default function AttendancePage() {
         query.eq('EmpShift', empShift.value);
       }
 
+      if (date.value !== 'All') {
+        if (date.value === 'Today') {
+          query.eq('date', '2023-09-22');
+        } else if (date.value === 'Last 7 days') {
+          query.gt('date', '2023-09-15');
+          query.lte('date', '2023-09-22');
+        } else if (date.value === 'Last 14 days') {
+          query.gt('date', '2023-09-08');
+          query.lte('date', '2023-09-22');
+        }
+      }
+
       if (status.value !== 'All') {
+        console.log(status.value);
         query.eq('status', status.value);
       }
 
@@ -142,15 +103,16 @@ export default function AttendancePage() {
         query.like('EmpId', `%${inputValue}%`);
       }
 
-      console.log(`%${inputValue}%`);
+      const { data: d, error } = await query
+        .range(0, 49)
+        .order('date', { ascending: false })
+        .order('time', { ascending: false });
 
-      const { data: d, error } = await query.range(0, 9);
       if (!error) {
         setData(d);
       }
     })();
   }, [zone, department, empShift, date, status, inputValue]);
-
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-5">
       <ChatRoom />
@@ -168,19 +130,46 @@ export default function AttendancePage() {
           }}
           onValueChange={(value) => {
             setInputValue(value);
+            const newSearchParams = new URLSearchParams(searchParams);
+            if (value !== '') {
+              newSearchParams.set('empId', value);
+            } else {
+              newSearchParams.delete('empId');
+            }
+            router.push(`${pathname}?${newSearchParams.toString()}`);
           }}
           classNames={{
             inputWrapper: 'h-full border border-[#2f3037] bg-[#191a24] w-52',
           }}
         />
 
-        <CustomSelect state={zone} onChange={setZone} />
-        <CustomSelect state={department} onChange={setDepartment} />
-        <CustomSelect state={empShift} onChange={setEmpShift} />
-        <CustomSelect state={status} onChange={setStatus} />
-        <CustomSelect state={date} onChange={setDate} />
+        <CustomSelect
+          state={zone}
+          onChange={setZone}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={department}
+          onChange={setDepartment}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={empShift}
+          onChange={setEmpShift}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={status}
+          onChange={setStatus}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={date}
+          onChange={setDate}
+          searchParams={searchParams}
+        />
       </div>
-      <div className="my-10 flex justify-center gap-10">
+      <div className="flex w-full justify-center gap-5">
         {data.length > 0 && <DoughnutChart database={data} />}
         {data.length > 0 && <LineChart database={data} />}
       </div>
@@ -195,31 +184,35 @@ export default function AttendancePage() {
       >
         <TableHeader>
           <TableColumn className="w-32">Employee</TableColumn>
-          <TableColumn className="w-20">Shift</TableColumn>
-          <TableColumn className="w-32">Department</TableColumn>
           <TableColumn className="w-20">Zone</TableColumn>
-          <TableColumn className="w-32">Date Time</TableColumn>
-          <TableColumn className="w-40">Status</TableColumn>
-          <TableColumn className="w-32">Contraband</TableColumn>
+          <TableColumn className="w-32">Department</TableColumn>
+          <TableColumn className="w-20">Shift</TableColumn>
+          <TableColumn className="w-20">Time</TableColumn>
+          <TableColumn className="w-20">Date</TableColumn>
+          <TableColumn className="w-32">Status</TableColumn>
         </TableHeader>
         <TableBody>
           {data.map((d) => (
             <TableRow key={d.id}>
               <TableCell>{d.EmpId}</TableCell>
-              <TableCell>{d.EmpShift}</TableCell>
-              <TableCell>{d.DeptId}</TableCell>
               <TableCell>{d.Zone}</TableCell>
-              <TableCell>{d.DateTime}</TableCell>
+              <TableCell>{d.DeptId}</TableCell>
+              <TableCell>{d.EmpShift}</TableCell>
+              <TableCell>{formatTime(d.time)}</TableCell>
+              <TableCell>{new Date(d.date).toLocaleDateString()}</TableCell>
               <TableCell>
-                <Chip
-                  variant="bordered"
-                  color={d.status === 'On Time' ? 'success' : 'warning'}
-                >
-                  {d.status}
-                </Chip>
-              </TableCell>
-              <TableCell>
-                <ContrabandChip contraband="No" />
+                {d.status === 'Early' ? (
+                  <Chip variant="bordered" className="text-[#0070F0] border-[#0070F0]">
+                    {d.status}
+                  </Chip>
+                ) : (
+                  <Chip
+                    variant="bordered"
+                    color={d.status === 'On Time' ? 'success' : 'warning'}
+                  >
+                    {d.status}
+                  </Chip>
+                )}
               </TableCell>
             </TableRow>
           ))}
