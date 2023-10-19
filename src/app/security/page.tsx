@@ -114,7 +114,7 @@ export default function SecurityPage() {
   }, [zone, department, empShift, date, inputValue]);
 
   return (
-    <div className="flex w-full flex-col gap-5 px-10 pt-5">
+    <div className="flex w-full flex-col gap-5 px-5 pt-5">
       <ChatRoom />
       <div className="flex h-12 gap-5">
         <Input

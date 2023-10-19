@@ -11,7 +11,7 @@ const openai = new OpenAIApi(apiConfig);
 
 export async function POST(req: Request) {
   // Extract the `messages` from the body of the request
-  const { messages, data } = await req.json();
+  const { messages/* , data */ } = await req.json();
   // TODO: use data
 
   // Request the OpenAI API for the response based on the prompt
