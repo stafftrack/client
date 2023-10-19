@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableHeader,
@@ -9,34 +9,20 @@ import {
   TableRow,
   TableCell,
   Chip,
+  Input,
 } from '@nextui-org/react';
-import Filter from '../components/Fiter/index';
-import fakeData from './fakedata';
+import CustomSelect from '@/components/Security/CustomSelect';
+import { createClient } from '@supabase/supabase-js';
+import SearchIcon from '@/components/Fiter/SearchIcon';
+import { DataRow } from '@/types';
 
-type StatusChipProps = {
-  status: 'On time' | 'Late' | string; // 其他可能的值也可以在此添加
-};
-
-function StatusChip({ status }: StatusChipProps) {
-  if (status === 'On time') {
-    return (
-      <Chip color="success" variant="bordered">
-        On time
-      </Chip>
-    );
-  }
-  if (status === 'Late') {
-    return (
-      <Chip color="warning" variant="bordered">
-        Late
-      </Chip>
-    );
-  }
-  return null;
-}
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+);
 
 type ContrabandChipProps = {
-  contraband: 'Yes' | 'No' | string; // 其他可能的值也可以在此添加
+  contraband: 'Yes' | 'No' | string;
 };
 
 function ContrabandChip({ contraband }: ContrabandChipProps) {
@@ -53,51 +39,147 @@ function ContrabandChip({ contraband }: ContrabandChipProps) {
     </Chip>
   );
 }
+
 export default function App() {
-  const [filters, setFilters] = useState({
-    zone: 'zone',
-    department: 'department',
-    empShift: 'empShift',
-    date: 'date',
-    status: 'status',
-    empId: '',
+  const [data, setData] = useState<DataRow[]>([]);
+
+  // const calculateTotalContrabandCount = (s: SecurityData) => {
+  //   const { gun, knife, laptop, scissor, electronicDevice } = s.contraband;
+  //   return gun + knife + laptop + scissor + electronicDevice;
+  // };
+
+  const [inputValue, setInputValue] = useState('');
+  const [zone, setZone] = useState({
+    label: 'Zone',
+    values: ['All', 'AZ', 'HQ'],
+    value: 'All',
+  });
+  const [department, setDepartment] = useState({
+    label: 'Department',
+    values: ['All', 'DEPT1', 'DEPT2', 'DEPT3', 'DEPT4'],
+    value: 'All',
+  });
+  const [empShift, setEmpShift] = useState({
+    label: 'EmpShift',
+    values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
+    value: 'All',
+  });
+  const [status, setStatus] = useState({
+    label: 'Status',
+    values: ['All', 'On Time', 'Late'],
+    value: 'All',
+  });
+  const [date, setDate] = useState({
+    label: 'Date',
+    values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
+    value: 'All',
   });
 
-  const filteredData = fakeData.filter((item) => {
-    if (
-      filters.zone !== 'all' &&
-      filters.zone !== 'zone' &&
-      item.Zone !== filters.zone.toUpperCase()
-    )
-      return false;
-    if (
-      filters.department !== 'all' &&
-      filters.department !== 'department' &&
-      item.DeptId !== filters.department.toUpperCase()
-    )
-      return false;
-    if (
-      filters.empShift !== 'all' &&
-      filters.empShift !== 'empShift' &&
-      item.EmpShift !== filters.empShift
-    )
-      return false;
-    if (
-      filters.status !== 'all' &&
-      filters.status !== 'status' &&
-      item.Status !== filters.status
-    )
-      return false;
-    if (filters.date === 'today' && !item.DateTime.includes('9/11/2023'))
-      return false;
-    if (filters.empId && !item.EmpId.includes(filters.empId)) return false;
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
 
-    return true;
-  });
+    const searchZone = searchParams.get('zone');
+    if (searchZone) {
+      setZone({ ...zone, value: searchZone });
+    }
+
+    const searchDepartment = searchParams.get('department');
+    if (searchDepartment) {
+      setDepartment({ ...department, value: searchDepartment });
+    }
+
+    const searchEmpShift = searchParams.get('empShift');
+    if (searchEmpShift) {
+      setEmpShift({ ...empShift, value: searchEmpShift });
+    }
+
+    const searchDate = searchParams.get('date');
+    if (searchDate) {
+      setDate({ ...date, value: searchDate });
+    }
+
+    const searchStatus = searchParams.get('status');
+    if (searchStatus) {
+      setStatus({ ...status, value: searchStatus });
+    }
+
+    const searchEmpId = searchParams.get('empId');
+    if (searchEmpId) {
+      setInputValue(searchEmpId);
+    }
+  }, []);
+
+  useEffect(() => {
+    const newSearchParams = new URLSearchParams();
+    if (zone.value !== 'All') newSearchParams.set('zone', zone.value);
+    if (department.value !== 'All')
+      newSearchParams.set('department', department.value);
+    if (empShift.value !== 'All')
+      newSearchParams.set('empShift', empShift.value);
+    if (date.value !== 'All') newSearchParams.set('date', date.value);
+    if (status.value !== 'All') newSearchParams.set('status', status.value);
+    if (inputValue) newSearchParams.set('empId', inputValue);
+    window.history.pushState({}, '', `?${newSearchParams.toString()}`);
+
+    (async () => {
+      const query = supabase.from('Entry Data').select('*');
+
+      if (zone.value !== 'All') {
+        query.eq('Zone', zone.value);
+      }
+
+      if (department.value !== 'All') {
+        query.eq('DeptId', department.value);
+      }
+
+      if (empShift.value !== 'All') {
+        query.eq('EmpShift', empShift.value);
+      }
+
+      if (status.value !== 'All') {
+        query.eq('Status', status.value);
+      }
+
+      if (inputValue !== '') {
+        query.like('EmpId', `%${inputValue}%`);
+      }
+
+      const { data: d, error } = await query.range(0, 9);
+
+      if (!error) {
+        setData(d);
+      }
+    })();
+  }, [zone, department, empShift, date, status, inputValue]);
 
   return (
     <div className="mx-auto flex w-[65rem] flex-col gap-4 pt-10">
-      <Filter onFilterChange={setFilters} />
+      <div className="flex h-12 gap-5">
+        <Input
+          aria-label="Employee ID input"
+          isClearable
+          variant="bordered"
+          placeholder="Search Employee ID"
+          value={inputValue}
+          startContent={<SearchIcon />}
+          radius="sm"
+          onClear={() => {
+            setInputValue('');
+          }}
+          onValueChange={(value) => {
+            setInputValue(value);
+          }}
+          classNames={{
+            inputWrapper: 'h-full border border-[#2f3037] bg-[#191a24] w-52',
+          }}
+        />
+
+        <CustomSelect state={zone} onChange={setZone} />
+        <CustomSelect state={department} onChange={setDepartment} />
+        <CustomSelect state={empShift} onChange={setEmpShift} />
+        <CustomSelect state={status} onChange={setStatus} />
+        <CustomSelect state={date} onChange={setDate} />
+      </div>
       <Table
         classNames={{
           wrapper:
@@ -116,18 +198,23 @@ export default function App() {
           <TableColumn>Contraband</TableColumn>
         </TableHeader>
         <TableBody>
-          {filteredData.map((data) => (
-            <TableRow key={data.EmpId}>
-              <TableCell>{data.EmpId}</TableCell>
-              <TableCell>{data.EmpShift}</TableCell>
-              <TableCell>{data.DeptId}</TableCell>
-              <TableCell>{data.Zone}</TableCell>
-              <TableCell>{data.DateTime}</TableCell>
+          {data.map((d) => (
+            <TableRow key={d.id}>
+              <TableCell>{d.EmpId}</TableCell>
+              <TableCell>{d.EmpShift}</TableCell>
+              <TableCell>{d.DeptId}</TableCell>
+              <TableCell>{d.Zone}</TableCell>
+              <TableCell>{d.DateTime}</TableCell>
               <TableCell>
-                <StatusChip status={data.Status} />
+                <Chip
+                  variant="bordered"
+                  color={d.Status === 'On Time' ? 'success' : 'warning'}
+                >
+                  {d.Status}
+                </Chip>
               </TableCell>
               <TableCell>
-                <ContrabandChip contraband={data.Contraband} />
+                <ContrabandChip contraband="No" />
               </TableCell>
             </TableRow>
           ))}
