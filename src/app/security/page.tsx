@@ -36,7 +36,7 @@ export default function SecurityPage() {
     value: 'All',
   });
   const [empShift, setEmpShift] = useState({
-    label: 'EmpShift',
+    label: 'Shift',
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
     value: 'All',
   });
@@ -46,9 +46,49 @@ export default function SecurityPage() {
     value: 'All',
   });
 
+  async function updateData() {
+    const query = supabase.from('Entry Data').select('*');
+
+    if (zone.value !== 'All') {
+      query.eq('Zone', zone.value);
+    }
+
+    if (department.value !== 'All') {
+      query.eq('DeptId', department.value);
+    }
+
+    if (empShift.value !== 'All') {
+      query.eq('EmpShift', empShift.value);
+    }
+
+    if (date.value !== 'All') {
+      if (date.value === 'Today') {
+        query.eq('date', '2023-09-22');
+      } else if (date.value === 'Last 7 days') {
+        query.gt('date', '2023-09-15');
+        query.lte('date', '2023-09-22');
+      } else if (date.value === 'Last 14 days') {
+        query.gt('date', '2023-09-08');
+        query.lte('date', '2023-09-22');
+      }
+    }
+
+    if (inputValue !== '') {
+      query.like('EmpId', `%${inputValue}%`);
+    }
+
+    const { data: d, error } = await query
+      .range(0, 49)
+      .order('date', { ascending: false })
+      .order('time', { ascending: false });
+
+    if (!error) {
+      setData(d);
+    }
+  }
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
-
     const searchZone = searchParams.get('zone');
     if (searchZone) {
       setZone({ ...zone, value: searchZone });
@@ -73,7 +113,7 @@ export default function SecurityPage() {
     if (searchEmpId) {
       setInputValue(searchEmpId);
     }
-  }, []);
+  }, [window.location.search]);
 
   useEffect(() => {
     const newSearchParams = new URLSearchParams();
@@ -86,35 +126,11 @@ export default function SecurityPage() {
     if (inputValue) newSearchParams.set('empId', inputValue);
     window.history.pushState({}, '', `?${newSearchParams.toString()}`);
 
-    (async () => {
-      const query = supabase.from('Entry Data').select('*');
-
-      if (zone.value !== 'All') {
-        query.eq('Zone', zone.value);
-      }
-
-      if (department.value !== 'All') {
-        query.eq('DeptId', department.value);
-      }
-
-      if (empShift.value !== 'All') {
-        query.eq('EmpShift', empShift.value);
-      }
-
-      if (inputValue !== '') {
-        query.like('EmpId', `%${inputValue}%`);
-      }
-
-      const { data: d, error } = await query.range(0, 19);
-
-      if (!error) {
-        setData(d);
-      }
-    })();
+    updateData();
   }, [zone, department, empShift, date, inputValue]);
 
   return (
-    <div className="flex w-full flex-col gap-5 px-5 pt-5">
+    <div className="flex w-full flex-col gap-5 px-10 pt-10">
       <ChatRoom />
       <div className="flex h-12 gap-5">
         <Input

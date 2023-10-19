@@ -1,5 +1,3 @@
-'use client';
-
 import useSecurityData from '@/hooks/useSecurityData';
 import {
   Chart as ChartJS,
@@ -57,12 +55,17 @@ export default function BarChart() {
         data: [1, 3, 1, 2, 5, 1, 2],
         borderColor: '#ffffff',
         backgroundColor: '#ffffff',
+        radius: 3,
+        hoverRadius: 7,
       },
     ],
   };
 
   return (
-    <div className="flex h-72 w-full flex-col items-center justify-center gap-5 rounded-xl border border-[#30303E] bg-[#191a24] px-10">
+    <div
+      className="flex h-72 w-full flex-col items-center justify-center
+        gap-5 rounded-xl border border-[#30303E] bg-[#191a24] px-10"
+    >
       <div className="text-lg font-semibold text-white">
         Contrabands Per Day
       </div>
@@ -71,6 +74,20 @@ export default function BarChart() {
           data={data}
           plugins={[plugin]}
           options={{
+            scales: {
+              x: {
+                ticks: {
+                  color: '#c0c0c0',
+                },
+              },
+              y: {
+                ticks: {
+                  stepSize: 1,
+                  color: '#c0c0c0',
+                },
+                beginAtZero: true,
+              },
+            },
             plugins: {
               legend: {
                 display: false,

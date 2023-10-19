@@ -28,6 +28,11 @@ function ContrabandChip({ contraband }: ContrabandChipProps) {
   );
 }
 
+function formatTime(time: string) {
+  const [hours, minutes] = time.split(':');
+  return `${parseInt(hours, 10)}:${minutes}`;
+}
+
 export default function CustomTable({ data }: { data: DataRow[] }) {
   return (
     <Table
@@ -42,20 +47,22 @@ export default function CustomTable({ data }: { data: DataRow[] }) {
     >
       <TableHeader>
         <TableColumn className="w-32">Employee</TableColumn>
-        <TableColumn className="w-20">Shift</TableColumn>
-        <TableColumn className="w-32">Department</TableColumn>
         <TableColumn className="w-20">Zone</TableColumn>
-        <TableColumn className="w-32">Date Time</TableColumn>
+        <TableColumn className="w-32">Department</TableColumn>
+        <TableColumn className="w-20">Shift</TableColumn>
+        <TableColumn className="w-20">Time</TableColumn>
+        <TableColumn className="w-20">Date</TableColumn>
         <TableColumn className="w-32">Contrabands</TableColumn>
       </TableHeader>
       <TableBody>
         {data.map((d) => (
           <TableRow key={d.id}>
             <TableCell>{d.EmpId}</TableCell>
-            <TableCell>{d.EmpShift}</TableCell>
-            <TableCell>{d.DeptId}</TableCell>
             <TableCell>{d.Zone}</TableCell>
-            <TableCell>{d.DateTime}</TableCell>
+            <TableCell>{d.DeptId}</TableCell>
+            <TableCell>{d.EmpShift}</TableCell>
+            <TableCell>{formatTime(d.time)}</TableCell>
+            <TableCell>{new Date(d.date).toLocaleDateString()}</TableCell>
             <TableCell>
               <ContrabandChip contraband="No" />
             </TableCell>
