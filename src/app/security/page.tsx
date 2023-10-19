@@ -47,9 +47,9 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
   useEffect(() => {
     (async () => {
       const query = supabase.from('Entry Data').select('*');
-
+      
       if (zone.value !== 'All') {
-        query.eq('Zone', zone.value);
+        query.eq('Zone', zone.value);     
       }
 
       if (department.value !== 'All') {
@@ -85,6 +85,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
         setData(d);
       }
     })();
+    
   }, [zone, department, empShift, date, inputValue]);
 
   return (

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Table,
   TableHeader,
@@ -24,7 +25,9 @@ const supabase = createClient(
 type ContrabandChipProps = {
   contraband: 'Yes' | 'No' | string;
 };
-
+type StatusChipProps = {
+  status: 'On Time' | 'Late' | 'Early' | string;
+};
 function ContrabandChip({ contraband }: ContrabandChipProps) {
   if (contraband === 'Yes') {
     return (
@@ -39,88 +42,99 @@ function ContrabandChip({ contraband }: ContrabandChipProps) {
     </Chip>
   );
 }
+function StatusChip({ status }: StatusChipProps) {
+  if (status === 'On Time') {
+    return (
+      <Chip color="success" variant="bordered">
+        On time
+      </Chip>
+    );
+  }
+  if (status === 'Late') {
+    return (
+      <Chip color="warning" variant="bordered">
+        Late
+      </Chip>
+    );
+  }
+  if (status === 'Early') {
+    return (
+      <Chip className="border-[#0070F0] text-[#0070F0]" variant="bordered">
+        Early
+      </Chip>
+    );
+  }
+  return (
+    <Chip color="default" variant="bordered">
+      Unknown
+    </Chip>
+  );
+}
 
-export default function App() {
+export default function App({ searchParams }: { searchParams: any }) {
   const [data, setData] = useState<DataRow[]>([]);
-
-  // const calculateTotalContrabandCount = (s: SecurityData) => {
-  //   const { gun, knife, laptop, scissor, electronicDevice } = s.contraband;
-  //   return gun + knife + laptop + scissor + electronicDevice;
-  // };
-
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
+  const router = useRouter();
+  const pathname = usePathname();
   const [zone, setZone] = useState({
     label: 'Zone',
     values: ['All', 'AZ', 'HQ'],
-    value: 'All',
+    value: searchParams.Zone ?? 'All',
   });
   const [department, setDepartment] = useState({
     label: 'Department',
     values: ['All', 'DEPT1', 'DEPT2', 'DEPT3', 'DEPT4'],
-    value: 'All',
+    value: searchParams.Department ?? 'All',
   });
   const [empShift, setEmpShift] = useState({
     label: 'EmpShift',
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
-    value: 'All',
+    value: searchParams.Shift ?? 'All',
   });
   const [status, setStatus] = useState({
     label: 'Status',
-    values: ['All', 'On Time', 'Late'],
-    value: 'All',
+    values: ['All', 'On Time', 'Early', 'Late'],
+    value: searchParams.status ?? 'All',
   });
   const [date, setDate] = useState({
     label: 'Date',
     values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
-    value: 'All',
+    value: searchParams.Date ?? 'All',
   });
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-
-    const searchZone = searchParams.get('zone');
+    const searchZone = searchParams.zone;
     if (searchZone) {
       setZone({ ...zone, value: searchZone });
     }
 
-    const searchDepartment = searchParams.get('department');
+    const searchDepartment = searchParams.department;
     if (searchDepartment) {
       setDepartment({ ...department, value: searchDepartment });
     }
 
-    const searchEmpShift = searchParams.get('empShift');
+    const searchEmpShift = searchParams.EmpShift;
     if (searchEmpShift) {
       setEmpShift({ ...empShift, value: searchEmpShift });
     }
 
-    const searchDate = searchParams.get('date');
+    const searchDate = searchParams.date;
     if (searchDate) {
       setDate({ ...date, value: searchDate });
     }
 
-    const searchStatus = searchParams.get('status');
+    const searchStatus = searchParams.Status;
     if (searchStatus) {
       setStatus({ ...status, value: searchStatus });
     }
 
-    const searchEmpId = searchParams.get('empId');
+    const searchEmpId = searchParams.empId;
     if (searchEmpId) {
       setInputValue(searchEmpId);
     }
   }, []);
 
   useEffect(() => {
-    const newSearchParams = new URLSearchParams();
-    if (zone.value !== 'All') newSearchParams.set('zone', zone.value);
-    if (department.value !== 'All')
-      newSearchParams.set('department', department.value);
-    if (empShift.value !== 'All')
-      newSearchParams.set('empShift', empShift.value);
-    if (date.value !== 'All') newSearchParams.set('date', date.value);
-    if (status.value !== 'All') newSearchParams.set('status', status.value);
-    if (inputValue) newSearchParams.set('empId', inputValue);
-    window.history.pushState({}, '', `?${newSearchParams.toString()}`);
-
     (async () => {
       const query = supabase.from('Entry Data').select('*');
 
@@ -137,14 +151,29 @@ export default function App() {
       }
 
       if (status.value !== 'All') {
-        query.eq('Status', status.value);
+        query.eq('status', status.value);
       }
 
       if (inputValue !== '') {
         query.like('EmpId', `%${inputValue}%`);
       }
 
-      const { data: d, error } = await query.range(0, 9);
+      if (date.value !== 'All') {
+        if (date.value === 'Today') {
+          query.eq('date', '2023-09-22');
+        } else if (date.value === 'Last 7 days') {
+          query.gt('date', '2023-09-15');
+          query.lte('date', '2023-09-22');
+        } else if (date.value === 'Last 14 days') {
+          query.gt('date', '2023-09-08');
+          query.lte('date', '2023-09-22');
+        }
+      }
+
+      const { data: d, error } = await query
+        .range(0, 49)
+        .order('date', { ascending: false })
+        .order('time', { ascending: false });
 
       if (!error) {
         setData(d);
@@ -153,7 +182,7 @@ export default function App() {
   }, [zone, department, empShift, date, status, inputValue]);
 
   return (
-    <div className="mx-auto flex w-[65rem] flex-col gap-4 pt-10">
+    <div className="flex w-full flex-col gap-5 px-10 pt-10">
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
@@ -168,25 +197,53 @@ export default function App() {
           }}
           onValueChange={(value) => {
             setInputValue(value);
+            const newSearchParams = new URLSearchParams(searchParams);
+            if (value !== '') {
+              newSearchParams.set('empId', value);
+            } else {
+              newSearchParams.delete('empId');
+            }
+            router.push(`${pathname}?${newSearchParams.toString()}`);
           }}
           classNames={{
             inputWrapper: 'h-full border border-[#2f3037] bg-[#191a24] w-52',
           }}
         />
 
-        <CustomSelect state={zone} onChange={setZone} />
-        <CustomSelect state={department} onChange={setDepartment} />
-        <CustomSelect state={empShift} onChange={setEmpShift} />
-        <CustomSelect state={status} onChange={setStatus} />
-        <CustomSelect state={date} onChange={setDate} />
+        <CustomSelect
+          state={zone}
+          onChange={setZone}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={department}
+          onChange={setDepartment}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={empShift}
+          onChange={setEmpShift}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={status}
+          onChange={setStatus}
+          searchParams={searchParams}
+        />
+        <CustomSelect
+          state={date}
+          onChange={setDate}
+          searchParams={searchParams}
+        />
       </div>
       <Table
         classNames={{
           wrapper:
-            'w-full max-h-[38rem] border border-[#2f3037] rounded-md p-0 bg-[#191a24] text-white',
-          th: 'text-base bg-transparent text-white',
-          td: 'border-t border-t-[#2f3037]',
+            'w-full table-fixed max-h-[35rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
+          th: 'text-base text-white bg-[#191a24]',
+          td: 'border-y border-y-[#2f3037]',
         }}
+        isHeaderSticky
       >
         <TableHeader>
           <TableColumn>EmpId</TableColumn>
@@ -206,12 +263,7 @@ export default function App() {
               <TableCell>{d.Zone}</TableCell>
               <TableCell>{d.DateTime}</TableCell>
               <TableCell>
-                <Chip
-                  variant="bordered"
-                  color={d.Status === 'On Time' ? 'success' : 'warning'}
-                >
-                  {d.Status}
-                </Chip>
+                <StatusChip status={d.status} />
               </TableCell>
               <TableCell>
                 <ContrabandChip contraband="No" />
