@@ -1,5 +1,3 @@
-'use client';
-
 import useSecurityData from '@/hooks/useSecurityData';
 import {
   Chart as ChartJS,
@@ -23,6 +21,18 @@ ChartJS.register(
   Legend,
 );
 
+const plugin = {
+  id: 'customCanvasBackgroundColor',
+  beforeDraw: (chart: any) => {
+    const { ctx } = chart;
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.fillStyle = '#191a24';
+    ctx.fillRect(0, 0, chart.width, chart.height);
+    ctx.restore();
+  },
+};
+
 export default function BarChart() {
   const securityData = useSecurityData();
 
@@ -45,14 +55,46 @@ export default function BarChart() {
         data: [1, 3, 1, 2, 5, 1, 2],
         borderColor: '#ffffff',
         backgroundColor: '#ffffff',
+        radius: 3,
+        hoverRadius: 7,
       },
     ],
   };
 
   return (
-    <div className="relative h-max rounded-xl border border-[#30303E] p-5">
-      <div className="w-[20rem]">
-        <Line data={data} />
+    <div
+      className="flex h-72 w-full flex-col items-center justify-center
+        gap-5 rounded-xl border border-[#30303E] bg-[#191a24] px-10"
+    >
+      <div className="text-lg font-semibold text-white">
+        Contrabands Per Day
+      </div>
+      <div className="mx-auto w-[80%]">
+        <Line
+          data={data}
+          plugins={[plugin]}
+          options={{
+            scales: {
+              x: {
+                ticks: {
+                  color: '#c0c0c0',
+                },
+              },
+              y: {
+                ticks: {
+                  stepSize: 1,
+                  color: '#c0c0c0',
+                },
+                beginAtZero: true,
+              },
+            },
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+          }}
+        />
       </div>
     </div>
   );
