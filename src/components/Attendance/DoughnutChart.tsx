@@ -5,12 +5,6 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface AttendData {
-  id: string;
-  EmpId: string;
-  EmpShift: string;
-  DeptId: string;
-  Zone: string;
-  DateTime: string;
   status: string;
 }
 
@@ -24,7 +18,6 @@ export default function DoughnutChart({
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
-    console.log(database);
   }, [database]);
 
   const checkInStatus = ['On Time', 'Late', 'Early'];
@@ -48,7 +41,7 @@ export default function DoughnutChart({
       {
         label: 'Attend Count',
         data: checkInCount,
-        backgroundColor: ['#187964', '#F5A524', '#0070F0'],
+        backgroundColor: ['#94e2d5', '#f38ba8', '#74c7ec'],
         borderColor: '#171821',
         borderWidth: 5,
         borderRadius: 13,

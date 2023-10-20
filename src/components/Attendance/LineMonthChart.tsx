@@ -27,12 +27,8 @@ ChartJS.register(
 );
 
 interface AttendData {
-  id: string;
-  EmpId: string;
   EmpShift: string;
-  DeptId: string;
-  Zone: string;
-  DateTime: string;
+  date: string;
   status: string;
 }
 
@@ -40,10 +36,9 @@ export default function LineWeekChart({ database }: { database: any }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
-    console.log(database);
   }, [database]);
 
-  const today = dayjs(database[0].DateTime, 'MM/DD/YYYY HH:mm');
+  const today = dayjs(database[0].date, 'MM/DD/YYYY');
   const labels = [];
   for (let i = 0; i < 4; i += 1) {
     const startOfWeek = today
@@ -57,7 +52,7 @@ export default function LineWeekChart({ database }: { database: any }) {
 
   const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {
-      const day = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
+      const day = dayjs(item.date, 'MM/DD/YYYY');
       const startOfWeek = day.startOf('week').format('MM/DD');
       const endOfWeek = day.endOf('week').format('MM/DD');
       const weekLabel = `${startOfWeek} - ${endOfWeek}`;
@@ -76,7 +71,6 @@ export default function LineWeekChart({ database }: { database: any }) {
     (label) => countForLabel(label, 'Early').length,
   );
   const weeklyCount = delayCount.map((item, index) => item + onTimeCount[index] + earlyCount[index]);
-  console.log(weeklyCount, delayCount, onTimeCount, earlyCount);
   const data = {
     labels,
     datasets: [
@@ -91,20 +85,20 @@ export default function LineWeekChart({ database }: { database: any }) {
       {
         type: 'bar' as const,
         label: 'Late',
-        backgroundColor: '#F5A524',
+        backgroundColor: '#f38ba8',
         data: delayCount,
         borderColor: 'white',
       },
       {
         type: 'bar' as const,
         label: 'On Time',
-        backgroundColor: '#187964',
+        backgroundColor: '#94e2d5',
         data: onTimeCount,
       },
       {
         type: 'bar' as const,
         label: 'Early',
-        backgroundColor: '#0070F0',
+        backgroundColor: '#74c7ec',
         data: earlyCount,
       },
     ],

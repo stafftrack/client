@@ -25,14 +25,9 @@ ChartJS.register(
   LineController,
   BarController,
 );
-
 interface AttendData {
-  id: string;
-  EmpId: string;
   EmpShift: string;
-  DeptId: string;
-  Zone: string;
-  DateTime: string;
+  date: string;
   status: string;
 }
 
@@ -40,10 +35,9 @@ export default function LineWeekChart({ database }: { database: any }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
-    console.log(database);
   }, [database]);
 
-  const today = dayjs(database[0].DateTime, 'MM/DD/YYYY HH:mm');
+  const today = dayjs(database[0].date, 'MM/DD/YYYY');
   const labels = [
     today.subtract(6, 'day').format('MM/DD'),
     today.subtract(5, 'day').format('MM/DD'),
@@ -55,7 +49,7 @@ export default function LineWeekChart({ database }: { database: any }) {
   ];
   const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {
-      const day = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
+      const day = dayjs(item.date, 'MM/DD/YYYY');
       const date = day.format('MM/DD');
       if (date !== label) {
         return false;
@@ -86,20 +80,20 @@ export default function LineWeekChart({ database }: { database: any }) {
       {
         type: 'bar' as const,
         label: 'Late',
-        backgroundColor: '#F5A524',
+        backgroundColor: '#f38ba8',
         data: delayCount,
         borderColor: 'white',
       },
       {
         type: 'bar' as const,
         label: 'On Time',
-        backgroundColor: '#187964',
+        backgroundColor: '#94e2d5',
         data: onTimeCount,
       },
       {
         type: 'bar' as const,
         label: 'Early',
-        backgroundColor: '#0070F0',
+        backgroundColor: '#74c7ec',
         data: earlyCount,
       },
     ],

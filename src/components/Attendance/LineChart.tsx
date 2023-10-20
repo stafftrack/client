@@ -27,12 +27,9 @@ ChartJS.register(
 );
 
 interface AttendData {
-  id: string;
-  EmpId: string;
   EmpShift: string;
-  DeptId: string;
-  Zone: string;
-  DateTime: string;
+  time: string;
+  date: string;
   status: string;
 }
 
@@ -40,17 +37,17 @@ export default function LineChart({ database }: { database: any }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
-    console.log(database);
   }, [database]);
 
   const labels = ['6:30', '7:30', '8:30', '9:30'];
   const countForLabel = (label: string, status?: string) =>
     attendData.filter((item) => {
-      const date = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
+      const dateObj = dayjs(`${item.date} ${item.time}`, 'YYYY-MM-DD HH:mm:ss');
       const shiftHour = parseInt(label.split(':')[0], 10);
       const shiftMinute = parseInt(label.split(':')[1], 10);
-      const onTime = date.hour(shiftHour).minute(shiftMinute);
-      const diffMinutes = date.diff(onTime, 'minute');
+      const onTime = dateObj.hour(shiftHour).minute(shiftMinute);
+      const diffMinutes = dateObj.diff(onTime, 'minute');
+
       if (status) {
         return (
           diffMinutes <= 30 && diffMinutes >= -30 && item.status === status
@@ -81,20 +78,20 @@ export default function LineChart({ database }: { database: any }) {
       {
         type: 'bar' as const,
         label: 'Late',
-        backgroundColor: '#F5A524',
+        backgroundColor: '#f38ba8',
         data: delayCount,
         borderColor: 'white',
       },
       {
         type: 'bar' as const,
         label: 'On Time',
-        backgroundColor: '#187964',
+        backgroundColor: '#94e2d5',
         data: onTimeCount,
       },
       {
         type: 'bar' as const,
         label: 'Early',
-        backgroundColor: '#0070F0',
+        backgroundColor: '#74c7ec',
         data: earlyCount,
       },
     ],
