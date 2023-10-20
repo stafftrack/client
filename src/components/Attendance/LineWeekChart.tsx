@@ -38,20 +38,36 @@ export default function LineWeekChart({ database }: { database: any }) {
   }, [database]);
 
   const today = dayjs(database[0].date, 'MM/DD/YYYY');
+
   const labels = [
-    today.subtract(6, 'day').format('MM/DD'),
-    today.subtract(5, 'day').format('MM/DD'),
-    today.subtract(4, 'day').format('MM/DD'),
-    today.subtract(3, 'day').format('MM/DD'),
-    today.subtract(2, 'day').format('MM/DD'),
-    today.subtract(1, 'day').format('MM/DD'),
-    today.format('MM/DD'),
+    `${today.subtract(6, 'day').format('MM/DD')} - ${today
+      .subtract(6, 'day')
+      .format('ddd')}`,
+    `${today.subtract(5, 'day').format('MM/DD')} - ${today
+      .subtract(5, 'day')
+      .format('ddd')}`,
+    `${today.subtract(4, 'day').format('MM/DD')} - ${today
+      .subtract(4, 'day')
+      .format('ddd')}`,
+    `${today.subtract(3, 'day').format('MM/DD')} - ${today
+      .subtract(3, 'day')
+      .format('ddd')}`,
+    `${today.subtract(2, 'day').format('MM/DD')} - ${today
+      .subtract(2, 'day')
+      .format('ddd')}`,
+    `${today.subtract(1, 'day').format('MM/DD')} - ${today
+      .subtract(1, 'day')
+      .format('ddd')}`,
+    `${today.format('MM/DD')} - ${today.format('ddd')}`,
   ];
+
+  console.log(labels);
+
   const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {
       const day = dayjs(item.date, 'MM/DD/YYYY');
       const date = day.format('MM/DD');
-      if (date !== label) {
+      if (date !== label.split(' - ')[0]) {
         return false;
       }
       const { status } = item;
@@ -65,7 +81,9 @@ export default function LineWeekChart({ database }: { database: any }) {
   const earlyCount = labels.map(
     (label) => countForLabel(label, 'Early').length,
   );
-  const dailyCount = delayCount .map((item, index) => item + onTimeCount[index] + earlyCount[index]);
+  const dailyCount = delayCount.map(
+    (item, index) => item + onTimeCount[index] + earlyCount[index],
+  );
   const data = {
     labels,
     datasets: [
