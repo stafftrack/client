@@ -9,12 +9,15 @@ export default function useSupabaseData(
   empShift: any,
   date: any,
   inputValue: any,
+  end: number | null,
 ) {
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
     (async () => {
       const query = supabase.from('Entry Data').select(select);
+
+      query.not("contraband", "is", null);
 
       if (zone.value !== 'All') {
         query.eq('Zone', zone.value);
@@ -44,8 +47,11 @@ export default function useSupabaseData(
         query.like('EmpId', `%${inputValue}%`);
       }
 
+      if (end !== null) {
+        query.range(0, end);
+      }
+
       const { data: d, error } = await query
-        .range(0, 49)
         .order('date', { ascending: false })
         .order('time', { ascending: false });
 
@@ -53,7 +59,7 @@ export default function useSupabaseData(
         setData(d);
       }
     })();
-  }, [zone, department, empShift, date, inputValue, supabase, select]);
+  }, [zone, department, empShift, date, inputValue, supabase, select, end]);
 
   return data;
 }

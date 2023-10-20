@@ -1,20 +1,9 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Contraband } from '@/types';
-import useSecurityData from '@/hooks/useSecurityData';
-import { Chip } from '@nextui-org/react';
-import { SupabaseClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
+import { Chip } from '@nextui-org/react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-const contrabandKeys: (keyof Contraband)[] = [
-  'electronicDevice',
-  'laptop',
-  'scissor',
-  'knife',
-  'gun',
-];
 
 const plugin = {
   id: 'customCanvasBackgroundColor',
@@ -28,18 +17,44 @@ const plugin = {
   },
 };
 
-export default function DoughnutChart({
-  supabase,
-}: {
-  supabase: SupabaseClient<any, 'public', any>;
-}) {
+interface Props {
+  contrabandData: any[];
+}
 
-  const [tmp, setTmp] = useState();
+export default function DoughnutChart({ contrabandData }: Props) {
+  const [electronicDeviceCount, setElectronicDeviceCount] = useState(0);
+  const [laptopCount, setLaptopCount] = useState(0);
+  const [scissorsCount, setScissorsCount] = useState(0);
+  const [knifeCount, setKnifeCount] = useState(0);
+  const [gunCount, setGunCount] = useState(0);
 
-  const securityData = useSecurityData();
-  const contrabandCounts: number[] = contrabandKeys.map((key) =>
-    securityData.reduce((total, entry) => total + entry.contraband[key], 0),
-  );
+  useEffect(() => {
+    if (!contrabandData) {
+      return;
+    }
+
+    let newElectronicDeviceCount = 0;
+    let newLaptopCount = 0;
+    let newScissorsCount = 0;
+    let newKnifeCount = 0;
+    let newGunCount = 0;
+
+    contrabandData.forEach((d) => {
+      if (d.contraband) {
+        newElectronicDeviceCount += d.contraband.electronic_device;
+        newLaptopCount += d.contraband.laptop;
+        newScissorsCount += d.contraband.scissors;
+        newKnifeCount += d.contraband.knife;
+        newGunCount += d.contraband.gun;
+      }
+    });
+
+    setElectronicDeviceCount(newElectronicDeviceCount);
+    setLaptopCount(newLaptopCount);
+    setScissorsCount(newScissorsCount);
+    setKnifeCount(newKnifeCount);
+    setGunCount(newGunCount);
+  }, [contrabandData]);
 
   const labels = [
     {
@@ -69,7 +84,13 @@ export default function DoughnutChart({
     datasets: [
       {
         label: 'counts',
-        data: contrabandCounts,
+        data: [
+          electronicDeviceCount,
+          laptopCount,
+          scissorsCount,
+          knifeCount,
+          gunCount,
+        ],
         backgroundColor: [
           '#f38ba8',
           '#f9e2af',
@@ -87,8 +108,8 @@ export default function DoughnutChart({
   return (
     <div className="relative flex h-72 rounded-xl border border-[#30303E] bg-[#191a24] p-5">
       <div
-        className="absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2
-            transform text-4xl font-semibold text-white"
+        className="absolute left-1/3 top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col
+            items-center text-4xl font-semibold text-white"
       >
         {data.datasets[0].data.reduce((a, b) => a + b, 0)}
         <div className="text-medium text-white">Total</div>
