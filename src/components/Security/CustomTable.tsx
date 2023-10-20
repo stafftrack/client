@@ -56,6 +56,7 @@ export default function CustomTable({ data }: { data: any[] }) {
             'w-full table-fixed max-h-[39.5rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
           th: 'text-base text-white bg-[#191a24]',
           td: 'border-y border-y-[#2f3037]',
+          tr: 'hover:bg-[#1f212d] transition-all'
         }}
       >
         <TableHeader>
