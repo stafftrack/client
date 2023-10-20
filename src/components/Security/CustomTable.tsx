@@ -7,33 +7,13 @@ import {
   TableCell,
   Chip,
 } from '@nextui-org/react';
-import { DataRow } from '@/types';
-
-type ContrabandChipProps = {
-  contraband: 'Yes' | 'No' | string; // 其他可能的值也可以在此添加
-};
-
-function ContrabandChip({ contraband }: ContrabandChipProps) {
-  if (contraband === 'Yes') {
-    return (
-      <Chip color="danger" variant="bordered">
-        Yes
-      </Chip>
-    );
-  }
-  return (
-    <Chip color="default" variant="bordered">
-      No
-    </Chip>
-  );
-}
 
 function formatTime(time: string) {
   const [hours, minutes] = time.split(':');
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function CustomTable({ data }: { data: DataRow[] }) {
+export default function CustomTable({ data }: { data: any[] }) {
   return (
     <Table
       aria-label="Table with employee security data"
@@ -55,19 +35,49 @@ export default function CustomTable({ data }: { data: DataRow[] }) {
         <TableColumn className="w-32">Contrabands</TableColumn>
       </TableHeader>
       <TableBody>
-        {data.map((d) => (
-          <TableRow key={d.id}>
-            <TableCell>{d.EmpId}</TableCell>
-            <TableCell>{d.Zone}</TableCell>
-            <TableCell>{d.DeptId}</TableCell>
-            <TableCell>{d.EmpShift}</TableCell>
-            <TableCell>{formatTime(d.time)}</TableCell>
-            <TableCell>{new Date(d.date).toLocaleDateString()}</TableCell>
-            <TableCell>
-              <ContrabandChip contraband="No" />
-            </TableCell>
-          </TableRow>
-        ))}
+        {data &&
+          data.map((d) => (
+            <TableRow key={d.id}>
+              <TableCell>{d.EmpId}</TableCell>
+              <TableCell>{d.Zone}</TableCell>
+              <TableCell>{d.DeptId}</TableCell>
+              <TableCell>{d.EmpShift}</TableCell>
+              <TableCell>{formatTime(d.time)}</TableCell>
+              <TableCell>{new Date(d.date).toLocaleDateString()}</TableCell>
+              <TableCell
+                className="flex min-h-unit-10 cursor-pointer flex-wrap gap-2"
+                onClick={() => {
+                  alert('show image');
+                }}
+              >
+                {d.contraband.electronic_device ? (
+                  <Chip variant="dot" classNames={{ dot: 'bg-[#f38ba8]' }}>
+                    {d.contraband?.electronic_device}
+                  </Chip>
+                ) : null}
+                {d.contraband.laptop ? (
+                  <Chip variant="dot" classNames={{ dot: 'bg-[#f9e2af]' }}>
+                    {d.contraband?.laptop}
+                  </Chip>
+                ) : null}
+                {d.contraband.scissors ? (
+                  <Chip variant="dot" classNames={{ dot: 'bg-[#94e2d5]' }}>
+                    {d.contraband?.scissors}
+                  </Chip>
+                ) : null}
+                {d.contraband.knife ? (
+                  <Chip variant="dot" classNames={{ dot: 'bg-[#74c7ec]' }}>
+                    {d.contraband?.knife}
+                  </Chip>
+                ) : null}
+                {d.contraband.gun ? (
+                  <Chip variant="dot" classNames={{ dot: 'bg-[#b4befe]' }}>
+                    {d.contraband?.gun}
+                  </Chip>
+                ) : null}
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

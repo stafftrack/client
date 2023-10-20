@@ -1,4 +1,3 @@
-import useSecurityData from '@/hooks/useSecurityData';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,6 +8,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -33,26 +33,49 @@ const plugin = {
   },
 };
 
-export default function BarChart() {
-  const securityData = useSecurityData();
+interface Props {
+  contrabandData: any[];
+}
 
-  const labels = Array.from(
-    new Set(
-      securityData.map((item) => {
-        const date = new Date(item.dateTime);
-        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
-        const day = date.getUTCDate().toString().padStart(2, '0');
-        return `${month}/${day}`;
-      }),
-    ),
-  );
+function sortMapByKey(inputMap: Map<string, any>): Map<string, any> {
+  const sortedKeys = Array.from(inputMap.keys()).sort();
+  return new Map(sortedKeys.map((key) => [key, inputMap.get(key)]));
+}
+
+export default function LineChart({ contrabandData }: Props) {
+  const [labels, setLabels] = useState<any[]>([]);
+  const [tmp, setTmp] = useState<any[]>([]);
+  const m = new Map();
+
+  useEffect(() => {
+    if (!contrabandData) {
+      return;
+    }
+    contrabandData.forEach((d) => {
+      const total =
+        d.contraband.electronic_device +
+        d.contraband.laptop +
+        d.contraband.scissors +
+        d.contraband.knife +
+        d.contraband.gun;
+      if (m.get(d.date) === undefined) {
+        m.set(d.date, total);
+      } else {
+        m.set(d.date, m.get(d.date) + total);
+      }
+    });
+
+    const sortedM = sortMapByKey(m);
+    setLabels(Array.from(sortedM.keys()));
+    setTmp(Array.from(sortedM.values()));
+  }, [contrabandData]);
 
   const data = {
     labels,
     datasets: [
       {
         label: 'Total',
-        data: [1, 3, 1, 2, 5, 1, 2],
+        data: tmp,
         borderColor: '#ffffff',
         backgroundColor: '#ffffff',
         radius: 3,
