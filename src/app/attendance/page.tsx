@@ -58,7 +58,7 @@ export default function AttendancePage({
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Today', 'Last Week', 'Last Month'],
+    values: ['All', 'Daily', 'Last Week', 'Last Month'],
     value: searchParams.Date ?? 'Today',
   });
   const [status, setStatus] = useState({
@@ -155,7 +155,7 @@ export default function AttendancePage({
         {data.length > 0 && (
           <DoughnutChart database={attendData} period={date.value} />
         )}
-        {date.value === 'Today' && data.length > 0 && (
+        {date.value === 'Daily' && data.length > 0 && (
           <LineChart database={attendData} />
         )}
         {date.value === 'Last Week' && attendData.length > 0 && (

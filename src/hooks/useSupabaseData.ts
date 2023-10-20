@@ -42,7 +42,7 @@ export default function useSupabaseData(
           : dayjs('2023-09-22');
           console.log(today);
         const queryStartDate = today.format('YYYY-MM-DD');
-        if (date.value === 'Today') {
+        if (date.value === 'Today' || date.value === 'Daily') {
           query.eq('date', queryStartDate);
         } else if (date.value === 'Last Week' || date.value === 'Last 7 Days') {
           const lastWeek = today.subtract(1, 'week');

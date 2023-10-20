@@ -40,6 +40,7 @@ export default function LineChart({ database }: { database: any }) {
   }, [database]);
 
   const labels = ['6:30', '7:30', '8:30', '9:30'];
+  const today = database[0]?.date || null;
   const countForLabel = (label: string, status?: string) =>
     attendData.filter((item) => {
       const dateObj = dayjs(`${item.date} ${item.time}`, 'YYYY-MM-DD HH:mm:ss');
@@ -138,7 +139,7 @@ export default function LineChart({ database }: { database: any }) {
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
       <div className="text-2xl font-semibold text-white">
-        Today Check-in Flow
+        { `${today}  Check-in Flow`}
       </div>
       <Chart type="bar" data={data} options={options} />
     </div>
