@@ -84,7 +84,11 @@ export default function App({ searchParams }: { searchParams: any }) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
-  const [isLoading, setIsLoading] = useState(true);
+  const [filtersChanged, setFiltersChanged] = useState(false);
+  const handleFilterChange = (setter) => (value) => {
+    setter(value);
+    setFiltersChanged(true);
+  };
   const [hasMore, setHasMore] = useState(true);
   const [zone, setZone] = useState({
     label: 'Zone',
@@ -208,9 +212,13 @@ export default function App({ searchParams }: { searchParams: any }) {
     onLoadMore: list.loadMore,
   });
   const fetchData = () => {
-    list.reload(); // 重新加載資料
-    setData([]); // 清空當前的資料
+    list.reload();
+    setData([]);
   };
+  useEffect(() => {
+    fetchData();
+}, [inputValue, zone.value, department.value, empShift.value, status.value, date.value]);
+
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
       <div className="flex h-12 gap-5">
@@ -227,7 +235,7 @@ export default function App({ searchParams }: { searchParams: any }) {
           }}
           onValueChange={(value) => {
             setInputValue(value);
-            fetchData(); 
+            fetchData();
           }}
           classNames={{
             inputWrapper: 'h-full border border-[#2f3037] bg-[#191a24] w-52',
