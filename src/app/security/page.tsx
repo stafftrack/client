@@ -51,6 +51,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
     empShift,
     date,
     inputValue,
+    true,
     99,
   );
 
@@ -62,6 +63,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
     empShift,
     date,
     inputValue,
+    true,
     null,
   );
 

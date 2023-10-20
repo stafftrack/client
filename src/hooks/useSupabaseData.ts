@@ -9,6 +9,7 @@ export default function useSupabaseData(
   empShift: any,
   date: any,
   inputValue: any,
+  filterNoContraband: boolean,
   end: number | null,
 ) {
   const [data, setData] = useState<any[]>([]);
@@ -17,7 +18,9 @@ export default function useSupabaseData(
     (async () => {
       const query = supabase.from('Entry Data').select(select);
 
-      query.not("contraband", "is", null);
+      if (filterNoContraband) {
+        query.not('contraband', 'is', null);
+      }
 
       if (zone.value !== 'All') {
         query.eq('Zone', zone.value);
@@ -59,7 +62,17 @@ export default function useSupabaseData(
         setData(d);
       }
     })();
-  }, [zone, department, empShift, date, inputValue, supabase, select, end]);
+  }, [
+    zone,
+    department,
+    empShift,
+    date,
+    inputValue,
+    supabase,
+    select,
+    end,
+    filterNoContraband,
+  ]);
 
   return data;
 }
