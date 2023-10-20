@@ -43,7 +43,7 @@ export default function CustomTable({ data }: { data: any[] }) {
               src="https://github.com/m4xshen/img-host/assets/74842863/71f86dfb-9d62-41bc-b6f0-f5a601006073"
             />
           </ModalBody>
-          <ModalFooter className="flex justify-center gap-3">
+          <ModalFooter className="flex flex-wrap justify-center gap-3">
             <ContrabandChips displayText contraband={contraband} />
           </ModalFooter>
         </ModalContent>
