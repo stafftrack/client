@@ -45,7 +45,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
 
   const data = useSupabaseData(
     supabase,
-    'id,EmpId,Zone,DeptId,EmpShift,time,date,contraband',
+    'id,EmpId,Zone,DeptId,EmpShift,time,date,contraband,Img',
     zone,
     department,
     empShift,
