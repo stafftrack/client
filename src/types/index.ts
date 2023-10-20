@@ -41,3 +41,14 @@ export interface AsyncListResult {
   items: EntryData[];
   cursor?: string;
 }
+
+export interface UploadDataProps {
+  empshift: any;
+  empId: string;
+  deptId: string;
+  zone: string;
+  ToolScanTime: number;
+  date: string;
+  arrived_time: string;
+  image: File | null;
+}

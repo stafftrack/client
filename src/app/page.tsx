@@ -82,13 +82,10 @@ function StatusChip({ status }: StatusChipProps) {
 export default function App({ searchParams }: { searchParams: any }) {
   const [data, setData] = useState<DataRow[]>([]);
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
+  
   const router = useRouter();
   const pathname = usePathname();
-  const [filtersChanged, setFiltersChanged] = useState(false);
-  const handleFilterChange = (setter) => (value) => {
-    setter(value);
-    setFiltersChanged(true);
-  };
+
   const [hasMore, setHasMore] = useState(true);
   const [zone, setZone] = useState({
     label: 'Zone',
@@ -151,6 +148,7 @@ export default function App({ searchParams }: { searchParams: any }) {
   const list = useAsyncList<DataRow[]>({
     async load({ signal, cursor }: ListOptions) {
       const start = cursor ? parseInt(cursor, 10) : 0; // Convert string cursor to number
+      console.log(start)
       const end = start + 50;
       const query = supabase.from('Entry Data').select('*');
       if (zone.value !== 'All') {
@@ -193,9 +191,14 @@ export default function App({ searchParams }: { searchParams: any }) {
       const { data: d, error } = await query;
 
       if (error) {
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw error;
       }
-      setData((prevData) => [...prevData, ...d]);
+      if (!cursor) { // if it's a fresh load, reset the data
+        setData(d);
+    } else {
+        setData((prevData) => [...prevData, ...d]);
+    }
       const hasMoreData = !(d.length < 50);
 
       setHasMore(hasMoreData);
@@ -214,7 +217,10 @@ export default function App({ searchParams }: { searchParams: any }) {
   const fetchData = () => {
     list.reload();
     setData([]);
-  };
+    if (scrollerRef && scrollerRef.current) {
+        scrollerRef.current.scrollTop = 0; // Scroll to the top
+    }
+};
   useEffect(() => {
     fetchData();
 }, [inputValue, zone.value, department.value, empShift.value, status.value, date.value]);
