@@ -1,9 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Sidebar from '@/components/Sidebar';
 import Providers from './providers';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'stafftrack',
@@ -15,10 +19,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
-    <html lang="en">
+    <html lang="en" className="bg-primary">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="h-screen flex font-sans">
+            <Sidebar />
+            <div className='w-full h-screen overflow-y-scroll'>
+              {children}
+            </div>
+          </div>
+        </Providers>
       </body>
     </html>
   );
