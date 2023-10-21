@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from '@nextui-org/react';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function CustomSelect({
@@ -37,12 +37,7 @@ export default function CustomSelect({
     >
       {state.values.map((value: any) => (
         <SelectItem key={value} value={value}>
-          {
-            value === 'Custom Date' ?
-              <Input placeholder="custom date"/>
-            :
-            value
-          }
+          {value}
         </SelectItem>
       ))}
     </Select>

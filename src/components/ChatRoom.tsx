@@ -13,12 +13,12 @@ import {
 import { Input } from '@nextui-org/input';
 import SendIcon from './icons/Send';
 
-export default function ChatRoom(/* { data }: { data: DataRow[] } */) {
+export default function ChatRoom({ data }: { data: any[] }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    // body: {
-    //   data: JSON.stringify(data),
-    // },
+    body: {
+      data: JSON.stringify(data),
+    },
   });
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 

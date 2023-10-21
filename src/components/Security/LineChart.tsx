@@ -98,7 +98,7 @@ export default function LineChart({ date, contrabandData }: Props) {
     >
       <div className="text-lg font-semibold text-white">
         {date.value === 'Today'
-          ? 'Contrabands Per Hour'
+          ? 'Contrabands Per Shift'
           : 'Contrabands Per Day'}
       </div>
       <div className="mx-auto w-[80%]">
