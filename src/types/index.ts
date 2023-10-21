@@ -43,6 +43,7 @@ export interface AsyncListResult {
 }
 
 export interface UploadDataProps {
+  shift: any;
   empshift: any;
   empId: string;
   deptId: string;

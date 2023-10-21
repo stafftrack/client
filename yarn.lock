@@ -4314,7 +4314,7 @@ react-remove-scroll@^2.5.6:
 
 react-stately@^3.27.1:
   version "3.27.1"
-  resolved "https://registry.npmjs.org/react-stately/-/react-stately-3.27.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-stately/-/react-stately-3.27.1.tgz#b24992bd72da1b1632bf4f4232d87ce6913a19bd"
   integrity sha512-qHhivqOpyATaWwoj3xl3IqqoEnib+dsl2vYlOz92CT5Ntm6lprF7KO+LkxdkS0SnUckdGewFM1NjCmbK7wPJgw==
   dependencies:
     "@react-stately/calendar" "^3.4.1"

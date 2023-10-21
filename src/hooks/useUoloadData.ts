@@ -14,7 +14,7 @@ function useUploadData() {
     if (props.image) formData.append('image', props.image);
     console.log({
       empId: props.empId,
-      empshift: props.empshift,
+      shift: props.shift,
       deptId: props.deptId,
       zone: props.zone,
       date: props.date,
@@ -23,11 +23,12 @@ function useUploadData() {
 
     formData.append('empInfo', JSON.stringify({
       empId: props.empId,
-      empshift: props.empshift,
+      shift: props.shift,
       deptId: props.deptId,
       zone: props.zone,
       date: props.date,
       arrived_time: props.arrived_time,
+      ToolScanTime: props.ToolScanTime
     }));
 
     try {
@@ -39,7 +40,8 @@ function useUploadData() {
       });
       setResponse(result.data);
     } catch (err) {
-      setError(err);
+      console.error();
+      // setError(err);
     } finally {
       setIsLoading(false);
     }

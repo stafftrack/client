@@ -9,7 +9,7 @@ import useUploadData from '@/hooks/useUoloadData';
 
 export default function UploadPage() {
   const [empId, setEmpId] = useState<string>('');
-  const [empshift, setEmpShift] = useState<string>();
+  const [shift, setShift] = useState<string>();
   const [deptId, setDeptId] = useState<string>();
   const [zone, setZone] = useState<string>();
   const [datetime, setDatetime] = useState<string>();
@@ -26,18 +26,19 @@ export default function UploadPage() {
   };
 
   const handleSubmit = async () => {
-    if (empId && empshift && deptId && zone && datetime && selectImage) {
+    if (empId && shift && deptId && zone && datetime && selectImage) {
       if (typeof datetime === 'string') {
         const dateParts = datetime.split(' ');
 
         const uploadProps = {
           empId,
-          empshift,
+          shift,
           deptId,
           zone,
           date: dateParts[0],
           arrived_time: dateParts[1],
           image: selectImage!,
+          ToolScanTime: "100"
         };
 
         await uploadData(uploadProps);
@@ -97,14 +98,14 @@ export default function UploadPage() {
                 trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
                 popover: 'border border-[#2f3037] bg-[#191a24]',
               }}
-              value={empshift}
+              value={shift}
               onChange={(event) => {
-                setEmpShift(event.target.value);
+                setShift(event.target.value);
               }}
             >
-              {EmpShiftSelect.map((shift) => (
-                <SelectItem key={shift.value} value={shift.value}>
-                  {shift.label}
+              {EmpShiftSelect.map((empshift) => (
+                <SelectItem key={empshift.value} value={empshift.value}>
+                  {empshift.label}
                 </SelectItem>
               ))}
             </Select>

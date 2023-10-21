@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useInfiniteScroll } from '@nextui-org/use-infinite-scroll';
-import { useAsyncList } from '@react-stately/data';
 import {
   Table,
   TableHeader,
@@ -13,7 +11,6 @@ import {
   TableCell,
   Chip,
   Input,
-  Spinner,
 } from '@nextui-org/react';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
@@ -30,10 +27,6 @@ type ContrabandChipProps = {
 };
 type StatusChipProps = {
   status: 'On Time' | 'Late' | 'Early' | string;
-};
-type ListOptions = {
-  signal: AbortSignal;
-  cursor?: string;
 };
 
 function ContrabandChip({ contraband }: ContrabandChipProps) {
@@ -78,15 +71,16 @@ function StatusChip({ status }: StatusChipProps) {
     </Chip>
   );
 }
-
+function formatTime(time: string) {
+  const [hours, minutes] = time.split(':');
+  return `${parseInt(hours, 10)}:${minutes}`;
+}
 export default function App({ searchParams }: { searchParams: any }) {
-  const [data, setData] = useState<DataRow[]>([]);
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
-  
+  const [data, setData] = useState<DataRow[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
-  const [hasMore, setHasMore] = useState(true);
   const [zone, setZone] = useState({
     label: 'Zone',
     values: ['All', 'AZ', 'HQ'],
@@ -114,45 +108,11 @@ export default function App({ searchParams }: { searchParams: any }) {
   });
 
   useEffect(() => {
-    const searchZone = searchParams.zone;
-    if (searchZone) {
-      setZone({ ...zone, value: searchZone });
-    }
-
-    const searchDepartment = searchParams.department;
-    if (searchDepartment) {
-      setDepartment({ ...department, value: searchDepartment });
-    }
-
-    const searchEmpShift = searchParams.EmpShift;
-    if (searchEmpShift) {
-      setEmpShift({ ...empShift, value: searchEmpShift });
-    }
-
-    const searchDate = searchParams.date;
-    if (searchDate) {
-      setDate({ ...date, value: searchDate });
-    }
-
-    const searchStatus = searchParams.Status;
-    if (searchStatus) {
-      setStatus({ ...status, value: searchStatus });
-    }
-
-    const searchEmpId = searchParams.empId;
-    if (searchEmpId) {
-      setInputValue(searchEmpId);
-    }
-  }, []);
-
-  const list = useAsyncList<DataRow[]>({
-    async load({ signal, cursor }: ListOptions) {
-      const start = cursor ? parseInt(cursor, 10) : 0; // Convert string cursor to number
-      console.log(start)
-      const end = start + 50;
+    (async () => {
       const query = supabase.from('Entry Data').select('*');
+      
       if (zone.value !== 'All') {
-        query.eq('Zone', zone.value);
+        query.eq('Zone', zone.value);     
       }
 
       if (department.value !== 'All') {
@@ -162,15 +122,9 @@ export default function App({ searchParams }: { searchParams: any }) {
       if (empShift.value !== 'All') {
         query.eq('EmpShift', empShift.value);
       }
-
       if (status.value !== 'All') {
         query.eq('status', status.value);
       }
-
-      if (inputValue !== '') {
-        query.like('EmpId', `%${inputValue}%`);
-      }
-
       if (date.value !== 'All') {
         if (date.value === 'Today') {
           query.eq('date', '2023-09-22');
@@ -183,47 +137,22 @@ export default function App({ searchParams }: { searchParams: any }) {
         }
       }
 
-      query
-        .range(start, end)
+      if (inputValue !== '') {
+        query.like('EmpId', `%${inputValue}%`);
+      }
+
+      const { data: d, error } = await query
+        .range(0, 49)
         .order('date', { ascending: false })
         .order('time', { ascending: false });
 
-      const { data: d, error } = await query;
-
-      if (error) {
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
-        throw error;
-      }
-      if (!cursor) { // if it's a fresh load, reset the data
+      if (!error) {
         setData(d);
-    } else {
-        setData((prevData) => [...prevData, ...d]);
-    }
-      const hasMoreData = !(d.length < 50);
+      }
+    })();
+    
+  }, [zone, department, empShift, date, inputValue]);
 
-      setHasMore(hasMoreData);
-      console.log('Cursor:', start, 'Has More:', hasMoreData);
-
-      return {
-        items: d,
-        cursor: hasMoreData ? (end + 1).toString() : undefined,
-      };
-    },
-  });
-  const [loaderRef, scrollerRef] = useInfiniteScroll({
-    hasMore,
-    onLoadMore: list.loadMore,
-  });
-  const fetchData = () => {
-    list.reload();
-    setData([]);
-    if (scrollerRef && scrollerRef.current) {
-        scrollerRef.current.scrollTop = 0; // Scroll to the top
-    }
-};
-  useEffect(() => {
-    fetchData();
-}, [inputValue, zone.value, department.value, empShift.value, status.value, date.value]);
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
@@ -239,9 +168,16 @@ export default function App({ searchParams }: { searchParams: any }) {
           onClear={() => {
             setInputValue('');
           }}
+          
           onValueChange={(value) => {
             setInputValue(value);
-            fetchData();
+            const newSearchParams = new URLSearchParams(searchParams);
+            if (value !== '') {
+              newSearchParams.set('empId', value);
+            } else {
+              newSearchParams.delete('empId');
+            }
+            router.push(`${pathname}?${newSearchParams.toString()}`);
           }}
           classNames={{
             inputWrapper: 'h-full border border-[#2f3037] bg-[#191a24] w-52',
@@ -282,21 +218,14 @@ export default function App({ searchParams }: { searchParams: any }) {
           td: 'border-y border-y-[#2f3037]',
         }}
         isHeaderSticky
-        baseRef={scrollerRef}
-        bottomContent={
-          hasMore ? (
-            <div className="flex w-full justify-center">
-              <Spinner ref={loaderRef} color="white" />
-            </div>
-          ) : null
-        }
       >
         <TableHeader>
           <TableColumn>EmpId</TableColumn>
           <TableColumn>EmpShift</TableColumn>
           <TableColumn>DeptId</TableColumn>
           <TableColumn>Zone</TableColumn>
-          <TableColumn>DateTime</TableColumn>
+          <TableColumn>Time</TableColumn>
+          <TableColumn>Date</TableColumn>
           <TableColumn>Status</TableColumn>
           <TableColumn>Contraband</TableColumn>
         </TableHeader>
@@ -307,7 +236,8 @@ export default function App({ searchParams }: { searchParams: any }) {
               <TableCell>{d.EmpShift}</TableCell>
               <TableCell>{d.DeptId}</TableCell>
               <TableCell>{d.Zone}</TableCell>
-              <TableCell>{d.DateTime}</TableCell>
+              <TableCell>{formatTime(d.time)}</TableCell>
+              <TableCell>{new Date(d.date).toLocaleDateString()}</TableCell>
               <TableCell>
                 <StatusChip status={d.status} />
               </TableCell>
