@@ -4,5 +4,8 @@
     "security": "Security",
     "attendance": "Attendance",
     "upload": "Upload"
+  },
+  "filterbar": {
+    "input": "Search Employee ID"
   }
 }

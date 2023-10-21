@@ -4,5 +4,8 @@
     "security": "違禁品",
     "attendance": "出席",
     "upload": "上傳"
+  },
+  "filterbar": {
+    "input": "以員工ID搜尋"
   }
 }
