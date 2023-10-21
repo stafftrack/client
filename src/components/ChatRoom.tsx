@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useChat } from 'ai/react';
 import { Button } from '@nextui-org/button';
+import ReactMarkdown from 'react-markdown';
 import ChatIcon from '@/components/icons/Chat';
 import {
   Modal,
@@ -13,7 +14,13 @@ import {
 import { Input } from '@nextui-org/input';
 import SendIcon from './icons/Send';
 
-export default function ChatRoom({ data }: { data: any[] }) {
+export default function ChatRoom({
+  data,
+  pageType,
+}: {
+  data: any[];
+  pageType: 'security' | 'attendance';
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     body: {
@@ -22,12 +29,22 @@ export default function ChatRoom({ data }: { data: any[] }) {
   });
   const [showPresetQuestions, setShowPresetQuestions] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const presetQuestions = [
-    '哪一天違禁品入廠的次數最多',
-    '找出哪些員工有攜帶違禁品入廠',
-    '請給我今天有攜帶違禁品的EMPId',
-    '「違禁品名稱、「數量]」和「[入廠日期]」三個欄位的數據轉化為一段簡單的文字分析',
-  ];
+
+  const presetQuestions = {
+    security: [
+      '哪一天違禁品入廠的次數最多',
+      '哪一種違禁品被檢出的次數最多?',
+      '哪個部門的違禁品檢出數量最多?',
+      '哪一位員工最常攜帶違禁品入廠?',
+    ],
+    attendance: [
+      '上週每一天最早跟最晚到的員工分別是誰?',
+      '有多少員工遲到超過30分鐘?',
+      '請問上週的平均遲到時間',
+      '我想知道每天哪個時段進廠人數最多',
+    ],
+  };
+  const questionsForCurrentPage = presetQuestions[pageType];
   const handlePresetQuestionClick = (question: string) => {
     const fakeEvent = {
       target: {
@@ -77,18 +94,18 @@ export default function ChatRoom({ data }: { data: any[] }) {
                 How can I help you?
               </div>
               {messages.map((m) => (
-                <div
-                  className={`w-max max-w-sm rounded-xl bg-[#2c2e3f] px-4 py-2 ${
-                    m.role === 'user' ? 'ml-auto' : ''
-                  }`}
-                  key={m.id}
-                >
-                  {m.content}
-                </div>
-              ))}
+                    <div
+                        className={`w-max max-w-sm rounded-xl bg-[#2c2e3f] px-4 py-2 ${
+                            m.role === 'user' ? 'ml-auto' : ''
+                        }`}
+                        key={m.id}
+                    >
+                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                    </div>
+                ))}
               {showPresetQuestions && (
                 <div className="mx-auto  mt-48 grid grid-cols-2 gap-4">
-                  {presetQuestions.map((question) => (
+                  {questionsForCurrentPage.map((question) => (
                     <Button
                       key={question}
                       onClick={() => handlePresetQuestionClick(question)}

@@ -71,7 +71,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom data={data} />
+      <ChatRoom data={data} pageType="security"/>
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
