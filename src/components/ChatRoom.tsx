@@ -32,16 +32,18 @@ export default function ChatRoom({
 
   const presetQuestions = {
     security: [
+      // zone==AZ Department==DEPT2 Date==Last week
       '哪一天違禁品入廠的次數最多',
       '哪一種違禁品被檢出的次數最多?',
-      '哪個部門的違禁品檢出數量最多?',
+      '給我攜帶違禁品的員工編號?',
       '哪一位員工最常攜帶違禁品入廠?',
     ],
     attendance: [
-      '上週每一天最早跟最晚到的員工分別是誰?',
-      '有多少員工遲到超過30分鐘?',
-      '請問上週的平均遲到時間',
-      '我想知道每天哪個時段進廠人數最多',
+      // zone==HQ Department==DEPT2 Date==Last week
+      '列出每一天最早到的員工分別是誰?',
+      '有多少員工遲到?給我遲到的EMPId',
+      '請問哪一天最多人準時到?',
+      '哪天遲到人數最多?',
     ],
   };
   const questionsForCurrentPage = presetQuestions[pageType];
@@ -64,7 +66,11 @@ export default function ChatRoom({
         chatContainerRef.current.scrollHeight;
     }
   }, [isOpen, messages]);
-
+  // useEffect(() => {
+  //   if (messages.length && messages[messages.length - 1].role !== 'user') {
+  //     setShowPresetQuestions(true);
+  //   }
+  // }, [messages]);
   return (
     <>
       <Button
@@ -128,7 +134,7 @@ export default function ChatRoom({
                 onChange={handleInputChange}
                 placeholder="Say something..."
               />
-              <Button isIconOnly type="submit">
+              <Button isIconOnly type="submit" onClick={()=>setShowPresetQuestions(false)}>
                 <SendIcon />
               </Button>
             </form>
