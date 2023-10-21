@@ -1,5 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 export default function useSupabaseData(
   supabase: SupabaseClient<any, 'public', any>,
@@ -10,6 +11,7 @@ export default function useSupabaseData(
   date: any,
   inputValue: any,
   filterNoContraband: boolean,
+  status: any | null,
   end: number | null,
 ) {
   const [data, setData] = useState<any[]>([]);
@@ -35,18 +37,35 @@ export default function useSupabaseData(
       }
 
       if (date.value !== 'All') {
-        if (date.value === 'Today') {
-          query.eq('date', '2023-09-22');
-        } else if (date.value === 'Last 7 days') {
-          query.gt('date', '2023-09-15');
-          query.lte('date', '2023-09-22');
-        } else if (date.value === 'Last 14 days') {
-          query.gt('date', '2023-09-08');
-          query.lte('date', '2023-09-22');
+        const today = dayjs(inputValue, 'YYYY-MM-DD', true).isValid()
+          ? dayjs(inputValue)
+          : dayjs('2023-09-22');
+          console.log(today);
+        const queryStartDate = today.format('YYYY-MM-DD');
+        if (date.value === 'Today' || date.value === 'Daily') {
+          query.eq('date', queryStartDate);
+        } else if (date.value === 'Last Week' || date.value === 'Last 7 Days') {
+          const lastWeek = today.subtract(1, 'week');
+          const queryLastWeek = lastWeek.format('YYYY-MM-DD');
+          query.gt('date', queryLastWeek);
+          query.lte('date', queryStartDate);
+        } else if (date.value === 'Last 2 Weeks') {
+          const lastWeek = today.subtract(2, 'week');
+          const queryLastWeek = lastWeek.format('YYYY-MM-DD');
+          query.gt('date', queryLastWeek);
+          query.lte('date', queryStartDate);
+        } else if (date.value === 'Last Month') {
+          const lastMonth = today.subtract(1, 'month');
+          const queryLastMonth = lastMonth.format('YYYY-MM-DD');
+          query.gt('date', queryLastMonth);
+          query.lte('date', queryStartDate);
         }
       }
+      if (status !== null && status.value !== 'All' ) {
+        query.eq('status', status.value);
+      }
 
-      if (inputValue !== '') {
+      if (inputValue !== '' && dayjs(inputValue, 'YYYY-MM-DD', true).isValid() === false) {
         query.like('EmpId', `%${inputValue}%`);
       }
 
@@ -71,6 +90,7 @@ export default function useSupabaseData(
     supabase,
     select,
     end,
+    status,
     filterNoContraband,
   ]);
 

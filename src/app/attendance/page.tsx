@@ -1,11 +1,12 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 import LineChart from '@/components/Attendance/LineChart';
 import LineWeekChart from '@/components/Attendance/LineWeekChart';
 import LineMonthChart from '@/components/Attendance/LineMonthChart';
+import LineAllChart from '@/components/Attendance/LineAllChart';
 import DoughnutChart from '@/components/Attendance/DoughnutChart';
 import {
   Table,
@@ -21,6 +22,7 @@ import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
+import useSupabaseData from '@/hooks/useSupabaseData';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -37,7 +39,6 @@ export default function AttendancePage({
 }: {
   searchParams: any;
 }) {
-  const [data, setData] = useState<any[]>([]);
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
@@ -59,8 +60,8 @@ export default function AttendancePage({
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Today', 'Last Week', 'Last Month'],
-    value: searchParams.Date ?? 'Today',
+    values: ['All', 'Daily', 'Last Week', 'Last 2 Weeks', 'Last Month'],
+    value: searchParams.Date ?? 'All',
   });
   const [status, setStatus] = useState({
     label: 'status',
@@ -68,59 +69,46 @@ export default function AttendancePage({
     value: searchParams.status ?? 'All',
   });
 
+  const data = useSupabaseData(
+    supabase,
+    'id,EmpId,Zone,DeptId,EmpShift,time,date,status',
+    zone,
+    department,
+    empShift,
+    date,
+    inputValue,
+    false,
+    status,
+    99,
+  );
+
+  console.log(data);
+
+  const attendData = useSupabaseData(
+    supabase,
+    'EmpShift,time,date,status',
+    zone,
+    department,
+    empShift,
+    date,
+    inputValue,
+    false,
+    status,
+    null,
+  );
+
   useEffect(() => {
-    (async () => {
-      const query = supabase.from('Entry Data').select('Zone, DeptId, EmpShift, EmpId, date, time, status, id, DateTime');
-
-      if (zone.value !== 'All') {
-        query.eq('Zone', zone.value);
-      }
-
-      if (department.value !== 'All') {
-        query.eq('DeptId', department.value);
-      }
-
-      if (empShift.value !== 'All') {
-        query.eq('EmpShift', empShift.value);
-      }
-
-      if (date.value !== 'All') {
-        const today = dayjs('2023-09-22');
-        if (date.value === 'Today') {
-          query.eq('date', today);
-        } else if (date.value === 'Last Week') {
-          const lastWeek = today.subtract(1, 'week');
-          console.log(lastWeek);
-          query.gt('date', lastWeek);
-          query.lte('date', today);
-        } else if (date.value === 'Last Month') {
-          const lastMonth = today.subtract(1, 'month');
-          query.gt('date', lastMonth);
-          query.lte('date', today);
-        }
-      }
-
-      if (status.value !== 'All') {
-        console.log(status.value);
-        query.eq('status', status.value);
-      }
-
-      if (inputValue !== '') {
-        query.like('EmpId', `%${inputValue}%`);
-      }
-
-      const queryResult = query
-        .order('date', { ascending: false })
-        .order('time', { ascending: false });
-
-      const { data: d, error } = await queryResult;
-      console.log(d);
-
-      if (!error) {
-        setData(d);
-      }
-    })();
-  }, [searchParams]);
+    if (dayjs(inputValue, 'YYYY-MM-DD', true).isValid()) {
+      setDate({
+        label: 'Date',
+        values: ['All', 'Daily', 'Last Week', 'Last Month'],
+        value: 'Daily',
+      });
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('Date', 'Daily');
+      router.push(`${pathname}?${newSearchParams.toString()}`);
+    }
+  }, [inputValue]);
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-5">
@@ -179,17 +167,15 @@ export default function AttendancePage({
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        {data.length > 0 && (
-          <DoughnutChart database={data} period={date.value} />
+        <DoughnutChart database={attendData} period={date.value} />
+
+        {date.value === 'All' && <LineAllChart database={attendData} />}
+        {date.value === 'Daily' && <LineChart database={attendData} />}
+        {(date.value === 'Last Week' || date.value === 'Last 2 Weeks') && (
+          <LineWeekChart database={attendData} period={date.value} />
         )}
-        {date.value === 'Today' && data.length > 0 && (
-          <LineChart database={data} />
-        )}
-        {date.value === 'Last Week' && data.length > 0 && (
-          <LineWeekChart database={data} />
-        )}
-        {date.value === 'Last Month' && data.length > 0 && (
-          <LineMonthChart database={data} />
+        {date.value === 'Last Month' && (
+          <LineMonthChart database={attendData} />
         )}
       </div>
       <Table

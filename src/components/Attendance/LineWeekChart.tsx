@@ -25,39 +25,40 @@ ChartJS.register(
   LineController,
   BarController,
 );
-
 interface AttendData {
-  id: string;
-  EmpId: string;
   EmpShift: string;
-  DeptId: string;
-  Zone: string;
-  DateTime: string;
+  date: string;
   status: string;
 }
 
-export default function LineWeekChart({ database }: { database: any }) {
+export default function LineWeekChart({
+  database,
+  period,
+}: {
+  database: any;
+  period: any;
+}) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
-    console.log(database);
   }, [database]);
 
-  const today = dayjs(database[0].DateTime, 'MM/DD/YYYY HH:mm');
-  const labels = [
-    today.subtract(6, 'day').format('MM/DD'),
-    today.subtract(5, 'day').format('MM/DD'),
-    today.subtract(4, 'day').format('MM/DD'),
-    today.subtract(3, 'day').format('MM/DD'),
-    today.subtract(2, 'day').format('MM/DD'),
-    today.subtract(1, 'day').format('MM/DD'),
-    today.format('MM/DD'),
-  ];
+  const today = dayjs(database[0]?.date, 'MM/DD/YYYY');
+
+  const periodDays = period === 'Last Week' ? 7 : 14;
+
+  const labels = [];
+  for (let i = periodDays; i > 0; i-=1) {
+    const day = today.subtract(i-1, 'day');
+    const label = `${day.format('MM/DD')} - ${day.format('ddd')}`;
+    labels.push(label);
+  }
+
   const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {
-      const day = dayjs(item.DateTime, 'MM/DD/YYYY HH:mm');
+      const day = dayjs(item.date, 'MM/DD/YYYY');
       const date = day.format('MM/DD');
-      if (date !== label) {
+      if (date !== label.split(' - ')[0]) {
         return false;
       }
       const { status } = item;
@@ -71,7 +72,9 @@ export default function LineWeekChart({ database }: { database: any }) {
   const earlyCount = labels.map(
     (label) => countForLabel(label, 'Early').length,
   );
-  const dailyCount = delayCount .map((item, index) => item + onTimeCount[index] + earlyCount[index]);
+  const dailyCount = delayCount.map(
+    (item, index) => item + onTimeCount[index] + earlyCount[index],
+  );
   const data = {
     labels,
     datasets: [
@@ -86,20 +89,20 @@ export default function LineWeekChart({ database }: { database: any }) {
       {
         type: 'bar' as const,
         label: 'Late',
-        backgroundColor: '#F5A524',
+        backgroundColor: '#f38ba8',
         data: delayCount,
         borderColor: 'white',
       },
       {
         type: 'bar' as const,
         label: 'On Time',
-        backgroundColor: '#187964',
+        backgroundColor: '#94e2d5',
         data: onTimeCount,
       },
       {
         type: 'bar' as const,
         label: 'Early',
-        backgroundColor: '#0070F0',
+        backgroundColor: '#74c7ec',
         data: earlyCount,
       },
     ],
@@ -146,7 +149,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
       <div className="text-2xl font-semibold text-white">
-        Last Week Check-in Flow
+        {`${period} Check-in Flow`}
       </div>
       <Chart type="bar" data={data} options={options} />
     </div>
