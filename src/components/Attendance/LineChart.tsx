@@ -39,25 +39,60 @@ export default function LineChart({ database }: { database: any }) {
     setAttendData(database);
   }, [database]);
 
-  const labels = ['6:30', '7:30', '8:30', '9:30'];
-  // const today = database[0]?.date || null;
+  const today = database[0]?.date;
+  let minTime = dayjs(`${today} ${attendData[0]?.time}`, 'YYYY-MM-DD HH:mm:ss');
+  let maxTime = dayjs(`${today} ${attendData[0]?.time}`, 'YYYY-MM-DD HH:mm:ss');
+
+  attendData.forEach((item) => {
+    const currentTime = dayjs(`${today} ${item.time}`, 'YYYY-MM-DD HH:mm:ss');
+    if (currentTime.isBefore(minTime)) {
+      minTime = currentTime;
+    }
+    if (currentTime.isAfter(maxTime)) {
+      maxTime = currentTime;
+    }
+  });
+
+  const roundedMinTime = minTime
+    .startOf('minute')
+    .subtract(minTime.minute() % 10, 'minute');
+  const roundedMaxTime = maxTime
+    .endOf('minute')
+    .add(10 - (maxTime.minute() % 10), 'minute');
+
+  const labels = [];
+  const startTime = dayjs(roundedMinTime);
+  const endTime = dayjs(roundedMaxTime);
+
+  if (database.length > 0) {
+    for (
+      let i = startTime;
+      i.isBefore(endTime);
+      i = i.add(10, 'minute').startOf('minute')
+    ) {
+      const label = i.format('H:mm');
+      labels.push(label);
+    }
+  }
   const countForLabel = (label: string, status?: string) =>
+    attendData.filter((item) => {
+      if (item.EmpShift !== label) {
+        return false;
+      }
+      return item.status === status;
+    });
+  console.log(labels)
+  const hourCountForLabel = (label: string) =>
     attendData.filter((item) => {
       const dateObj = dayjs(`${item.date} ${item.time}`, 'YYYY-MM-DD HH:mm:ss');
       const shiftHour = parseInt(label.split(':')[0], 10);
       const shiftMinute = parseInt(label.split(':')[1], 10);
       const onTime = dateObj.hour(shiftHour).minute(shiftMinute);
       const diffMinutes = dateObj.diff(onTime, 'minute');
-
-      if (status) {
-        return (
-          diffMinutes <= 30 && diffMinutes >= -30 && item.status === status
-        );
-      }
-      return diffMinutes <= 30 && diffMinutes >= -30;
+      return diffMinutes >= 0 && diffMinutes > 10;
     });
 
-  const hourCount = labels.map((label) => countForLabel(label).length);
+  const hourCount = labels.map((label) => hourCountForLabel(label).length);
   const delayCount = labels.map((label) => countForLabel(label, 'Late').length);
   const onTimeCount = labels.map(
     (label) => countForLabel(label, 'On Time').length,
@@ -65,6 +100,7 @@ export default function LineChart({ database }: { database: any }) {
   const earlyCount = labels.map(
     (label) => countForLabel(label, 'Early').length,
   );
+  
   const data = {
     labels,
     datasets: [
@@ -72,8 +108,8 @@ export default function LineChart({ database }: { database: any }) {
         type: 'line' as const,
         label: 'Total',
         borderColor: 'rgb(250,250,250)',
-        borderWidth: 2,
-        fill: false,
+        radius: 3,
+        hoverRadius: 7,
         data: hourCount,
       },
       {
@@ -127,7 +163,9 @@ export default function LineChart({ database }: { database: any }) {
       className="flex h-72 w-full flex-col items-center justify-center
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 px-10 align-middle"
     >
-      <div className="text-lg font-semibold text-white">Check-in Flow Per Shifts</div>
+      <div className="text-lg font-semibold text-white">
+        Check-in Flow Per Shifts
+      </div>
       <div className="mx-auto w-[80%]">
         <Chart type="bar" data={data} options={options} />
       </div>

@@ -82,8 +82,8 @@ export default function LineWeekChart({
         type: 'line' as const,
         label: 'Total',
         borderColor: 'rgb(250,250,250)',
-        borderWidth: 2,
-        fill: false,
+        radius: 3,
+        hoverRadius: 7,
         data: dailyCount,
       },
       {
