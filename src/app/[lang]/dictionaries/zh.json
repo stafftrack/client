@@ -14,9 +14,20 @@
     "department": "部門",
     "shift": "輪班",
     "status": "出勤狀態",
-    "time": "時間",
+    "time": "進廠時間",
     "date": "日期",
     "has_contraband": "攜帶違禁品",
+    "contraband": "違禁品",
     "all": "所有"
+  },
+  "contrabands": {
+    "electronic_device": "電子產品",
+    "laptop": "筆電",
+    "scissor": "剪刀",
+    "knife": "刀具",
+    "gun": "槍枝"
+  },
+  "chart": {
+    "total": "總合"
   }
 }

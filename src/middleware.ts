@@ -1,4 +1,4 @@
-let locales = ['en', 'zh'];
+const locales = ['en', 'zh'];
  
 // Get the preferred locale, similar to the above or using a library
 function getLocale(request) {

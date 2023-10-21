@@ -21,7 +21,7 @@ function formatTime(time: string) {
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function CustomTable({ data }: { data: any[] }) {
+export default function CustomTable({ data, dict }: { data: any[], dict: any }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [image, setImage] = useState('');
   const [contraband, setContraband] = useState();
@@ -60,13 +60,13 @@ export default function CustomTable({ data }: { data: any[] }) {
         }}
       >
         <TableHeader>
-          <TableColumn className="w-32">Employee</TableColumn>
-          <TableColumn className="w-20">Zone</TableColumn>
-          <TableColumn className="w-32">Department</TableColumn>
-          <TableColumn className="w-20">Shift</TableColumn>
-          <TableColumn className="w-20">Time</TableColumn>
-          <TableColumn className="w-20">Date</TableColumn>
-          <TableColumn className="w-32">Contrabands</TableColumn>
+          <TableColumn className="w-32">{dict.common.empid}</TableColumn>
+          <TableColumn className="w-20">{dict.common.zone}</TableColumn>
+          <TableColumn className="w-32">{dict.common.department}</TableColumn>
+          <TableColumn className="w-20">{dict.common.shift}</TableColumn>
+          <TableColumn className="w-20">{dict.common.time}</TableColumn>
+          <TableColumn className="w-20">{dict.common.date}</TableColumn>
+          <TableColumn className="w-32">{dict.common.contraband}</TableColumn>
         </TableHeader>
         <TableBody>
           {data &&

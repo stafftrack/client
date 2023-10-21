@@ -80,7 +80,7 @@ export default function CustomTable({ data, dict }: { data: any[], dict: any }) 
         <TableColumn>{dict.common.shift}</TableColumn>
         <TableColumn>{dict.common.department}</TableColumn>
         <TableColumn>{dict.common.zone}</TableColumn>
-        <TableColumn>{dict.common.zone}</TableColumn>
+        <TableColumn>{dict.common.time}</TableColumn>
         <TableColumn>{dict.common.date}</TableColumn>
         <TableColumn>{dict.common.status}</TableColumn>
         <TableColumn>{dict.common.has_contraband}</TableColumn>

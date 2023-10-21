@@ -20,27 +20,32 @@ export default function FilterBar({
   const pathname = usePathname();
 
   const [zone, setZone] = useState({
-    label: dict.common.zone,
+    label: 'Zone',
+    displayLabel: dict.common.zone,
     values: ['All', 'AZ', 'HQ'],
     value: searchParams.Zone ?? 'All',
   });
   const [department, setDepartment] = useState({
-    label: dict.common.department,
+    label: 'Department',
+    displayLabel: dict.common.department,
     values: ['All', 'DEPT1', 'DEPT2', 'DEPT3', 'DEPT4'],
     value: searchParams.Department ?? 'All',
   });
   const [empShift, setEmpShift] = useState({
-    label: dict.common.shift,
+    label: 'Shift',
+    displayLabel: dict.common.shift,
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
     value: searchParams.Shift ?? 'All',
   });
   const [status, setStatus] = useState({
-    label: dict.common.status,
+    label: 'Status',
+    displayLabel: dict.common.status,
     values: ['All', 'On Time', 'Early', 'Late'],
     value: searchParams.status ?? 'All',
   });
   const [date, setDate] = useState({
-    label: dict.common.date,
+    label: 'Date',
+    displayLabel: dict.common.date,
     values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
     value: searchParams.Date ?? 'Today',
   });

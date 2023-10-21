@@ -17,6 +17,17 @@
     "time": "Time",
     "date": "Date",
     "has_contraband": "Has Contraband",
+    "contraband": "Contraband",
     "all": "All"
+  },
+  "contrabands": {
+    "electronic_device": "Electronic Device",
+    "laptop": "Laptop",
+    "scissor": "Scissor",
+    "knife": "Knife",
+    "gun": "Gun"
+  },
+  "chart": {
+    "total": "Total"
   }
 }

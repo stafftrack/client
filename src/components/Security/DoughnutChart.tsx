@@ -19,9 +19,10 @@ const plugin = {
 
 interface Props {
   contrabandData: any[];
+  dict: any;
 }
 
-export default function DoughnutChart({ contrabandData }: Props) {
+export default function DoughnutChart({ contrabandData, dict }: Props) {
   const [electronicDeviceCount, setElectronicDeviceCount] = useState(0);
   const [laptopCount, setLaptopCount] = useState(0);
   const [scissorsCount, setScissorsCount] = useState(0);
@@ -58,29 +59,35 @@ export default function DoughnutChart({ contrabandData }: Props) {
 
   const labels = [
     {
-      name: 'Electronic Device',
+      name: dict.contrabands.electronic_device,
       style: 'bg-[#f38ba8]',
     },
     {
-      name: 'Laptop',
+      name: dict.contrabands.laptop,
       style: 'bg-[#f9e2af]',
     },
     {
-      name: 'Scissor',
+      name: dict.contrabands.scissor,
       style: 'bg-[#94e2d5]',
     },
     {
-      name: 'Knife',
+      name: dict.contrabands.knife,
       style: 'bg-[#74c7ec]',
     },
     {
-      name: 'Gun',
+      name: dict.contrabands.gun,
       style: 'bg-[#b4befe]',
     },
   ];
 
   const data = {
-    labels: ['Electronic Device', 'Laptop', 'Scissor', 'Knife', 'Gun'],
+    labels: [
+      dict.contrabands.electronic_device,
+      dict.contrabands.laptop,
+      dict.contrabands.scissor,
+      dict.contrabands.knife,
+      dict.contrabands.gun,
+    ],
     datasets: [
       {
         label: 'counts',
@@ -107,9 +114,9 @@ export default function DoughnutChart({ contrabandData }: Props) {
 
   return (
     <div className="relative flex h-72 rounded-xl border border-[#30303E] bg-[#191a24] p-5">
-      <div className="absolute left-1/3 top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center text-4xl font-semibold text-white">
+      <div className="absolute left-[8.7rem] top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center text-4xl font-semibold text-white">
         {data.datasets[0].data.reduce((a, b) => a + b, 0)}
-        <div className="text-medium text-white">Total</div>
+        <div className="text-medium text-white">{dict.chart.total}</div>
       </div>
       <div className="w-[15rem]">
         <Doughnut
