@@ -60,7 +60,7 @@ export default function AttendancePage({
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Daily', 'Last Week', 'Last Month'],
+    values: ['All', 'Daily', 'Last Week', 'Last 2 Weeks', 'Last Month'],
     value: searchParams.Date ?? 'All',
   });
   const [status, setStatus] = useState({
@@ -98,19 +98,17 @@ export default function AttendancePage({
   );
 
   useEffect(() => {
-    if(dayjs(inputValue, 'YYYY-MM-DD', true).isValid()) {
+    if (dayjs(inputValue, 'YYYY-MM-DD', true).isValid()) {
       setDate({
         label: 'Date',
         values: ['All', 'Daily', 'Last Week', 'Last Month'],
         value: 'Daily',
-      })
+      });
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set('Date', 'Daily');
       router.push(`${pathname}?${newSearchParams.toString()}`);
     }
-  }
-  , [inputValue]);
-
+  }, [inputValue]);
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-5">
@@ -178,9 +176,10 @@ export default function AttendancePage({
         {date.value === 'Daily' && attendData.length > 0 && (
           <LineChart database={attendData} />
         )}
-        {date.value === 'Last Week' && attendData.length > 0 && (
-          <LineWeekChart database={attendData} />
-        )}
+        {(date.value === 'Last Week' || date.value === 'Last 2 Weeks') &&
+          attendData.length > 0 && (
+            <LineWeekChart database={attendData} period={date.value} />
+          )}
         {date.value === 'Last Month' && attendData.length > 0 && (
           <LineMonthChart database={attendData} />
         )}

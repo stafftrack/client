@@ -49,7 +49,7 @@ export default function useSupabaseData(
           const queryLastWeek = lastWeek.format('YYYY-MM-DD');
           query.gt('date', queryLastWeek);
           query.lte('date', queryStartDate);
-        } else if (date.value === 'Last 14 Days') {
+        } else if (date.value === 'Last 2 Weeks') {
           const lastWeek = today.subtract(2, 'week');
           const queryLastWeek = lastWeek.format('YYYY-MM-DD');
           query.gt('date', queryLastWeek);

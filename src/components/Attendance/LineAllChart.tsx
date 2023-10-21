@@ -133,6 +133,7 @@ export default function LineWeekChart({ database }: { database: any }) {
           usePointStyle: true,
           padding: 20,
         },
+        // onClick: newLegendClickHandler,
       },
     },
   };
