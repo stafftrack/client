@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useInfiniteScroll } from '@nextui-org/use-infinite-scroll';
+import { useAsyncList } from '@react-stately/data';
 import {
   Table,
   TableHeader,
@@ -11,10 +13,12 @@ import {
   TableCell,
   Chip,
   Input,
+  Spinner,
 } from '@nextui-org/react';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
 import SearchIcon from '@/components/Fiter/SearchIcon';
+import { DataRow } from '@/types';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -27,9 +31,13 @@ type ContrabandChipProps = {
 type StatusChipProps = {
   status: 'On Time' | 'Late' | 'Early' | string;
 };
+type ListOptions = {
+  signal: AbortSignal;
+  cursor?: string;
+};
 
-function ContrabandChip({ contraband: has_contraband }: ContrabandChipProps) {
-  if (has_contraband) {
+function ContrabandChip({ contraband }: ContrabandChipProps) {
+  if (contraband === 'Yes') {
     return (
       <Chip color="danger" variant="bordered">
         Yes
@@ -75,11 +83,13 @@ function formatTime(time: string) {
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 export default function App({ searchParams }: { searchParams: any }) {
+  const [data, setData] = useState<DataRow[]>([]);
+  const [resetScroll, setResetScroll] = useState(false);
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
-  const [data, setData] = useState<any[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
+  const [hasMore, setHasMore] = useState(true);
   const [zone, setZone] = useState({
     label: 'Zone',
     values: ['All', 'AZ', 'HQ'],
@@ -102,16 +112,49 @@ export default function App({ searchParams }: { searchParams: any }) {
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
-    value: searchParams.Date ?? 'Today',
+    values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
+    value: searchParams.Date ?? 'All',
   });
 
   useEffect(() => {
-    (async () => {
+    const searchZone = searchParams.zone;
+    if (searchZone) {
+      setZone({ ...zone, value: searchZone });
+    }
+
+    const searchDepartment = searchParams.department;
+    if (searchDepartment) {
+      setDepartment({ ...department, value: searchDepartment });
+    }
+
+    const searchEmpShift = searchParams.EmpShift;
+    if (searchEmpShift) {
+      setEmpShift({ ...empShift, value: searchEmpShift });
+    }
+
+    const searchDate = searchParams.date;
+    if (searchDate) {
+      setDate({ ...date, value: searchDate });
+    }
+
+    const searchStatus = searchParams.Status;
+    if (searchStatus) {
+      setStatus({ ...status, value: searchStatus });
+    }
+
+    const searchEmpId = searchParams.empId;
+    if (searchEmpId) {
+      setInputValue(searchEmpId);
+    }
+  }, []);
+
+  const list = useAsyncList<DataRow[]>({
+    async load({ cursor }: ListOptions) {
+      const start = cursor ? parseInt(cursor, 10) : 0; // Convert string cursor to number
+      const end = start + 50;
       const query = supabase.from('Entry Data').select('*');
-      
       if (zone.value !== 'All') {
-        query.eq('Zone', zone.value);     
+        query.eq('Zone', zone.value);
       }
 
       if (department.value !== 'All') {
@@ -121,9 +164,15 @@ export default function App({ searchParams }: { searchParams: any }) {
       if (empShift.value !== 'All') {
         query.eq('EmpShift', empShift.value);
       }
+
       if (status.value !== 'All') {
         query.eq('status', status.value);
       }
+
+      if (inputValue !== '') {
+        query.like('EmpId', `%${inputValue}%`);
+      }
+
       if (date.value !== 'All') {
         if (date.value === 'Today') {
           query.eq('date', '2023-09-22');
@@ -136,26 +185,68 @@ export default function App({ searchParams }: { searchParams: any }) {
         }
       }
 
-      if (inputValue !== '') {
-        query.like('EmpId', `%${inputValue}%`);
-      }
-
-      const { data: d, error } = await query
-        .range(0, 49)
+      query
+        .range(start, end)
         .order('date', { ascending: false })
         .order('time', { ascending: false });
 
-      if (!error) {
-        setData(d);
-      }
-    })();
-    
-  }, [zone, department, empShift, date, inputValue]);
+      const { data: d, error } = await query;
 
+      if (error) {
+        // eslint-disable-next-line @typescript-eslint/no-throw-literal
+        throw error;
+      }
+      if (!cursor) {
+        // if it's a fresh load, reset the data
+        setData(d);
+      } else {
+        setData((prevData) => [...prevData, ...d]);
+      }
+      const hasMoreData = !(d.length < 50);
+
+      setHasMore(hasMoreData);
+
+      return {
+        items: d,
+        cursor: hasMoreData ? (end + 1).toString() : undefined,
+      };
+    },
+  });
+  const [loaderRef, scrollerRef] = useInfiniteScroll({
+    hasMore,
+    onLoadMore: list.loadMore,
+  });
+  const fetchData = async () => {
+    setResetScroll(true);
+    try {
+      await list.reload();
+      setData([]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchDataAndScroll = async () => {
+      await fetchData();
+      if (resetScroll && scrollerRef && scrollerRef.current) {
+        scrollerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    fetchDataAndScroll();
+  }, [
+    inputValue,
+    zone.value,
+    department.value,
+    empShift.value,
+    status.value,
+    date.value,
+  ]);
 
   return (
-    <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <div className="flex h-12 gap-5">
+    <div className="flex w-full flex-col gap-5 overflow-auto px-10 pt-10">
+      <div className="flex h-12 gap-5 overflow-auto">
         <Input
           aria-label="Employee ID input"
           isClearable
@@ -167,7 +258,6 @@ export default function App({ searchParams }: { searchParams: any }) {
           onClear={() => {
             setInputValue('');
           }}
-          
           onValueChange={(value) => {
             setInputValue(value);
             const newSearchParams = new URLSearchParams(searchParams);
@@ -212,11 +302,19 @@ export default function App({ searchParams }: { searchParams: any }) {
       <Table
         classNames={{
           wrapper:
-            'w-full table-fixed max-h-[35rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
+            'w-full table-fixed max-h-[35rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white ',
           th: 'text-base text-white bg-[#191a24]',
           td: 'border-y border-y-[#2f3037]',
         }}
         isHeaderSticky
+        baseRef={scrollerRef}
+        bottomContent={
+          hasMore ? (
+            <div className="flex w-full justify-center">
+              <Spinner ref={loaderRef} color="white" />
+            </div>
+          ) : null
+        }
       >
         <TableHeader>
           <TableColumn>EmpId</TableColumn>
@@ -241,7 +339,7 @@ export default function App({ searchParams }: { searchParams: any }) {
                 <StatusChip status={d.status} />
               </TableCell>
               <TableCell>
-                <ContrabandChip contraband={d.has_contraband} />
+                <ContrabandChip contraband="No" />
               </TableCell>
             </TableRow>
           ))}

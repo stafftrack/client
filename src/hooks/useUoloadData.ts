@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import  { UploadDataProps } from '@/types';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 function useUploadData() {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,9 +40,10 @@ function useUploadData() {
         maxBodyLength: Infinity,
       });
       setResponse(result.data);
+      Swal.fire('Success', 'Data uploaded successfully!', 'success');
     } catch (err) {
       console.error();
-      // setError(err);
+      Swal.fire('Error',  'Failed to upload data!', 'error');
     } finally {
       setIsLoading(false);
     }
