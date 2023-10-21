@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chip } from '@nextui-org/react';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -10,10 +11,10 @@ interface AttendData {
 
 export default function DoughnutChart({
   database,
-  period,
+  // period,
 }: {
   database: any;
-  period: any;
+  // period: any;
 }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
@@ -36,6 +37,21 @@ export default function DoughnutChart({
       }).length,
   );
 
+  const labels = [
+    {
+      name: 'On Time',
+      style: 'bg-[#94e2d5]',
+    },
+    {
+      name: 'Late',
+      style: 'bg-[#f38ba8]',
+    },
+    {
+      name: 'Early',
+      style: 'bg-[#74c7ec]',
+    },
+  ];
+
   const data = {
     labels: checkInStatus,
     datasets: [
@@ -55,34 +71,32 @@ export default function DoughnutChart({
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: true,
-        position: 'bottom' as const,
-        align: 'center' as const,
-        labels: {
-          color: '#fff',
-          usePointStyle: true,
-          padding: 20,
-        },
+        display: false,
       },
     },
   };
 
   return (
-    <div className="relative flex w-[40%] flex-col items-center gap-2 rounded-xl border border-[#30303E] bg-[#191a24] p-5 ">
-      <div className="text-center text-2xl font-semibold text-white">
-        {`${period} Attendance Status`}
+    <div className="relative flex h-72 rounded-xl border border-[#30303E] bg-[#191a24] p-5">
+      <div className="absolute left-1/3 top-1/2 flex -translate-x-1/3 -translate-y-1/2 transform flex-col items-center text-4xl font-semibold text-white">
+        {attendData.length}
+        <div className="text-medium text-white">Total</div>
       </div>
-
-      <div className="relative flex flex-grow items-center justify-center">
-        {attendData.length > 0 && (
-          <div
-            className="top-2/5 absolute left-1/2 -translate-x-1/2 -translate-y-1/2
-            transform text-4xl font-semibold text-white"
-          >
-            {attendData.length}
-          </div>
-        )}
+      <div className="w-[15rem]">
         <Doughnut data={data} options={options} />
+      </div>
+      <div className="flex flex-col items-center justify-center gap-3">
+        {labels.map((label) => (
+          <Chip
+            key={label.name}
+            variant="dot"
+            classNames={{
+              dot: label.style,
+            }}
+          >
+            {label.name}
+          </Chip>
+        ))}
       </div>
     </div>
   );

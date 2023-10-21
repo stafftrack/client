@@ -60,8 +60,8 @@ export default function AttendancePage({
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Daily', 'Last Week', 'Last 2 Weeks', 'Last Month'],
-    value: searchParams.Date ?? 'All',
+    values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
+    value: searchParams.Date ?? 'Today',
   });
   const [status, setStatus] = useState({
     label: 'status',
@@ -81,8 +81,6 @@ export default function AttendancePage({
     status,
     99,
   );
-
-  console.log(data);
 
   const attendData = useSupabaseData(
     supabase,
@@ -111,7 +109,7 @@ export default function AttendancePage({
   }, [inputValue]);
 
   return (
-    <div className="flex w-full flex-col gap-5 px-10 pt-5">
+    <div className="flex w-full flex-col gap-5 px-10 pt-10">
       <ChatRoom />
       <div className="flex h-12 gap-5">
         <Input
@@ -167,10 +165,10 @@ export default function AttendancePage({
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        <DoughnutChart database={attendData} period={date.value} />
+        <DoughnutChart database={attendData} /* period={date.value} */ />
 
         {date.value === 'All' && <LineAllChart database={attendData} />}
-        {date.value === 'Daily' && <LineChart database={attendData} />}
+        {date.value === 'Today' && <LineChart database={attendData} />}
         {(date.value === 'Last Week' || date.value === 'Last 2 Weeks') && (
           <LineWeekChart database={attendData} period={date.value} />
         )}
