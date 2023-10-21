@@ -34,9 +34,11 @@ interface AttendData {
 export default function LineWeekChart({
   database,
   period,
+  dict,
 }: {
   database: any;
   period: any;
+  dict: any;
 }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
@@ -137,7 +139,7 @@ export default function LineWeekChart({
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
       <div className="text-lg font-semibold text-white">
-        Check-in Flow Per Day
+        {dict.chart.attendance.title.day}
       </div>
       <div className="mx-auto w-[80%]">
         <Chart type="bar" data={data} options={options} />

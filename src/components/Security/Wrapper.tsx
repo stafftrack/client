@@ -8,37 +8,41 @@ import { Input } from '@nextui-org/react';
 import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
-import { createClient } from '@supabase/supabase-js';
 import CustomTable from '@/components/Security/CustomTable';
 import useSupabaseData from '@/hooks/useSupabaseData';
+import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
-export default function SecurityPage({ searchParams }: { searchParams: any }) {
+export default function Wrapper({ searchParams, dict }: { searchParams: any, dict: any }) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
 
   const [zone, setZone] = useState({
     label: 'Zone',
+    displayLabel: dict.common.zone,
     values: ['All', 'AZ', 'HQ'],
     value: searchParams.Zone ?? 'All',
   });
   const [department, setDepartment] = useState({
     label: 'Department',
+    displayLabel: dict.common.department,
     values: ['All', 'DEPT1', 'DEPT2', 'DEPT3', 'DEPT4'],
     value: searchParams.Department ?? 'All',
   });
   const [empShift, setEmpShift] = useState({
     label: 'Shift',
+    displayLabel: dict.common.shift,
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
     value: searchParams.Shift ?? 'All',
   });
   const [date, setDate] = useState({
     label: 'Date',
+    displayLabel: dict.common.date,
     values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
     value: searchParams.Date ?? 'Today',
   });
@@ -53,12 +57,12 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
     inputValue,
     true,
     null,
-    99,
+    49,
   );
 
   const contrabandData = useSupabaseData(
     supabase,
-    'date,contraband',
+    'date,EmpShift,contraband',
     zone,
     department,
     empShift,
@@ -71,13 +75,13 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom />
+      <ChatRoom data={data} />
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
           isClearable
           variant="bordered"
-          placeholder="Search Employee ID"
+          placeholder={dict.filterbar.input}
           value={inputValue}
           startContent={<SearchIcon />}
           radius="sm"
@@ -121,10 +125,10 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        <DoughnutChart contrabandData={contrabandData} />
-        <LineChart contrabandData={contrabandData} />
+        <DoughnutChart contrabandData={contrabandData} dict={dict} />
+        <LineChart date={date} contrabandData={contrabandData} dict={dict} />
       </div>
-      <CustomTable data={data} onClickRow={setInputValue}/>
+      <CustomTable data={data} onClickRow={setInputValue} dict={dict} />
     </div>
   );
 }

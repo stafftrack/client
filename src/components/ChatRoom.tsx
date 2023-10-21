@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useChat } from 'ai/react';
 import { Button } from '@nextui-org/button';
 import ChatIcon from '@/components/icons/Chat';
@@ -13,14 +13,34 @@ import {
 import { Input } from '@nextui-org/input';
 import SendIcon from './icons/Send';
 
-export default function ChatRoom(/* { data }: { data: DataRow[] } */) {
+export default function ChatRoom({ data }: { data: any[] }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    // body: {
-    //   data: JSON.stringify(data),
-    // },
+    api: '/en/api/chat', // TODO: use {lang}
+    body: {
+      data: JSON.stringify(data),
+    },
   });
+  const [showPresetQuestions, setShowPresetQuestions] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const presetQuestions = [
+    '請給我今日員工遲到的EMPId',
+    '請列出這周違禁品總數由大到小',
+    '請給我今天有攜帶違禁品的EMPId',
+    '過去三天內,每一天最早跟最晚到的員工分別是誰?',
+  ];
+  const handlePresetQuestionClick = (question: string) => {
+    const fakeEvent = {
+      target: {
+        value: question,
+        addEventListener: () => {},
+        dispatchEvent: () => {},
+        removeEventListener: () => {},
+      } as any,
+    };
+    handleInputChange(fakeEvent as any);
+    setShowPresetQuestions(false);
+  };
 
   useEffect(() => {
     if (chatContainerRef.current && isOpen) {
@@ -67,6 +87,20 @@ export default function ChatRoom(/* { data }: { data: DataRow[] } */) {
                   {m.content}
                 </div>
               ))}
+              {showPresetQuestions && (
+                <div className="mx-auto  mt-48 grid grid-cols-2 gap-4">
+                  {presetQuestions.map((question) => (
+                    <Button
+                      key={question}
+                      onClick={() => handlePresetQuestionClick(question)}
+                      variant="bordered"
+                      className="hover:bg-[#191a24]"
+                    >
+                      {question}
+                    </Button>
+                  ))}
+                </div>
+              )}
             </div>
           </ModalBody>
           <ModalFooter className="flex items-center">

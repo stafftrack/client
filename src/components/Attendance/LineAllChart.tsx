@@ -31,7 +31,13 @@ interface AttendData {
   status: string;
 }
 
-export default function LineWeekChart({ database }: { database: any }) {
+export default function LineWeekChart({
+  database,
+  dict,
+}: {
+  database: any;
+  dict: any;
+}) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   const chartRef = useRef();
   useEffect(() => {
@@ -141,19 +147,25 @@ export default function LineWeekChart({ database }: { database: any }) {
     if (chart) {
       console.log(getElementAtEvent(chart, event as any));
     }
-  }
+  };
 
-    return (
-      <div
-        className="flex w-[60%] flex-col items-center justify-center
+  return (
+    <div
+      className="flex w-[60%] flex-col items-center justify-center
           gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
-      >
-        <div className="text-lg font-semibold text-white">
-          Check-in Flow Per Month
-        </div>
-        <div className="mx-auto w-[80%]">
-          <Chart type="bar" data={data} options={options} ref={chartRef} onClick={(event: any) => onClickBar(event)}/>
-        </div>
+    >
+      <div className="text-lg font-semibold text-white">
+        {dict.chart.attendance.title.month}
       </div>
-    );
+      <div className="mx-auto w-[80%]">
+        <Chart
+          type="bar"
+          data={data}
+          options={options}
+          ref={chartRef}
+          onClick={(event: any) => onClickBar(event)}
+        />
+      </div>
+    </div>
+  );
 }

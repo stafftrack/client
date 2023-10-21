@@ -1,0 +1,58 @@
+{
+  "sidebar": {
+    "home": "首頁",
+    "security": "違禁品",
+    "attendance": "出席",
+    "upload": "上傳"
+  },
+  "filterbar": {
+    "input": "以員工ID搜尋"
+  },
+  "common": {
+    "empid": "員工ID",
+    "zone": "廠區",
+    "department": "部門",
+    "shift": "輪班",
+    "status": "出勤狀態",
+    "time": "進廠時間",
+    "date": "日期",
+    "has_contraband": "攜帶違禁品",
+    "contraband": "違禁品",
+    "all": "所有"
+  },
+  "contrabands": {
+    "electronic_device": "電子產品",
+    "laptop": "筆電",
+    "scissor": "剪刀",
+    "knife": "刀具",
+    "gun": "槍枝"
+  },
+  "status": {
+    "ontime": "準時打卡",
+    "late": "遲到",
+    "early": "早到"
+  },
+  "chart": {
+    "total": "總合",
+    "security":{
+      "title": {
+        "shift": "違禁品/班次",
+        "day": "違禁品/天"
+      }
+    },
+    "attendance":{
+      "title": {
+        "shift": "人流峰值與出勤狀態/班次",
+        "day": "人流峰值與出勤狀態/天",
+        "week": "人流峰值與出勤狀態/週",
+        "month": "人流峰值與出勤狀態/月"
+      },
+      "total": "Total",
+      "late": "Late",
+      "ontime": "On Time"
+    }
+  },
+  "preview": {
+    "header": "圖片預覽"
+  }
+}

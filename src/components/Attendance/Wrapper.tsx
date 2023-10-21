@@ -34,10 +34,12 @@ function formatTime(time: string) {
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function AttendancePage({
+export default function WrapperWrapper({
   searchParams,
+  dict,
 }: {
   searchParams: any;
+  dict: any;
 }) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
@@ -45,26 +47,31 @@ export default function AttendancePage({
 
   const [zone, setZone] = useState({
     label: 'Zone',
+    displayLabel: dict.common.zone,
     values: ['All', 'AZ', 'HQ'],
     value: searchParams.Zone ?? 'All',
   });
   const [department, setDepartment] = useState({
     label: 'Department',
+    displayLabel: dict.common.department,
     values: ['All', 'DEPT1', 'DEPT2', 'DEPT3', 'DEPT4'],
     value: searchParams.Department ?? 'All',
   });
   const [empShift, setEmpShift] = useState({
     label: 'Shift',
+    displayLabel: dict.common.shift,
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
     value: searchParams.Shift ?? 'All',
   });
   const [date, setDate] = useState({
     label: 'Date',
+    displayLabel: dict.common.date,
     values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
     value: searchParams.Date ?? 'Today',
   });
   const [status, setStatus] = useState({
     label: 'status',
+    displayLabel: dict.common.status,
     values: ['All', 'On Time', 'Late', 'Early'],
     value: searchParams.status ?? 'All',
   });
@@ -79,7 +86,7 @@ export default function AttendancePage({
     inputValue,
     false,
     status,
-    99,
+    49,
   );
 
   const attendData = useSupabaseData(
@@ -109,13 +116,13 @@ export default function AttendancePage({
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom />
+      <ChatRoom data={data} />
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
           isClearable
           variant="bordered"
-          placeholder="Search Employee ID"
+          placeholder={dict.filterbar.input}
           value={inputValue}
           startContent={<SearchIcon />}
           radius="sm"
@@ -164,20 +171,31 @@ export default function AttendancePage({
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        <DoughnutChart database={attendData} /* period={date.value} */ />
+        <DoughnutChart
+          database={attendData}
+          /* period={date.value} */ dict={dict}
+        />
 
-        {date.value === 'All' && <LineAllChart database={attendData} />}
-        {date.value === 'Today' && <LineChart database={attendData} />}
+        {date.value === 'All' && (
+          <LineAllChart database={attendData} dict={dict} />
+        )}
+        {date.value === 'Today' && (
+          <LineChart database={attendData} dict={dict} />
+        )}
         {(date.value === 'Last Week' || date.value === 'Last 2 Weeks') && (
-          <LineWeekChart database={attendData} period={date.value} />
+          <LineWeekChart
+            database={attendData}
+            period={date.value}
+            dict={dict}
+          />
         )}
         {date.value === 'Last Month' && (
-          <LineMonthChart database={attendData} />
+          <LineMonthChart database={attendData} dict={dict} />
         )}
       </div>
       <Table
         aria-label="Table with employee security data"
-        selectionMode="single" 
+        selectionMode="single"
         classNames={{
           wrapper:
             'w-full table-fixed max-h-[38rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
@@ -189,20 +207,23 @@ export default function AttendancePage({
           console.log(queryEmpId);
           setInputValue(queryEmpId);
         }}
-        
       >
         <TableHeader>
-          <TableColumn className="w-32">Employee</TableColumn>
-          <TableColumn className="w-20">Zone</TableColumn>
-          <TableColumn className="w-32">Department</TableColumn>
-          <TableColumn className="w-20">Shift</TableColumn>
-          <TableColumn className="w-20">Time</TableColumn>
-          <TableColumn className="w-20">Date</TableColumn>
-          <TableColumn className="w-32">Status</TableColumn>
+          <TableColumn className="w-32">{dict.common.empid}</TableColumn>
+          <TableColumn className="w-20">{dict.common.zone}</TableColumn>
+          <TableColumn className="w-32">{dict.common.department}</TableColumn>
+          <TableColumn className="w-20">{dict.common.shift}</TableColumn>
+          <TableColumn className="w-20">{dict.common.time}</TableColumn>
+          <TableColumn className="w-20">{dict.common.date}</TableColumn>
+          <TableColumn className="w-32">{dict.common.status}</TableColumn>
         </TableHeader>
         <TableBody>
           {data.map((d) => (
-            <TableRow key={`${d.id.toString()}-${d.EmpId}`} textValue={d.empId} className="cursor-pointer">
+            <TableRow
+              key={`${d.id.toString()}-${d.EmpId}`}
+              textValue={d.empId}
+              className="cursor-pointer"
+            >
               <TableCell>{d.EmpId}</TableCell>
               <TableCell>{d.Zone}</TableCell>
               <TableCell>{d.DeptId}</TableCell>
@@ -215,14 +236,14 @@ export default function AttendancePage({
                     variant="bordered"
                     className="border-[#0070F0] text-[#0070F0]"
                   >
-                    {d.status}
+                    {dict.status.early}
                   </Chip>
                 ) : (
                   <Chip
                     variant="bordered"
                     color={d.status === 'On Time' ? 'success' : 'warning'}
                   >
-                    {d.status}
+                    {d.status === 'On Time' ? dict.status.ontime : dict.status.late}
                   </Chip>
                 )}
               </TableCell>

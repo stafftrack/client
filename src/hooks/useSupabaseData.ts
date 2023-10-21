@@ -40,7 +40,7 @@ export default function useSupabaseData(
         const today = dayjs(inputValue, 'YYYY-MM-DD', true).isValid()
           ? dayjs(inputValue)
           : dayjs('2023-09-22');
-          console.log(today);
+          // console.log(today);
         const queryStartDate = today.format('YYYY-MM-DD');
         if (date.value === 'Today') {
           query.eq('date', queryStartDate);

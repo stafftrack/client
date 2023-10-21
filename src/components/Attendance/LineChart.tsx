@@ -33,7 +33,13 @@ interface AttendData {
   status: string;
 }
 
-export default function LineChart({ database }: { database: any }) {
+export default function LineChart({
+  database,
+  dict,
+}: {
+  database: any;
+  dict: any;
+}) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
     setAttendData(database);
@@ -163,7 +169,7 @@ export default function LineChart({ database }: { database: any }) {
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 px-10 align-middle"
     >
       <div className="text-lg font-semibold text-white">
-        Check-in Flow Per Shifts
+        {dict.chart.attendance.title.shift}
       </div>
       <div className="mx-auto w-[80%]">
         <Chart type="bar" data={data} options={options} />
