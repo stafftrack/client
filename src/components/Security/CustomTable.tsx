@@ -39,8 +39,8 @@ export default function CustomTable({ data }: { data: any[] }) {
           <ModalHeader className="mx-auto">Image</ModalHeader>
           <ModalBody className="min-h-unit-20">
             <Image
-              alt={image}
-              src="http://127.0.0.1:3000/static/1697811191062.jpg"
+              alt="x ray image"
+              src={`http://127.0.0.1:3000/${image}`}
             />
           </ModalBody>
           <ModalFooter className="flex flex-wrap justify-center gap-3">
