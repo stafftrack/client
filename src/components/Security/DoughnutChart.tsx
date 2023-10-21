@@ -107,10 +107,7 @@ export default function DoughnutChart({ contrabandData }: Props) {
 
   return (
     <div className="relative flex h-72 rounded-xl border border-[#30303E] bg-[#191a24] p-5">
-      <div
-        className="absolute left-1/3 top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col
-            items-center text-4xl font-semibold text-white"
-      >
+      <div className="absolute left-1/3 top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center text-4xl font-semibold text-white">
         {data.datasets[0].data.reduce((a, b) => a + b, 0)}
         <div className="text-medium text-white">Total</div>
       </div>

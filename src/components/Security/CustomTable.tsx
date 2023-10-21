@@ -40,7 +40,7 @@ export default function CustomTable({ data }: { data: any[] }) {
           <ModalBody className="min-h-unit-20">
             <Image
               alt={image}
-              src="https://github.com/m4xshen/img-host/assets/74842863/71f86dfb-9d62-41bc-b6f0-f5a601006073"
+              src="http://127.0.0.1:3000/static/1697811191062.jpg"
             />
           </ModalBody>
           <ModalFooter className="flex flex-wrap justify-center gap-3">

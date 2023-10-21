@@ -40,7 +40,7 @@ export default function LineChart({ database }: { database: any }) {
   }, [database]);
 
   const labels = ['6:30', '7:30', '8:30', '9:30'];
-  const today = database[0]?.date || null;
+  // const today = database[0]?.date || null;
   const countForLabel = (label: string, status?: string) =>
     attendData.filter((item) => {
       const dateObj = dayjs(`${item.date} ${item.time}`, 'YYYY-MM-DD HH:mm:ss');
@@ -135,13 +135,13 @@ export default function LineChart({ database }: { database: any }) {
 
   return (
     <div
-      className="flex w-[60%] flex-col items-center justify-center
-        gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
+      className="flex h-72 w-full flex-col items-center justify-center
+        gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 px-10 align-middle"
     >
-      <div className="text-2xl font-semibold text-white">
-        { `${today}  Check-in Flow`}
+      <div className="text-lg font-semibold text-white">Check-in Flow</div>
+      <div className="mx-auto w-[80%]">
+        <Chart type="bar" data={data} options={options} />
       </div>
-      <Chart type="bar" data={data} options={options} />
     </div>
   );
 }

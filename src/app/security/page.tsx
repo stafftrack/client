@@ -39,8 +39,8 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
-    value: searchParams.Date ?? 'All',
+    values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
+    value: searchParams.Date ?? 'Today',
   });
 
   const data = useSupabaseData(
