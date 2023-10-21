@@ -82,6 +82,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         label: 'Late',
         backgroundColor: '#f38ba8',
         data: delayCount,
+        fill: false,
         borderColor: '#f38ba8',
       },
       {
@@ -89,6 +90,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         label: 'On Time',
         backgroundColor: '#94e2d5',
         data: onTimeCount,
+        fill: false,
         borderColor: '#94e2d5',
       },
       {
@@ -96,6 +98,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         label: 'Early',
         backgroundColor: '#74c7ec',
         data: earlyCount,
+        fill: false,
         borderColor: '#74c7ec',
       },
     ],
@@ -110,7 +113,6 @@ export default function LineWeekChart({ database }: { database: any }) {
         ticks: {
           padding: 5,
         },
-        stacked: true,
       },
       y: {
         beginAtZero: true,
@@ -119,7 +121,6 @@ export default function LineWeekChart({ database }: { database: any }) {
           stepSize: 1,
           maxTicksLimit: 8,
         },
-        stacked: true,
       },
     },
     plugins: {
@@ -142,7 +143,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
       <div className="text-2xl font-semibold text-white">All Check-in Flow</div>
-      <Chart type="bar" data={data} options={options} />
+      <Chart type="line" data={data} options={options} />
     </div>
   );
 }
