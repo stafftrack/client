@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import LineChart from '@/components/Security/LineChart';
 import DoughnutChart from '@/components/Security/DoughnutChart';
 import { Input } from '@nextui-org/react';
@@ -9,8 +9,8 @@ import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
-import { DataRow } from '@/types';
 import CustomTable from '@/components/Security/CustomTable';
+import useSupabaseData from '@/hooks/useSupabaseData';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -18,7 +18,6 @@ const supabase = createClient(
 );
 
 export default function SecurityPage({ searchParams }: { searchParams: any }) {
-  const [data, setData] = useState<DataRow[]>([]);
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
@@ -40,53 +39,35 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
   });
   const [date, setDate] = useState({
     label: 'Date',
-    values: ['All', 'Today', 'Last 7 days', 'Last 14 days'],
-    value: searchParams.Date ?? 'All',
+    values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
+    value: searchParams.Date ?? 'Today',
   });
 
-  useEffect(() => {
-    (async () => {
-      const query = supabase.from('Entry Data').select('*');
-      
-      if (zone.value !== 'All') {
-        query.eq('Zone', zone.value);     
-      }
+  const data = useSupabaseData(
+    supabase,
+    'id,EmpId,Zone,DeptId,EmpShift,time,date,contraband,Img',
+    zone,
+    department,
+    empShift,
+    date,
+    inputValue,
+    true,
+    null,
+    99,
+  );
 
-      if (department.value !== 'All') {
-        query.eq('DeptId', department.value);
-      }
-
-      if (empShift.value !== 'All') {
-        query.eq('EmpShift', empShift.value);
-      }
-
-      if (date.value !== 'All') {
-        if (date.value === 'Today') {
-          query.eq('date', '2023-09-22');
-        } else if (date.value === 'Last 7 days') {
-          query.gt('date', '2023-09-15');
-          query.lte('date', '2023-09-22');
-        } else if (date.value === 'Last 14 days') {
-          query.gt('date', '2023-09-08');
-          query.lte('date', '2023-09-22');
-        }
-      }
-
-      if (inputValue !== '') {
-        query.like('EmpId', `%${inputValue}%`);
-      }
-
-      const { data: d, error } = await query
-        .range(0, 49)
-        .order('date', { ascending: false })
-        .order('time', { ascending: false });
-
-      if (!error) {
-        setData(d);
-      }
-    })();
-    
-  }, [zone, department, empShift, date, inputValue]);
+  const contrabandData = useSupabaseData(
+    supabase,
+    'date,contraband',
+    zone,
+    department,
+    empShift,
+    date,
+    inputValue,
+    true,
+    null,
+    null,
+  );
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
@@ -140,8 +121,8 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        <DoughnutChart />
-        <LineChart />
+        <DoughnutChart contrabandData={contrabandData} />
+        <LineChart contrabandData={contrabandData} />
       </div>
       <CustomTable data={data} />
     </div>

@@ -24,6 +24,7 @@ export interface SecurityData extends BaseData {
 }
 
 export interface DataRow {
+  status: string;
   DateTime: string | null;
   DeptId: string | null;
   EmpId: string | null;
@@ -32,7 +33,6 @@ export interface DataRow {
   Img: string | null;
   ToolScanTime: number | null;
   Zone: string | null;
-  status: string;
   date: string;
   time: string;
 }
