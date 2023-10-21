@@ -1,10 +1,12 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import LineChart from '@/components/Attendance/LineChart';
 import LineWeekChart from '@/components/Attendance/LineWeekChart';
 import LineMonthChart from '@/components/Attendance/LineMonthChart';
+import LineAllChart from '@/components/Attendance/LineAllChart';
 import DoughnutChart from '@/components/Attendance/DoughnutChart';
 import {
   Table,
@@ -59,7 +61,7 @@ export default function AttendancePage({
   const [date, setDate] = useState({
     label: 'Date',
     values: ['All', 'Daily', 'Last Week', 'Last Month'],
-    value: searchParams.Date ?? 'Today',
+    value: searchParams.Date ?? 'All',
   });
   const [status, setStatus] = useState({
     label: 'status',
@@ -94,6 +96,21 @@ export default function AttendancePage({
     status,
     null,
   );
+
+  useEffect(() => {
+    if(dayjs(inputValue, 'YYYY-MM-DD', true).isValid()) {
+      setDate({
+        label: 'Date',
+        values: ['All', 'Daily', 'Last Week', 'Last Month'],
+        value: 'Daily',
+      })
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set('Date', 'Daily');
+      router.push(`${pathname}?${newSearchParams.toString()}`);
+    }
+  }
+  , [inputValue]);
+
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-5">
@@ -155,7 +172,10 @@ export default function AttendancePage({
         {data.length > 0 && (
           <DoughnutChart database={attendData} period={date.value} />
         )}
-        {date.value === 'Daily' && data.length > 0 && (
+        {date.value === 'All' && attendData.length > 0 && (
+          <LineAllChart database={attendData} />
+        )}
+        {date.value === 'Daily' && attendData.length > 0 && (
           <LineChart database={attendData} />
         )}
         {date.value === 'Last Week' && attendData.length > 0 && (
