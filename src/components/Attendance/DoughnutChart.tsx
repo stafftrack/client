@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -20,7 +22,7 @@ export default function DoughnutChart({
 }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
-    // if(database.length === 0) return;
+    // if (database.length === 0) return;
     setAttendData(database);
   }, [database]);
 

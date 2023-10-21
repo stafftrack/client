@@ -17,12 +17,14 @@ import {
   TableCell,
   Chip,
   Input,
+  Spinner,
 } from '@nextui-org/react';
 import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
 import useSupabaseData from '@/hooks/useSupabaseData';
+import useInfiniteSupabaseData from '@/hooks/useInfiniteSupabaseData';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -34,7 +36,7 @@ function formatTime(time: string) {
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function WrapperWrapper({
+export default function Wrapper({
   searchParams,
   dict,
 }: {
@@ -76,7 +78,7 @@ export default function WrapperWrapper({
     value: searchParams.status ?? 'All',
   });
 
-  const data = useSupabaseData(
+  const { data, hasMore, scrollerRef, loaderRef } = useInfiniteSupabaseData(
     supabase,
     'id,EmpId,Zone,DeptId,EmpShift,time,date,status',
     zone,
@@ -86,7 +88,6 @@ export default function WrapperWrapper({
     inputValue,
     false,
     status,
-    49,
   );
 
   const attendData = useSupabaseData(
@@ -171,10 +172,7 @@ export default function WrapperWrapper({
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        <DoughnutChart
-          database={attendData}
-          /* period={date.value} */ dict={dict}
-        />
+        <DoughnutChart database={attendData} dict={dict} />
 
         {date.value === 'All' && (
           <LineAllChart database={attendData} dict={dict} />
@@ -198,15 +196,23 @@ export default function WrapperWrapper({
         selectionMode="single"
         classNames={{
           wrapper:
-            'w-full table-fixed max-h-[38rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
+            'w-full table-fixed max-h-[39.5rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
           th: 'text-base bg-transparent text-white',
           td: 'border-t border-t-[#2f3037]',
         }}
         onRowAction={(row) => {
           const queryEmpId = row.toString().split('-')[1];
-          console.log(queryEmpId);
+          // console.log(queryEmpId);
           setInputValue(queryEmpId);
         }}
+        baseRef={scrollerRef}
+        bottomContent={
+          hasMore ? (
+            <div className="flex w-full justify-center">
+              <Spinner ref={loaderRef} color="white" />
+            </div>
+          ) : null
+        }
       >
         <TableHeader>
           <TableColumn className="w-32">{dict.common.empid}</TableColumn>
@@ -243,7 +249,9 @@ export default function WrapperWrapper({
                     variant="bordered"
                     color={d.status === 'On Time' ? 'success' : 'warning'}
                   >
-                    {d.status === 'On Time' ? dict.status.ontime : dict.status.late}
+                    {d.status === 'On Time'
+                      ? dict.status.ontime
+                      : dict.status.late}
                   </Chip>
                 )}
               </TableCell>

@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import FilterBar from '@/components/Home/FilterBar';
-import CustomTable from '@/components/Home/CustomTable';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -25,9 +24,10 @@ export default function Wrapper({
         searchParams={searchParams}
         supabase={supabase}
         setData={setData}
+        data={data}
         dict={dict}
       />
-      <CustomTable data={data} dict={dict} />
     </div>
   );
 }
+
