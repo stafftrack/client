@@ -25,7 +25,6 @@ ChartJS.register(
   LineController,
   BarController,
 );
-
 interface AttendData {
   EmpShift: string;
   date: string;
@@ -37,69 +36,69 @@ export default function LineWeekChart({ database }: { database: any }) {
   useEffect(() => {
     setAttendData(database);
   }, [database]);
-
-  const today = dayjs(database[0]?.date, 'MM/DD/YYYY');
+  const firstDay = dayjs(database[0]?.date, 'MM/DD/YYYY');
+  const lastDay = dayjs(database[database.length - 1]?.date, 'MM/DD/YYYY');
   const labels = [];
-  for (let i = 0; i < 4; i += 1) {
-    const startOfWeek = today
-      .subtract(i, 'week')
-      .startOf('week')
-      .format('MM/DD');
-    const endOfWeek = today.subtract(i, 'week').endOf('week').format('MM/DD');
-    const weekLabel = `${startOfWeek} - ${endOfWeek}`;
-    labels.unshift(weekLabel);
+
+  const monthsDiff = firstDay.diff(lastDay, 'month');
+  console.log(monthsDiff);
+  for (let i = 0; i <= monthsDiff + 1; i += 1) {
+    const currentLabel = lastDay.add(i, 'month').format('MM/YYYY');
+    labels.push(currentLabel);
   }
 
   const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {
-      const day = dayjs(item.date, 'MM/DD/YYYY');
-      const startOfWeek = day.startOf('week').format('MM/DD');
-      const endOfWeek = day.endOf('week').format('MM/DD');
-      const weekLabel = `${startOfWeek} - ${endOfWeek}`;
-      if (weekLabel !== label) {
+      const month = dayjs(item.date, 'MM/DD/YYYY');
+      const monthLabel = month.format('MM/YYYY');
+      if (monthLabel !== label) {
         return false;
       }
-      const { status } = item;
-      return status === checkStatus;
+      if (checkStatus) {
+        return item.status === checkStatus;
+      }
+      return true;
     });
 
-  const delayCount = labels.map((label) => countForLabel(label, 'Late').length);
+  const earlyCount = labels.map(
+    (label) =>
+      // const month = label.split('/')[0];
+      // const year = label.split('/')[1];
+      // const date = dayjs(`${month}/01/${year}`, 'MM/DD/YYYY');
+      // return countForLabel(label, 'Early').length / date.daysInMonth();
+      countForLabel(label, 'Early').length,
+  );
+
   const onTimeCount = labels.map(
     (label) => countForLabel(label, 'On Time').length,
   );
-  const earlyCount = labels.map(
-    (label) => countForLabel(label, 'Early').length,
-  );
-  const weeklyCount = delayCount.map((item, index) => item + onTimeCount[index] + earlyCount[index]);
+  const delayCount = labels.map((label) => countForLabel(label, 'Late').length);
   const data = {
     labels,
     datasets: [
       {
         type: 'line' as const,
-        label: 'Total',
-        borderColor: 'rgb(250,250,250)',
-        borderWidth: 2,
-        fill: false,
-        data: weeklyCount,
-      },
-      {
-        type: 'bar' as const,
         label: 'Late',
         backgroundColor: '#f38ba8',
         data: delayCount,
-        borderColor: 'white',
+        fill: false,
+        borderColor: '#f38ba8',
       },
       {
-        type: 'bar' as const,
+        type: 'line' as const,
         label: 'On Time',
         backgroundColor: '#94e2d5',
         data: onTimeCount,
+        fill: false,
+        borderColor: '#94e2d5',
       },
       {
-        type: 'bar' as const,
+        type: 'line' as const,
         label: 'Early',
         backgroundColor: '#74c7ec',
         data: earlyCount,
+        fill: false,
+        borderColor: '#74c7ec',
       },
     ],
   };
@@ -113,7 +112,6 @@ export default function LineWeekChart({ database }: { database: any }) {
         ticks: {
           padding: 5,
         },
-        stacked: true,
       },
       y: {
         beginAtZero: true,
@@ -122,7 +120,6 @@ export default function LineWeekChart({ database }: { database: any }) {
           stepSize: 1,
           maxTicksLimit: 8,
         },
-        stacked: true,
       },
     },
     plugins: {
@@ -135,6 +132,7 @@ export default function LineWeekChart({ database }: { database: any }) {
           usePointStyle: true,
           padding: 20,
         },
+        // onClick: newLegendClickHandler,
       },
     },
   };
@@ -144,10 +142,8 @@ export default function LineWeekChart({ database }: { database: any }) {
       className="flex w-[60%] flex-col items-center justify-center
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
-      <div className="text-2xl font-semibold text-white">
-        Last Month Check-in Flow
-      </div>
-      <Chart type="bar" data={data} options={options} />
+      <div className="text-2xl font-semibold text-white">All Check-in Flow</div>
+      <Chart type="line" data={data} options={options} />
     </div>
   );
 }
