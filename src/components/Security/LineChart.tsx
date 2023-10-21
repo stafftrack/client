@@ -101,8 +101,8 @@ export default function LineChart({ date, contrabandData, dict }: Props) {
     >
       <div className="text-lg font-semibold text-white">
         {date.value === 'Today'
-          ? 'Contrabands Per Shift'
-          : 'Contrabands Per Day'}
+          ? dict.chart.security.title.shift
+          : dict.chart.security.title.day}
       </div>
       <div className="mx-auto w-[80%]">
         <Line
