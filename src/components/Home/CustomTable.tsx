@@ -64,7 +64,7 @@ function formatTime(time: string) {
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function CustomTable({ data }: { data: any[] }) {
+export default function CustomTable({ data, dict }: { data: any[], dict: any }) {
   return (
     <Table
       classNames={{
@@ -76,14 +76,14 @@ export default function CustomTable({ data }: { data: any[] }) {
       isHeaderSticky
     >
       <TableHeader>
-        <TableColumn>EmpId</TableColumn>
-        <TableColumn>EmpShift</TableColumn>
-        <TableColumn>DeptId</TableColumn>
-        <TableColumn>Zone</TableColumn>
-        <TableColumn>Time</TableColumn>
-        <TableColumn>Date</TableColumn>
-        <TableColumn>Status</TableColumn>
-        <TableColumn>Contraband</TableColumn>
+        <TableColumn>{dict.common.empid}</TableColumn>
+        <TableColumn>{dict.common.shift}</TableColumn>
+        <TableColumn>{dict.common.department}</TableColumn>
+        <TableColumn>{dict.common.zone}</TableColumn>
+        <TableColumn>{dict.common.zone}</TableColumn>
+        <TableColumn>{dict.common.date}</TableColumn>
+        <TableColumn>{dict.common.status}</TableColumn>
+        <TableColumn>{dict.common.has_contraband}</TableColumn>
       </TableHeader>
       <TableBody>
         {data.map((d) => (

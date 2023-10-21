@@ -8,37 +8,39 @@ export default function FilterBar({
   searchParams,
   supabase,
   setData,
+  dict,
 }: {
   searchParams: any;
   supabase: any;
   setData: any;
+  dict: any;
 }) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
 
   const [zone, setZone] = useState({
-    label: 'Zone',
+    label: dict.common.zone,
     values: ['All', 'AZ', 'HQ'],
     value: searchParams.Zone ?? 'All',
   });
   const [department, setDepartment] = useState({
-    label: 'Department',
+    label: dict.common.department,
     values: ['All', 'DEPT1', 'DEPT2', 'DEPT3', 'DEPT4'],
     value: searchParams.Department ?? 'All',
   });
   const [empShift, setEmpShift] = useState({
-    label: 'EmpShift',
+    label: dict.common.shift,
     values: ['All', '6:30', '7:30', '8:30', '9:00', '9:30'],
     value: searchParams.Shift ?? 'All',
   });
   const [status, setStatus] = useState({
-    label: 'Status',
+    label: dict.common.status,
     values: ['All', 'On Time', 'Early', 'Late'],
     value: searchParams.status ?? 'All',
   });
   const [date, setDate] = useState({
-    label: 'Date',
+    label: dict.common.date,
     values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
     value: searchParams.Date ?? 'Today',
   });
@@ -94,7 +96,7 @@ export default function FilterBar({
         aria-label="Employee ID input"
         isClearable
         variant="bordered"
-        placeholder="Search Employee ID"
+        placeholder={dict.filterbar.input}
         value={inputValue}
         startContent={<SearchIcon />}
         radius="sm"

@@ -7,5 +7,16 @@
   },
   "filterbar": {
     "input": "Search Employee ID"
+  },
+  "common": {
+    "empid": "Employee ID",
+    "zone": "Zone",
+    "department": "Department",
+    "shift": "Shift",
+    "status": "Status",
+    "time": "Time",
+    "date": "Date",
+    "has_contraband": "Has Contraband",
+    "all": "All"
   }
 }

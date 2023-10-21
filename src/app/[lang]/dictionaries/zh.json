@@ -7,5 +7,16 @@
   },
   "filterbar": {
     "input": "以員工ID搜尋"
+  },
+  "common": {
+    "empid": "員工ID",
+    "zone": "廠區",
+    "department": "部門",
+    "shift": "輪班",
+    "status": "出勤狀態",
+    "time": "時間",
+    "date": "日期",
+    "has_contraband": "攜帶違禁品",
+    "all": "所有"
   }
 }

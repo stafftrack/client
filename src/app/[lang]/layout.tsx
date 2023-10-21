@@ -28,7 +28,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Providers>
           <div className="flex h-screen font-sans">
-            <Sidebar dict={dict} />
+            <Sidebar dict={dict} lang={lang} />
             <div className="h-screen w-full overflow-y-scroll">{children}</div>
           </div>
         </Providers>
