@@ -17,12 +17,14 @@ import {
   TableCell,
   Chip,
   Input,
+  Spinner,
 } from '@nextui-org/react';
 import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
 import useSupabaseData from '@/hooks/useSupabaseData';
+import useInfiniteSupabaseData from '@/hooks/useInfiniteSupabaseData';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -69,7 +71,7 @@ export default function AttendancePage({
     value: searchParams.status ?? 'All',
   });
 
-  const data = useSupabaseData(
+  const { data, hasMore, scrollerRef, loaderRef } = useInfiniteSupabaseData(
     supabase,
     'id,EmpId,Zone,DeptId,EmpShift,time,date,status',
     zone,
@@ -79,7 +81,6 @@ export default function AttendancePage({
     inputValue,
     false,
     status,
-    49,
   );
 
   const attendData = useSupabaseData(
@@ -177,7 +178,7 @@ export default function AttendancePage({
       </div>
       <Table
         aria-label="Table with employee security data"
-        selectionMode="single" 
+        selectionMode="single"
         classNames={{
           wrapper:
             'w-full table-fixed max-h-[38rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
@@ -189,7 +190,14 @@ export default function AttendancePage({
           console.log(queryEmpId);
           setInputValue(queryEmpId);
         }}
-        
+        baseRef={scrollerRef}
+        bottomContent={
+          hasMore ? (
+            <div className="flex w-full justify-center">
+              <Spinner ref={loaderRef} color="white" />
+            </div>
+          ) : null
+        }
       >
         <TableHeader>
           <TableColumn className="w-32">Employee</TableColumn>
@@ -202,7 +210,11 @@ export default function AttendancePage({
         </TableHeader>
         <TableBody>
           {data.map((d) => (
-            <TableRow key={`${d.id.toString()}-${d.EmpId}`} textValue={d.empId} className="cursor-pointer">
+            <TableRow
+              key={`${d.id.toString()}-${d.EmpId}`}
+              textValue={d.empId}
+              className="cursor-pointer"
+            >
               <TableCell>{d.EmpId}</TableCell>
               <TableCell>{d.Zone}</TableCell>
               <TableCell>{d.DeptId}</TableCell>
