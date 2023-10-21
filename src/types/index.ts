@@ -36,3 +36,20 @@ export interface DataRow {
   date: string;
   time: string;
 }
+
+export interface AsyncListResult {
+  items: EntryData[];
+  cursor?: string;
+}
+
+export interface UploadDataProps {
+  shift: any;
+  empshift: any;
+  empId: string;
+  deptId: string;
+  zone: string;
+  ToolScanTime: number;
+  date: string;
+  arrived_time: string;
+  image: File | null;
+}

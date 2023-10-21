@@ -1,16 +1,54 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { Input, Select, SelectItem, Button } from '@nextui-org/react';
+import { Image, Input, Select, SelectItem, Button } from '@nextui-org/react';
+
+import useUploadData from '@/hooks/useUoloadData';
 
 export default function UploadPage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [empId, setEmpId] = useState<string>('');
+  const [shift, setShift] = useState<string>();
+  const [deptId, setDeptId] = useState<string>();
+  const [zone, setZone] = useState<string>();
+  const [datetime, setDatetime] = useState<string>();
+
   const [selectImage, setSelectImage] = useState<File | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { isLoading, response, error, uploadData } = useUploadData();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setSelectImage(event.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (empId && shift && deptId && zone && datetime && selectImage) {
+      if (typeof datetime === 'string') {
+        const dateParts = datetime.split(' ');
+
+        const uploadProps = {
+          empId,
+          shift,
+          empshift: shift,  // This might be redundant if "shift" is what you actually need
+          deptId,
+          zone,
+          date: dateParts[0],
+          arrived_time: dateParts[1],
+          image: selectImage!,
+          ToolScanTime: 100
+        };
+        
+
+        await uploadData(uploadProps);
+      } else {
+        console.error('Datetime is not a valid string');
+      }
+    } else {
+      console.error('Some fields are missing');
     }
   };
 
@@ -42,19 +80,50 @@ export default function UploadPage() {
   return (
     <div className="flex min-h-screen w-full items-center">
       <div className="mx-auto flex   w-[500px] flex-col   border border-[#30303E]">
-        <Input variant="faded" label="EmpId" className="mb-4 p-2" />
+        <Input
+          variant="faded"
+          label="EmpId"
+          className="mb-4 p-2 "
+          classNames={{
+            inputWrapper: 'border border-[#2f3037] bg-[#191a24]',
+          }}
+          value={empId}
+          onChange={(e) => setEmpId(e.target.value)}
+        />
         <div className="flex flex-wrap">
           <div className="w-1/2 p-2">
-            <Select label="EmpShift" variant="faded" className="mb-4">
-              {EmpShiftSelect.map((shift) => (
-                <SelectItem key={shift.value} value={shift.value}>
-                  {shift.label}
+            <Select
+              label="EmpShift"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={shift}
+              onChange={(event) => {
+                setShift(event.target.value);
+              }}
+            >
+              {EmpShiftSelect.map((empshift) => (
+                <SelectItem key={empshift.value} value={empshift.value}>
+                  {empshift.label}
                 </SelectItem>
               ))}
             </Select>
           </div>
           <div className="w-1/2 p-2">
-            <Select label="DeptId" variant="faded" className="mb-4">
+            <Select
+              label="DeptId"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={deptId}
+              onChange={(event) => setDeptId(event.target.value)}
+            >
               {DepIdSelect.map((dept) => (
                 <SelectItem key={dept.value} value={dept.value}>
                   {dept.label}
@@ -63,19 +132,39 @@ export default function UploadPage() {
             </Select>
           </div>
           <div className="w-1/2 p-2">
-            <Select label="Zone" variant="faded" className="mb-4">
-              {ZoneSelect.map((zone) => (
-                <SelectItem key={zone.value} value={zone.value}>
-                  {zone.label}
+            <Select
+              label="Zone"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={zone}
+              onChange={(event) => setZone(event.target.value)}
+            >
+              {ZoneSelect.map((z) => (
+                <SelectItem key={z.value} value={z.value}>
+                  {z.label}
                 </SelectItem>
               ))}
             </Select>
           </div>
           <div className="w-1/2 p-2">
-            <Select label="Datetime" variant="faded" className="mb-4">
-              {DatetimeSelect.map((datetime) => (
-                <SelectItem key={datetime.value} value={datetime.value}>
-                  {datetime.label}
+            <Select
+              label="Datetime"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={datetime}
+              onChange={(event) => setDatetime(event.target.value)}
+            >
+              {DatetimeSelect.map((dt) => (
+                <SelectItem key={dt.value} value={dt.value}>
+                  {dt.label}
                 </SelectItem>
               ))}
             </Select>
@@ -99,9 +188,23 @@ export default function UploadPage() {
             style={{ display: 'none' }}
             onChange={handleFileChange}
           />
-          <Button color="default" variant="faded">
+
+          <Button color="default" variant="faded" onClick={handleSubmit}>
             Post
           </Button>
+        </div>
+        <div className="flex justify-center items-center mt-4 mb-4 h-70">
+          {selectImage && (
+            <div className="w-70 h-70 flex justify-center items-center ">
+              <Image
+                src={URL.createObjectURL(selectImage)}
+                alt="Uploaded preview"
+                className="h-70 w-70  rounded object-cover flex justify-center items-center"
+                width={400}
+                height={500}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
