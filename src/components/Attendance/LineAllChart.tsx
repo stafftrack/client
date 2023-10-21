@@ -61,23 +61,30 @@ export default function LineWeekChart({ database }: { database: any }) {
     });
 
   const earlyCount = labels.map(
-    (label) =>
-      // const month = label.split('/')[0];
-      // const year = label.split('/')[1];
-      // const date = dayjs(`${month}/01/${year}`, 'MM/DD/YYYY');
-      // return countForLabel(label, 'Early').length / date.daysInMonth();
-      countForLabel(label, 'Early').length,
+    (label) => countForLabel(label, 'Early').length,
   );
 
   const onTimeCount = labels.map(
     (label) => countForLabel(label, 'On Time').length,
   );
   const delayCount = labels.map((label) => countForLabel(label, 'Late').length);
+  const totalCount: number[] = [];
+  earlyCount.forEach((value, index) => {
+    totalCount.push(value + onTimeCount[index] + delayCount[index]);
+  });
   const data = {
     labels,
     datasets: [
       {
         type: 'line' as const,
+        label: 'Total',
+        backgroundColor: 'rgb(250,250,250)',
+        data: totalCount,
+        fill: false,
+        borderColor: 'rgb(250,250,250)',
+      },
+      {
+        type: 'bar' as const,
         label: 'Late',
         backgroundColor: '#f38ba8',
         data: delayCount,
@@ -85,7 +92,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         borderColor: '#f38ba8',
       },
       {
-        type: 'line' as const,
+        type: 'bar' as const,
         label: 'On Time',
         backgroundColor: '#94e2d5',
         data: onTimeCount,
@@ -93,7 +100,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         borderColor: '#94e2d5',
       },
       {
-        type: 'line' as const,
+        type: 'bar' as const,
         label: 'Early',
         backgroundColor: '#74c7ec',
         data: earlyCount,
@@ -109,14 +116,11 @@ export default function LineWeekChart({ database }: { database: any }) {
         grid: {
           display: false,
         },
-        ticks: {
-          padding: 5,
-        },
+        stacked: true,
       },
       y: {
         beginAtZero: true,
         ticks: {
-          padding: 5,
           stepSize: 1,
           maxTicksLimit: 8,
         },
@@ -124,16 +128,11 @@ export default function LineWeekChart({ database }: { database: any }) {
     },
     plugins: {
       legend: {
-        display: true,
-        position: 'top' as const,
-        align: 'end' as const,
-        labels: {
-          color: '#ffffff',
-          usePointStyle: true,
-          padding: 20,
-        },
-        // onClick: newLegendClickHandler,
+        display: false,
       },
+    },
+    interaction: {
+      mode: 'index' as const,
     },
   };
 
@@ -142,8 +141,12 @@ export default function LineWeekChart({ database }: { database: any }) {
       className="flex w-[60%] flex-col items-center justify-center
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
-      <div className="text-2xl font-semibold text-white">All Check-in Flow</div>
-      <Chart type="line" data={data} options={options} />
+      <div className="text-lg font-semibold text-white">
+        Check-in Flow Per Month
+      </div>
+      <div className="mx-auto w-[80%]">
+        <Chart type="bar" data={data} options={options} onClick={() => {console.log("sss");}} />
+      </div>
     </div>
   );
 }

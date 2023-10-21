@@ -128,7 +128,7 @@ export default function Wrapper({ searchParams, dict }: { searchParams: any, dic
         <DoughnutChart contrabandData={contrabandData} dict={dict} />
         <LineChart date={date} contrabandData={contrabandData} dict={dict} />
       </div>
-      <CustomTable data={data} dict={dict} />
+      <CustomTable data={data} onClickRow={setInputValue} dict={dict} />
     </div>
   );
 }

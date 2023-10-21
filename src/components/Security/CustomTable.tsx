@@ -21,7 +21,15 @@ function formatTime(time: string) {
   return `${parseInt(hours, 10)}:${minutes}`;
 }
 
-export default function CustomTable({ data, dict }: { data: any[], dict: any }) {
+export default function CustomTable({
+  data,
+  onClickRow,
+  dict,
+}: {
+  data: any[];
+  onClickRow: any;
+  dict: any;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [image, setImage] = useState('');
   const [contraband, setContraband] = useState();
@@ -56,7 +64,7 @@ export default function CustomTable({ data, dict }: { data: any[], dict: any }) 
             'w-full table-fixed max-h-[39.5rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
           th: 'text-base text-white bg-[#191a24]',
           td: 'border-y border-y-[#2f3037]',
-          tr: 'hover:bg-[#1f212d] transition-all'
+          tr: 'hover:bg-[#1f212d] transition-all',
         }}
       >
         <TableHeader>
@@ -72,7 +80,7 @@ export default function CustomTable({ data, dict }: { data: any[], dict: any }) 
           {data &&
             data.map((d) => (
               <TableRow key={d.id}>
-                <TableCell>{d.EmpId}</TableCell>
+                <TableCell onClick={()=>onClickRow(d.EmpId)} className='cursor-pointer'>{d.EmpId}</TableCell>
                 <TableCell>{d.Zone}</TableCell>
                 <TableCell>{d.DeptId}</TableCell>
                 <TableCell>{d.EmpShift}</TableCell>
