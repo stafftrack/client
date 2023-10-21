@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from '@nextui-org/react';
 import { usePathname, useRouter } from 'next/navigation';
 
 export default function CustomSelect({
