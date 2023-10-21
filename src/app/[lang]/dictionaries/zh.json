@@ -27,6 +27,11 @@
     "knife": "刀具",
     "gun": "槍枝"
   },
+  "status": {
+    "ontime": "準時打卡",
+    "late": "遲到",
+    "early": "早到"
+  },
   "chart": {
     "total": "總合",
     "security":{
@@ -36,7 +41,12 @@
       }
     },
     "attendance":{
-      "title": "Attendance",
+      "title": {
+        "shift": "人流峰值與出勤狀態/班次",
+        "day": "人流峰值與出勤狀態/天",
+        "week": "人流峰值與出勤狀態/週",
+        "month": "人流峰值與出勤狀態/月"
+      },
       "total": "Total",
       "late": "Late",
       "ontime": "On Time"

@@ -12,9 +12,11 @@ interface AttendData {
 export default function DoughnutChart({
   database,
   // period,
+  dict,
 }: {
   database: any;
   // period: any;
+  dict: any;
 }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
@@ -39,15 +41,15 @@ export default function DoughnutChart({
 
   const labels = [
     {
-      name: 'On Time',
+      name: dict.status.ontime,
       style: 'bg-[#94e2d5]',
     },
     {
-      name: 'Late',
+      name: dict.status.late,
       style: 'bg-[#f38ba8]',
     },
     {
-      name: 'Early',
+      name: dict.status.early,
       style: 'bg-[#74c7ec]',
     },
   ];
@@ -78,9 +80,9 @@ export default function DoughnutChart({
 
   return (
     <div className="relative flex h-72 rounded-xl border border-[#30303E] bg-[#191a24] p-5">
-      <div className="absolute left-1/3 top-1/2 flex -translate-x-1/3 -translate-y-1/2 transform flex-col items-center text-4xl font-semibold text-white">
+      <div className="absolute left-[8.7rem] top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform flex-col items-center text-4xl font-semibold text-white">
         {attendData.length}
-        <div className="text-medium text-white">Total</div>
+        <div className="text-medium text-white">{dict.chart.total}</div>
       </div>
       <div className="w-[15rem]">
         <Doughnut data={data} options={options} />

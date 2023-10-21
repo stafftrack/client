@@ -27,6 +27,11 @@
     "knife": "Knife",
     "gun": "Gun"
   },
+  "status": {
+    "ontime": "On Time",
+    "late": "Late",
+    "early": "Early"
+  },
   "chart": {
     "total": "Total",
     "security":{
@@ -36,7 +41,12 @@
       }
     },
     "attendance":{
-      "title": "Attendance",
+      "title": {
+        "shift": "CheckIn Flow & Attendance Per Shift",
+        "day": "CheckIn Flow & Attendance  Per Day",
+        "week": "CheckIn Flow & Attendance  Per Week",
+        "month": "CheckIn Flow & Attendance  Per Month"
+      },
       "total": "Total",
       "late": "Late",
       "ontime": "On Time"
