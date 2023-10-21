@@ -37,12 +37,7 @@ export default function CustomSelect({
     >
       {state.values.map((value: any) => (
         <SelectItem key={value} value={value}>
-          {
-            value === 'Custom Date' ?
-              <Input placeholder="custom date"/>
-            :
-            value
-          }
+          {value}
         </SelectItem>
       ))}
     </Select>

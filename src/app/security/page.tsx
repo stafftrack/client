@@ -40,7 +40,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
   const [date, setDate] = useState({
     label: 'Date',
     values: ['All', 'Today', 'Last Week', 'Last 2 Weeks', 'Last Month'],
-    value: searchParams.Date ?? 'Today',
+    value: searchParams.Date ?? 'All',
   });
 
   const data = useSupabaseData(
@@ -69,9 +69,22 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
     null,
   );
 
+  const chatData = useSupabaseData(
+    supabase,
+    'EmpId,Zone,DeptId,EmpShift,time,date,contraband',
+    zone,
+    department,
+    empShift,
+    date,
+    inputValue,
+    true,
+    null,
+    49,
+  );
+
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom />
+      <ChatRoom data={chatData} />
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
