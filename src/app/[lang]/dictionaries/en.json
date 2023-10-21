@@ -1,0 +1,8 @@
+{
+  "sidebar": {
+    "home": "Home",
+    "security": "Security",
+    "attendance": "Attendance",
+    "upload": "Upload"
+  }
+}

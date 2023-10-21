@@ -7,7 +7,7 @@ import Security from '../icons/Security';
 import Tab from './Tab';
 import Upload from '../icons/Upload';
 
-export default function Sidebar() {
+export default function Sidebar({ dict }: { dict: any }) {
   const currentPage = usePathname();
 
   return (
@@ -16,19 +16,19 @@ export default function Sidebar() {
       <div className="flex w-full flex-col items-center">
         <Tab link="/" isSelected={currentPage === '/'}>
           <Home />
-          Home
+          {dict.sidebar.home}
         </Tab>
         <Tab link="security" isSelected={currentPage === '/security'}>
           <Security />
-          Security
+          {dict.sidebar.security}
         </Tab>
         <Tab link="attendance" isSelected={currentPage === '/attendance'}>
           <Attendance />
-          Attendance
+          {dict.sidebar.attendance}
         </Tab>
         <Tab link="upload" isSelected={currentPage === '/upload'}>
           <Upload />
-          Upload
+          {dict.sidebar.upload}
         </Tab>
       </div>
     </div>

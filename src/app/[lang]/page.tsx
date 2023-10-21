@@ -70,11 +70,13 @@ function StatusChip({ status }: StatusChipProps) {
     </Chip>
   );
 }
+
 function formatTime(time: string) {
   const [hours, minutes] = time.split(':');
   return `${parseInt(hours, 10)}:${minutes}`;
 }
-export default function App({ searchParams }: { searchParams: any }) {
+
+export default function App({ searchParams, params: { lang } }: { searchParams: any, params: any }) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const [data, setData] = useState<any[]>([]);
   const router = useRouter();

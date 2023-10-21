@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Sidebar from '@/components/Sidebar';
 import Providers from './providers';
+import { getDictionary } from './dictionaries';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -14,21 +15,21 @@ export const metadata: Metadata = {
   description: 'track your staff',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params: { lang },
 }: {
   children: React.ReactNode;
+  params: any;
 }) {
-
+  const dict = await getDictionary(lang);
   return (
-    <html lang="en" className="bg-primary">
+    <html lang={lang} className="bg-primary">
       <body className={inter.className}>
         <Providers>
-          <div className="h-screen flex font-sans">
-            <Sidebar />
-            <div className='w-full h-screen overflow-y-scroll'>
-              {children}
-            </div>
+          <div className="flex h-screen font-sans">
+            <Sidebar dict={dict} />
+            <div className="h-screen w-full overflow-y-scroll">{children}</div>
           </div>
         </Providers>
       </body>
