@@ -58,7 +58,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
 
   const contrabandData = useSupabaseData(
     supabase,
-    'date,contraband',
+    'date,EmpShift,contraband',
     zone,
     department,
     empShift,
@@ -122,7 +122,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
       </div>
       <div className="flex w-full justify-center gap-5">
         <DoughnutChart contrabandData={contrabandData} />
-        <LineChart contrabandData={contrabandData} />
+        <LineChart date={date} contrabandData={contrabandData} />
       </div>
       <CustomTable data={data} />
     </div>

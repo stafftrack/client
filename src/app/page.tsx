@@ -15,7 +15,6 @@ import {
 import CustomSelect from '@/components/Security/CustomSelect';
 import { createClient } from '@supabase/supabase-js';
 import SearchIcon from '@/components/Fiter/SearchIcon';
-import { DataRow } from '@/types';
 
 
 const supabase = createClient(
@@ -30,8 +29,8 @@ type StatusChipProps = {
   status: 'On Time' | 'Late' | 'Early' | string;
 };
 
-function ContrabandChip({ contraband }: ContrabandChipProps) {
-  if (contraband === 'Yes') {
+function ContrabandChip({ contraband: has_contraband }: ContrabandChipProps) {
+  if (has_contraband) {
     return (
       <Chip color="danger" variant="bordered">
         Yes
@@ -78,7 +77,7 @@ function formatTime(time: string) {
 }
 export default function App({ searchParams }: { searchParams: any }) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
-  const [data, setData] = useState<DataRow[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -243,7 +242,7 @@ export default function App({ searchParams }: { searchParams: any }) {
                 <StatusChip status={d.status} />
               </TableCell>
               <TableCell>
-                <ContrabandChip contraband="No" />
+                <ContrabandChip contraband={d.has_contraband} />
               </TableCell>
             </TableRow>
           ))}

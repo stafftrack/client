@@ -34,6 +34,7 @@ const plugin = {
 };
 
 interface Props {
+  date: any;
   contrabandData: any[];
 }
 
@@ -42,7 +43,7 @@ function sortMapByKey(inputMap: Map<string, any>): Map<string, any> {
   return new Map(sortedKeys.map((key) => [key, inputMap.get(key)]));
 }
 
-export default function LineChart({ contrabandData }: Props) {
+export default function LineChart({ date, contrabandData }: Props) {
   const [labels, setLabels] = useState<any[]>([]);
   const [tmp, setTmp] = useState<any[]>([]);
   const m = new Map();
@@ -59,7 +60,13 @@ export default function LineChart({ contrabandData }: Props) {
         d.contraband.knife +
         d.contraband.gun;
       if (m.get(d.date) === undefined) {
-        m.set(d.date, total);
+        if (date.value === 'Today') {
+          m.set(d.EmpShift, total);
+        } else {
+          m.set(d.date, total);
+        }
+      } else if (date.value === 'Today') {
+        m.set(d.EmpShift, m.get(d.EmpShift) + total);
       } else {
         m.set(d.date, m.get(d.date) + total);
       }
@@ -90,7 +97,9 @@ export default function LineChart({ contrabandData }: Props) {
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] px-10"
     >
       <div className="text-lg font-semibold text-white">
-        Contrabands Per Day
+        {date.value === 'Today'
+          ? 'Contrabands Per Hour'
+          : 'Contrabands Per Day'}
       </div>
       <div className="mx-auto w-[80%]">
         <Line
