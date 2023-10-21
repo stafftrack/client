@@ -12,6 +12,7 @@ import {
   ModalBody,
   Image,
   ModalFooter,
+  Spinner,
 } from '@nextui-org/react';
 import { useState } from 'react';
 import ContrabandChips from './ContrabandChips';
@@ -25,10 +26,16 @@ export default function CustomTable({
   data,
   onClickRow,
   dict,
+  hasMore,
+  scrollerRef,
+  loaderRef,
 }: {
   data: any[];
   onClickRow: any;
   dict: any;
+  hasMore: any;
+  scrollerRef: any;
+  loaderRef: any;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [image, setImage] = useState('');
@@ -66,6 +73,14 @@ export default function CustomTable({
           td: 'border-y border-y-[#2f3037]',
           tr: 'hover:bg-[#1f212d] transition-all',
         }}
+        baseRef={scrollerRef}
+        bottomContent={
+          hasMore ? (
+            <div className="flex w-full justify-center">
+              <Spinner ref={loaderRef} color="white" />
+            </div>
+          ) : null
+        }
       >
         <TableHeader>
           <TableColumn className="w-32">{dict.common.empid}</TableColumn>

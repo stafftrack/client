@@ -36,7 +36,7 @@ const plugin = {
 interface Props {
   date: any;
   contrabandData: any[];
-  // dict: any;
+  dict: any;
 }
 
 function sortMapByKey(inputMap: Map<string, any>): Map<string, any> {
@@ -44,7 +44,7 @@ function sortMapByKey(inputMap: Map<string, any>): Map<string, any> {
   return new Map(sortedKeys.map((key) => [key, inputMap.get(key)]));
 }
 
-export default function LineChart({ date, contrabandData/* , dict */ }: Props) {
+export default function LineChart({ date, contrabandData, dict }: Props) {
   const [labels, setLabels] = useState<any[]>([]);
   const [tmp, setTmp] = useState<any[]>([]);
   const m = new Map();

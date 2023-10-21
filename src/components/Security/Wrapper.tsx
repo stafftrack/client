@@ -11,13 +11,20 @@ import CustomSelect from '@/components/Security/CustomSelect';
 import CustomTable from '@/components/Security/CustomTable';
 import useSupabaseData from '@/hooks/useSupabaseData';
 import { createClient } from '@supabase/supabase-js';
+import useInfiniteSupabaseData from '@/hooks/useInfiniteSupabaseData';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
 
-export default function Wrapper({ searchParams, dict }: { searchParams: any, dict: any }) {
+export default function Wrapper({
+  searchParams,
+  dict,
+}: {
+  searchParams: any;
+  dict: any;
+}) {
   const [inputValue, setInputValue] = useState(searchParams.empId ?? '');
   const router = useRouter();
   const pathname = usePathname();
@@ -47,7 +54,7 @@ export default function Wrapper({ searchParams, dict }: { searchParams: any, dic
     value: searchParams.Date ?? 'Today',
   });
 
-  const data = useSupabaseData(
+  const { data, hasMore, scrollerRef, loaderRef } = useInfiniteSupabaseData(
     supabase,
     'id,EmpId,Zone,DeptId,EmpShift,time,date,contraband,Img',
     zone,
@@ -57,7 +64,6 @@ export default function Wrapper({ searchParams, dict }: { searchParams: any, dic
     inputValue,
     true,
     null,
-    49,
   );
 
   const contrabandData = useSupabaseData(
@@ -128,7 +134,14 @@ export default function Wrapper({ searchParams, dict }: { searchParams: any, dic
         <DoughnutChart contrabandData={contrabandData} dict={dict} />
         <LineChart date={date} contrabandData={contrabandData} dict={dict} />
       </div>
-      <CustomTable data={data} onClickRow={setInputValue} dict={dict} />
+      <CustomTable
+        data={data}
+        onClickRow={setInputValue}
+        dict={dict}
+        hasMore={hasMore}
+        scrollerRef={scrollerRef}
+        loaderRef={loaderRef}
+      />
     </div>
   );
 }
