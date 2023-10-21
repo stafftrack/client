@@ -79,7 +79,7 @@ export default function AttendancePage({
     inputValue,
     false,
     status,
-    99,
+    49,
   );
 
   const attendData = useSupabaseData(
@@ -110,7 +110,7 @@ export default function AttendancePage({
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom />
+      <ChatRoom data={data} />
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
