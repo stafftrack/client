@@ -21,7 +21,7 @@ export default function useInfiniteSupabaseData(
   const [resetScroll, setResetScroll] = useState(false);
 
   const list = useAsyncList<any[]>({
-    async load({ cursor }) {
+    async load({ cursor }): Promise<any> {
       const start = cursor ? parseInt(cursor, 10) : 0; // Convert string cursor to number
       const end = start + 50;
       const query = supabase.from('Entry Data').select(select);
