@@ -95,12 +95,6 @@ export default function AttendancePage({
     null,
   );
 
-  const setParams = (query: string, keywords: string) => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set(query, keywords);
-    router.push(`${pathname}?${newSearchParams.toString()}`);
-  }
-
   useEffect(() => {
     if (dayjs(inputValue, 'YYYY-MM-DD', true).isValid()) {
       setDate({
@@ -194,7 +188,6 @@ export default function AttendancePage({
           const queryEmpId = row.toString().split('-')[1];
           console.log(queryEmpId);
           setInputValue(queryEmpId);
-          setParams('empId', queryEmpId);
         }}
         
       >

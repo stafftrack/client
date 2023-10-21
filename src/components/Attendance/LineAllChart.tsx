@@ -131,6 +131,9 @@ export default function LineWeekChart({ database }: { database: any }) {
         display: false,
       },
     },
+    interaction: {
+      mode: 'index' as const,
+    },
   };
 
   return (
@@ -142,7 +145,7 @@ export default function LineWeekChart({ database }: { database: any }) {
         Check-in Flow Per Month
       </div>
       <div className="mx-auto w-[80%]">
-        <Chart type="bar" data={data} options={options} />
+        <Chart type="bar" data={data} options={options} onClick={() => {console.log("sss");}} />
       </div>
     </div>
   );
