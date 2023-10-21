@@ -117,7 +117,6 @@ export default function LineWeekChart({ database }: { database: any }) {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1,
           maxTicksLimit: 8,
         },
         stacked: true,

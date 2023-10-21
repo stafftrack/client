@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, MouseEvent } from 'react';
 import dayjs from 'dayjs';
 import {
   Chart as ChartJS,
@@ -12,7 +12,7 @@ import {
   LineController,
   BarController,
 } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
+import { Chart, getElementAtEvent } from 'react-chartjs-2';
 
 ChartJS.register(
   LinearScale,
@@ -33,6 +33,7 @@ interface AttendData {
 
 export default function LineWeekChart({ database }: { database: any }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
+  const chartRef = useRef();
   useEffect(() => {
     setAttendData(database);
   }, [database]);
@@ -121,7 +122,6 @@ export default function LineWeekChart({ database }: { database: any }) {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1,
           maxTicksLimit: 8,
         },
       },
@@ -136,17 +136,24 @@ export default function LineWeekChart({ database }: { database: any }) {
     },
   };
 
-  return (
-    <div
-      className="flex w-[60%] flex-col items-center justify-center
-        gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
-    >
-      <div className="text-lg font-semibold text-white">
-        Check-in Flow Per Month
+  const onClickBar = (event: MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    const chart = chartRef.current;
+    if (chart) {
+      console.log(getElementAtEvent(chart, event as any));
+    }
+  }
+
+    return (
+      <div
+        className="flex w-[60%] flex-col items-center justify-center
+          gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
+      >
+        <div className="text-lg font-semibold text-white">
+          Check-in Flow Per Month
+        </div>
+        <div className="mx-auto w-[80%]">
+          <Chart type="bar" data={data} options={options} ref={chartRef} onClick={(event: any) => onClickBar(event)}/>
+        </div>
       </div>
-      <div className="mx-auto w-[80%]">
-        <Chart type="bar" data={data} options={options} onClick={() => {console.log("sss");}} />
-      </div>
-    </div>
-  );
+    );
 }
