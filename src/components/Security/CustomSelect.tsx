@@ -15,7 +15,7 @@ export default function CustomSelect({
 
   return (
     <Select
-      label={state.label}
+      label={state.displayLabel}
       key={state.label}
       variant="bordered"
       selectedKeys={[state.value]}

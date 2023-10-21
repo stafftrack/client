@@ -7,28 +7,37 @@ import Security from '../icons/Security';
 import Tab from './Tab';
 import Upload from '../icons/Upload';
 
-export default function Sidebar() {
+export default function Sidebar({ dict, lang }: { dict: any; lang: any }) {
   const currentPage = usePathname();
 
   return (
     <div className="h-screen w-72 flex-shrink-0 border-r border-r-[#27282E] text-4xl font-bold text-white">
       <h1 className="mb-14 mt-5 text-center">stafftrack</h1>
       <div className="flex w-full flex-col items-center">
-        <Tab link="/" isSelected={currentPage === '/'}>
+        <Tab link={`/${lang}`} isSelected={currentPage === `/${lang}`}>
           <Home />
-          Home
+          {dict.sidebar.home}
         </Tab>
-        <Tab link="security" isSelected={currentPage === '/security'}>
+        <Tab
+          link={`/${lang}/security`}
+          isSelected={currentPage === `/${lang}/security`}
+        >
           <Security />
-          Security
+          {dict.sidebar.security}
         </Tab>
-        <Tab link="attendance" isSelected={currentPage === '/attendance'}>
+        <Tab
+          link={`/${lang}/attendance`}
+          isSelected={currentPage === `/${lang}/attendance`}
+        >
           <Attendance />
-          Attendance
+          {dict.sidebar.attendance}
         </Tab>
-        <Tab link="upload" isSelected={currentPage === '/upload'}>
+        <Tab
+          link={`/${lang}/upload`}
+          isSelected={currentPage === `/${lang}/upload`}
+        >
           <Upload />
-          Upload
+          {dict.sidebar.upload}
         </Tab>
       </div>
     </div>

@@ -16,6 +16,7 @@ import SendIcon from './icons/Send';
 export default function ChatRoom({ data }: { data: any[] }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: '/en/api/chat', // TODO: use {lang}
     body: {
       data: JSON.stringify(data),
     },

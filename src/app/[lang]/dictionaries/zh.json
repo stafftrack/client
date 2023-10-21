@@ -1,0 +1,33 @@
+{
+  "sidebar": {
+    "home": "首頁",
+    "security": "違禁品",
+    "attendance": "出席",
+    "upload": "上傳"
+  },
+  "filterbar": {
+    "input": "以員工ID搜尋"
+  },
+  "common": {
+    "empid": "員工ID",
+    "zone": "廠區",
+    "department": "部門",
+    "shift": "輪班",
+    "status": "出勤狀態",
+    "time": "進廠時間",
+    "date": "日期",
+    "has_contraband": "攜帶違禁品",
+    "contraband": "違禁品",
+    "all": "所有"
+  },
+  "contrabands": {
+    "electronic_device": "電子產品",
+    "laptop": "筆電",
+    "scissor": "剪刀",
+    "knife": "刀具",
+    "gun": "槍枝"
+  },
+  "chart": {
+    "total": "總合"
+  }
+}
