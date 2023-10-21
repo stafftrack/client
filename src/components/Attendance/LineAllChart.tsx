@@ -109,14 +109,10 @@ export default function LineWeekChart({ database }: { database: any }) {
         grid: {
           display: false,
         },
-        ticks: {
-          padding: 5,
-        },
       },
       y: {
         beginAtZero: true,
         ticks: {
-          padding: 5,
           stepSize: 1,
           maxTicksLimit: 8,
         },
@@ -124,15 +120,7 @@ export default function LineWeekChart({ database }: { database: any }) {
     },
     plugins: {
       legend: {
-        display: true,
-        position: 'top' as const,
-        align: 'end' as const,
-        labels: {
-          color: '#ffffff',
-          usePointStyle: true,
-          padding: 20,
-        },
-        // onClick: newLegendClickHandler,
+        display: false,
       },
     },
   };
@@ -142,8 +130,10 @@ export default function LineWeekChart({ database }: { database: any }) {
       className="flex w-[60%] flex-col items-center justify-center
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
-      <div className="text-2xl font-semibold text-white">All Check-in Flow</div>
-      <Chart type="line" data={data} options={options} />
+      <div className="text-lg font-semibold text-white">Check-in Flow Per Month</div>
+      <div className="mx-auto w-[80%]">
+        <Chart type="line" data={data} options={options} />
+      </div>
     </div>
   );
 }
