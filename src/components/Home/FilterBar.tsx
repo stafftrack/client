@@ -111,7 +111,7 @@ export default function FilterBar({
     label: 'Status',
     displayLabel: dict.common.status,
     values: ['All', 'On Time', 'Early', 'Late'],
-    value: searchParams.status ?? 'All',
+    value: searchParams.Status ?? 'All',
   });
   const [date, setDate] = useState({
     label: 'Date',
@@ -279,7 +279,7 @@ export default function FilterBar({
       <Table
         classNames={{
           wrapper:
-            'w-full table-fixed max-h-[35rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white ',
+            'w-full table-fixed max-h-[33.5rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white ',
           th: 'text-base text-white bg-[#191a24]',
           td: 'border-y border-y-[#2f3037]',
         }}
