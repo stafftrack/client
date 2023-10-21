@@ -23,10 +23,10 @@ export default function ChatRoom({ data }: { data: any[] }) {
   const [showPresetQuestions, setShowPresetQuestions] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const presetQuestions = [
-    '請給我今日員工遲到的EMPId',
-    '請列出這周違禁品總數由大到小',
+    '哪一天違禁品入廠的次數最多',
+    '找出哪些員工有攜帶違禁品入廠',
     '請給我今天有攜帶違禁品的EMPId',
-    '過去三天內,每一天最早跟最晚到的員工分別是誰?',
+    '「違禁品名稱、「數量]」和「[入廠日期]」三個欄位的數據轉化為一段簡單的文字分析',
   ];
   const handlePresetQuestionClick = (question: string) => {
     const fakeEvent = {

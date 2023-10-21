@@ -20,6 +20,7 @@ function useUploadData() {
       zone: props.zone,
       date: props.date,
       arrived_time: props.arrived_time,
+      ToolScanTime: props.ToolScanTime
     })
 
     formData.append('empInfo', JSON.stringify({
@@ -39,6 +40,7 @@ function useUploadData() {
         },
         maxBodyLength: Infinity,
       });
+      console.log(formData)
       setResponse(result.data);
       Swal.fire('Success', 'Data uploaded successfully!', 'success');
     } catch (err) {
