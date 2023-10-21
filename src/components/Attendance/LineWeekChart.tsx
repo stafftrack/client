@@ -48,8 +48,8 @@ export default function LineWeekChart({
   const periodDays = period === 'Last Week' ? 7 : 14;
 
   const labels = [];
-  for (let i = periodDays; i > 0; i-=1) {
-    const day = today.subtract(i-1, 'day');
+  for (let i = periodDays; i > 0; i -= 1) {
+    const day = today.subtract(i - 1, 'day');
     const label = `${day.format('MM/DD')} - ${day.format('ddd')}`;
     labels.push(label);
   }
@@ -114,15 +114,11 @@ export default function LineWeekChart({
         grid: {
           display: false,
         },
-        ticks: {
-          padding: 5,
-        },
         stacked: true,
       },
       y: {
         beginAtZero: true,
         ticks: {
-          padding: 5,
           stepSize: 1,
           maxTicksLimit: 8,
         },
@@ -131,14 +127,7 @@ export default function LineWeekChart({
     },
     plugins: {
       legend: {
-        display: true,
-        position: 'top' as const,
-        align: 'end' as const,
-        labels: {
-          color: '#ffffff',
-          usePointStyle: true,
-          padding: 20,
-        },
+        display: false,
       },
     },
   };
@@ -148,10 +137,12 @@ export default function LineWeekChart({
       className="flex w-[60%] flex-col items-center justify-center
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
-      <div className="text-2xl font-semibold text-white">
-        {`${period} Check-in Flow`}
+      <div className="text-lg font-semibold text-white">
+        Check-in Flow Per Day
       </div>
-      <Chart type="bar" data={data} options={options} />
+      <div className="mx-auto w-[80%]">
+        <Chart type="bar" data={data} options={options} />
+      </div>
     </div>
   );
 }

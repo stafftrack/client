@@ -104,15 +104,11 @@ export default function LineChart({ database }: { database: any }) {
         grid: {
           display: false,
         },
-        ticks: {
-          padding: 5,
-        },
         stacked: true,
       },
       y: {
         beginAtZero: true,
         ticks: {
-          padding: 5,
           stepSize: 1,
           maxTicksLimit: 8,
         },
@@ -121,14 +117,7 @@ export default function LineChart({ database }: { database: any }) {
     },
     plugins: {
       legend: {
-        display: true,
-        position: 'top' as const,
-        align: 'end' as const,
-        labels: {
-          color: '#ffffff',
-          usePointStyle: true,
-          padding: 20,
-        },
+        display: false,
       },
     },
   };
@@ -138,7 +127,7 @@ export default function LineChart({ database }: { database: any }) {
       className="flex h-72 w-full flex-col items-center justify-center
         gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 px-10 align-middle"
     >
-      <div className="text-lg font-semibold text-white">Check-in Flow</div>
+      <div className="text-lg font-semibold text-white">Check-in Flow Per Shifts</div>
       <div className="mx-auto w-[80%]">
         <Chart type="bar" data={data} options={options} />
       </div>
