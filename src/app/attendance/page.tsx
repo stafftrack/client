@@ -167,20 +167,14 @@ export default function AttendancePage({
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-        {data.length > 0 && (
-          <DoughnutChart database={attendData} period={date.value} />
+        <DoughnutChart database={attendData} period={date.value} />
+
+        {date.value === 'All' && <LineAllChart database={attendData} />}
+        {date.value === 'Daily' && <LineChart database={attendData} />}
+        {(date.value === 'Last Week' || date.value === 'Last 2 Weeks') && (
+          <LineWeekChart database={attendData} period={date.value} />
         )}
-        {date.value === 'All' && attendData.length > 0 && (
-          <LineAllChart database={attendData} />
-        )}
-        {date.value === 'Daily' && attendData.length > 0 && (
-          <LineChart database={attendData} />
-        )}
-        {(date.value === 'Last Week' || date.value === 'Last 2 Weeks') &&
-          attendData.length > 0 && (
-            <LineWeekChart database={attendData} period={date.value} />
-          )}
-        {date.value === 'Last Month' && attendData.length > 0 && (
+        {date.value === 'Last Month' && (
           <LineMonthChart database={attendData} />
         )}
       </div>

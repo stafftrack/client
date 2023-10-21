@@ -43,7 +43,7 @@ export default function LineWeekChart({
     setAttendData(database);
   }, [database]);
 
-  const today = dayjs(database[0].date, 'MM/DD/YYYY');
+  const today = dayjs(database[0]?.date, 'MM/DD/YYYY');
 
   const periodDays = period === 'Last Week' ? 7 : 14;
 
@@ -53,8 +53,6 @@ export default function LineWeekChart({
     const label = `${day.format('MM/DD')} - ${day.format('ddd')}`;
     labels.push(label);
   }
-
-  console.log(labels);
 
   const countForLabel = (label: string, checkStatus?: string) =>
     attendData.filter((item) => {

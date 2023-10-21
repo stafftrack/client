@@ -38,7 +38,7 @@ export default function LineWeekChart({ database }: { database: any }) {
     setAttendData(database);
   }, [database]);
 
-  const today = dayjs(database[0].date, 'MM/DD/YYYY');
+  const today = dayjs(database[0]?.date, 'MM/DD/YYYY');
   const labels = [];
   for (let i = 0; i < 4; i += 1) {
     const startOfWeek = today

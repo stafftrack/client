@@ -36,9 +36,8 @@ export default function LineWeekChart({ database }: { database: any }) {
   useEffect(() => {
     setAttendData(database);
   }, [database]);
-
-  const firstDay = dayjs(database[0].date, 'MM/DD/YYYY');
-  const lastDay = dayjs(database[database.length - 1].date, 'MM/DD/YYYY');
+  const firstDay = dayjs(database[0]?.date, 'MM/DD/YYYY');
+  const lastDay = dayjs(database[database.length - 1]?.date, 'MM/DD/YYYY');
   const labels = [];
 
   const monthsDiff = firstDay.diff(lastDay, 'month');

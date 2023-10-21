@@ -17,6 +17,7 @@ export default function DoughnutChart({
 }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
   useEffect(() => {
+    // if(database.length === 0) return;
     setAttendData(database);
   }, [database]);
 
