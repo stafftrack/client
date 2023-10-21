@@ -52,6 +52,7 @@ export default function LineChart({ date, contrabandData }: Props) {
     if (!contrabandData) {
       return;
     }
+
     contrabandData.forEach((d) => {
       const total =
         d.contraband.electronic_device +
@@ -59,14 +60,15 @@ export default function LineChart({ date, contrabandData }: Props) {
         d.contraband.scissors +
         d.contraband.knife +
         d.contraband.gun;
-      if (m.get(d.date) === undefined) {
-        if (date.value === 'Today') {
+
+      if (date.value === 'Today') {
+        if (m.get(d.EmpShift) === undefined) {
           m.set(d.EmpShift, total);
         } else {
-          m.set(d.date, total);
+          m.set(d.EmpShift, m.get(d.EmpShift) + total);
         }
-      } else if (date.value === 'Today') {
-        m.set(d.EmpShift, m.get(d.EmpShift) + total);
+      } else if (m.get(d.date) === undefined) {
+        m.set(d.date, total);
       } else {
         m.set(d.date, m.get(d.date) + total);
       }

@@ -53,7 +53,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
     inputValue,
     true,
     null,
-    99,
+    49,
   );
 
   const contrabandData = useSupabaseData(
@@ -69,22 +69,9 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
     null,
   );
 
-  const chatData = useSupabaseData(
-    supabase,
-    'EmpId,Zone,DeptId,EmpShift,time,date,contraband',
-    zone,
-    department,
-    empShift,
-    date,
-    inputValue,
-    true,
-    null,
-    49,
-  );
-
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom data={chatData} />
+      <ChatRoom data={data} />
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
