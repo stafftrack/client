@@ -98,12 +98,11 @@ export default function AttendancePage({
   useEffect(() => {
     if (dayjs(inputValue, 'YYYY-MM-DD', true).isValid()) {
       setDate({
-        label: 'Date',
-        values: ['All', 'Daily', 'Last Week', 'Last Month'],
-        value: 'Daily',
+        ...date,
+        value: 'Today',
       });
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.set('Date', 'Daily');
+      newSearchParams.set('Date', 'Today');
       router.push(`${pathname}?${newSearchParams.toString()}`);
     }
   }, [inputValue]);
@@ -178,12 +177,19 @@ export default function AttendancePage({
       </div>
       <Table
         aria-label="Table with employee security data"
+        selectionMode="single" 
         classNames={{
           wrapper:
             'w-full table-fixed max-h-[38rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
           th: 'text-base bg-transparent text-white',
           td: 'border-t border-t-[#2f3037]',
         }}
+        onRowAction={(row) => {
+          const queryEmpId = row.toString().split('-')[1];
+          console.log(queryEmpId);
+          setInputValue(queryEmpId);
+        }}
+        
       >
         <TableHeader>
           <TableColumn className="w-32">Employee</TableColumn>
@@ -196,7 +202,7 @@ export default function AttendancePage({
         </TableHeader>
         <TableBody>
           {data.map((d) => (
-            <TableRow key={d.id}>
+            <TableRow key={`${d.id.toString()}-${d.EmpId}`} textValue={d.empId} className="cursor-pointer">
               <TableCell>{d.EmpId}</TableCell>
               <TableCell>{d.Zone}</TableCell>
               <TableCell>{d.DeptId}</TableCell>

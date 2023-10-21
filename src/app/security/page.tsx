@@ -124,7 +124,7 @@ export default function SecurityPage({ searchParams }: { searchParams: any }) {
         <DoughnutChart contrabandData={contrabandData} />
         <LineChart date={date} contrabandData={contrabandData} />
       </div>
-      <CustomTable data={data} />
+      <CustomTable data={data} onClickRow={setInputValue}/>
     </div>
   );
 }
