@@ -28,6 +28,21 @@
     "gun": "槍枝"
   },
   "chart": {
-    "total": "總合"
+    "total": "總合",
+    "security":{
+      "title": {
+        "shift": "違禁品/班次",
+        "day": "違禁品/天"
+      }
+    },
+    "attendance":{
+      "title": "Attendance",
+      "total": "Total",
+      "late": "Late",
+      "ontime": "On Time"
+    }
+  },
+  "preview": {
+    "header": "圖片預覽"
   }
 }

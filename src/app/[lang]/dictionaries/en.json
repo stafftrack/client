@@ -28,6 +28,21 @@
     "gun": "Gun"
   },
   "chart": {
-    "total": "Total"
+    "total": "Total",
+    "security":{
+      "title": {
+        "shift": "Contrabands Per Shift",
+        "day": "Contrabands Per Day"
+      }
+    },
+    "attendance":{
+      "title": "Attendance",
+      "total": "Total",
+      "late": "Late",
+      "ontime": "On Time"
+    }
+  },
+  "preview": {
+    "header": "Image"
   }
 }

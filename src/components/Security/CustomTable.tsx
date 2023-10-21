@@ -44,7 +44,7 @@ export default function CustomTable({
         className="bg-primary"
       >
         <ModalContent>
-          <ModalHeader className="mx-auto">Image</ModalHeader>
+          <ModalHeader className="mx-auto">{dict.preview.header}{/* Image */}</ModalHeader>
           <ModalBody className="min-h-unit-20">
             <Image
               alt="x ray image"
