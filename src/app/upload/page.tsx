@@ -33,13 +33,15 @@ export default function UploadPage() {
         const uploadProps = {
           empId,
           shift,
+          empshift: shift,  // This might be redundant if "shift" is what you actually need
           deptId,
           zone,
           date: dateParts[0],
           arrived_time: dateParts[1],
           image: selectImage!,
-          ToolScanTime: "100"
+          ToolScanTime: 100
         };
+        
 
         await uploadData(uploadProps);
       } else {

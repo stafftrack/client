@@ -5,7 +5,7 @@ import axios from 'axios';
 function useUploadData() {
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [error] = useState<Error | null>(null);
 
   const uploadData = async (props: UploadDataProps) => {
     setIsLoading(true);
