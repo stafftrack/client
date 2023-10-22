@@ -6,7 +6,8 @@
     "upload": "Upload"
   },
   "filterbar": {
-    "input": "Search Employee ID"
+    "input": "Search Employee ID",
+    "inputDate":"Search Date"
   },
   "common": {
     "empid": "Employee ID",

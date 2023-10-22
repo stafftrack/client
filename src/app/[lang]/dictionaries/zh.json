@@ -6,7 +6,8 @@
     "upload": "上傳"
   },
   "filterbar": {
-    "input": "以員工ID搜尋"
+    "input": "以員工ID搜尋",
+    "inputDate":"以日期搜尋"
   },
   "common": {
     "empid": "員工ID",
