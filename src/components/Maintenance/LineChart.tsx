@@ -102,7 +102,7 @@ export default function LineChart({ date, scanData, dict }: Props) {
 
   return (
     <div
-      className="flex h-72 w-full flex-col items-center justify-center
+      className="flex h-[30rem] w-full flex-col items-center justify-center
           gap-5 rounded-xl border border-[#30303E] bg-[#191a24] px-10"
     >
       <div className="text-lg font-semibold text-white">

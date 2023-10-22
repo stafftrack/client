@@ -35,13 +35,13 @@
   },
   "chart": {
     "total": "Total",
-    "security":{
+    "security": {
       "title": {
         "shift": "Contrabands Per Shift",
         "day": "Contrabands Per Day"
       }
     },
-    "attendance":{
+    "attendance": {
       "title": {
         "shift": "CheckIn Flow & Attendance Per Shift",
         "day": "CheckIn Flow & Attendance  Per Day",
@@ -52,8 +52,7 @@
       "late": "Late",
       "ontime": "On Time"
     },
-    "scan":
-    {
+    "scan": {
       "title": "Tool Scan Time"
     }
   },

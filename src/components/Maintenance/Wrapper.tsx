@@ -122,9 +122,9 @@ export default function Wrapper({
         selectionMode="single"
         classNames={{
           wrapper:
-            'w-full table-fixed max-h-[38rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
-          th: 'text-base bg-transparent text-white',
-          td: 'border-t border-t-[#2f3037]',
+'w-full table-fixed max-h-[39.5rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
+    th : 'text-base bg-transparent text-white',
+         td : 'border-t border-t-[#2f3037]',
         }}
         onRowAction={(row) => {
           const queryEmpId = row.toString().split('-')[1];
