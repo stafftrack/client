@@ -79,7 +79,7 @@ export default function Wrapper({
           aria-label="Employee ID input"
           isClearable
           variant="bordered"
-          placeholder={dict.filterbar.input}
+          placeholder={dict.filterbar.inputDate}
           value={inputValue}
           startContent={<SearchIcon />}
           radius="sm"
