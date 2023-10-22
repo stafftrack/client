@@ -3,7 +3,8 @@
     "home": "Home",
     "security": "Security",
     "attendance": "Attendance",
-    "upload": "Upload"
+    "upload": "Upload",
+    "maintenance": "Maintenance"
   },
   "filterbar": {
     "input": "Search Employee ID"

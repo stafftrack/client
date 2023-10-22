@@ -8,6 +8,7 @@ import Security from '../icons/Security';
 import Tab from './Tab';
 import Upload from '../icons/Upload';
 import SwitchLanguage from '../icons/SwitchLanguage';
+import Maintenance from '../icons/Maintenance';
 
 export default function Sidebar({ dict, lang }: { dict: any; lang: any }) {
   const currentPage = usePathname();
@@ -42,8 +43,15 @@ export default function Sidebar({ dict, lang }: { dict: any; lang: any }) {
           <Upload />
           {dict.sidebar.upload}
         </Tab>
+        <Tab
+          link={`/${lang}/maintenance`}
+          isSelected={currentPage === `/${lang}/maintenance`}
+        >
+          <Maintenance />
+          {dict.sidebar.maintenance}
+        </Tab>
       </div>
-      <div className="mb-5 ml-8 mt-auto flex items-center gap-5 text-base font-medium">
+      <div className="mb-5 ml-8 mt-auto flex items-center gap-2 text-sm font-semibold">
         <Button
           isIconOnly
           onClick={() => {
@@ -51,6 +59,8 @@ export default function Sidebar({ dict, lang }: { dict: any; lang: any }) {
             const newPage = currentPage.replace(lang, newLang);
             router.push(newPage);
           }}
+          variant="bordered"
+          className="bg-[#FFFFFF1A]"
         >
           <SwitchLanguage />
         </Button>
