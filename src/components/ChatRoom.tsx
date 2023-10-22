@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useChat } from 'ai/react';
 import { Button } from '@nextui-org/button';
 import ChatIcon from '@/components/icons/Chat';
@@ -13,7 +14,13 @@ import {
 import { Input } from '@nextui-org/input';
 import SendIcon from './icons/Send';
 
-export default function ChatRoom({ data }: { data: any[] }) {
+export default function ChatRoom({
+  data,
+  pageType,
+}: {
+  data: any[];
+  pageType: 'security' | 'attendance';
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: '/en/api/chat', // TODO: use {lang}
@@ -23,12 +30,23 @@ export default function ChatRoom({ data }: { data: any[] }) {
   });
   const [showPresetQuestions, setShowPresetQuestions] = useState(true);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const presetQuestions = [
-    '請給我今日員工遲到的EMPId',
-    '請列出這周違禁品總數由大到小',
-    '請給我今天有攜帶違禁品的EMPId',
-    '過去三天內,每一天最早跟最晚到的員工分別是誰?',
-  ];
+  const presetQuestions = {
+    security: [
+      // zone==AZ Department==DEPT2 Date==Last week
+      '哪一天違禁品入廠的次數最多',
+      '哪一種違禁品被檢出的次數最多?',
+      '給我攜帶違禁品的員工編號?',
+      '哪一位員工最常攜帶違禁品入廠?',
+    ],
+    attendance: [
+      // zone==HQ Department==DEPT2 Date==Last week
+      '列出每一天最早到的員工分別是誰?',
+      '有多少員工遲到?給我遲到的EMPId',
+      '請問哪一天最多人準時到?',
+      '哪天遲到人數最多?',
+    ],
+  };
+  const questionsForCurrentPage = presetQuestions[pageType];
   const handlePresetQuestionClick = (question: string) => {
     const fakeEvent = {
       target: {
@@ -84,12 +102,12 @@ export default function ChatRoom({ data }: { data: any[] }) {
                   }`}
                   key={m.id}
                 >
-                  {m.content}
+                  <ReactMarkdown>{m.content}</ReactMarkdown>
                 </div>
               ))}
               {showPresetQuestions && (
                 <div className="mx-auto  mt-48 grid grid-cols-2 gap-4">
-                  {presetQuestions.map((question) => (
+                  {questionsForCurrentPage.map((question) => (
                     <Button
                       key={question}
                       onClick={() => handlePresetQuestionClick(question)}
@@ -112,7 +130,11 @@ export default function ChatRoom({ data }: { data: any[] }) {
                 onChange={handleInputChange}
                 placeholder="Say something..."
               />
-              <Button isIconOnly type="submit">
+              <Button
+                isIconOnly
+                type="submit"
+                onClick={() => setShowPresetQuestions(false)}
+              >
                 <SendIcon />
               </Button>
             </form>

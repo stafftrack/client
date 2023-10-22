@@ -11,7 +11,6 @@ import {
   TableCell,
   Input,
 } from '@nextui-org/react';
-import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import LineChart from '@/components/Maintenance/LineChart';
@@ -73,7 +72,6 @@ export default function Wrapper({
 
   return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom data={data} />
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
