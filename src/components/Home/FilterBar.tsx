@@ -30,7 +30,7 @@ function formatTime(time: string) {
 }
 
 function ContrabandChip({ contraband }: ContrabandChipProps) {
-  if (contraband === 'Yes') {
+  if (contraband) {
     return (
       <Chip color="danger" variant="bordered">
         Yes
@@ -174,6 +174,7 @@ export default function FilterBar({
       if (!cursor) {
         // if it's a fresh load, reset the data
         setData(d);
+        // console.log(d)
       } else {
         setData((prevData: any) => [...prevData, ...d]);
       }
