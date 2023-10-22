@@ -16,6 +16,7 @@ import CustomSelect from '@/components/Security/CustomSelect';
 import LineChart from '@/components/Maintenance/LineChart';
 import { createClient } from '@supabase/supabase-js';
 import useSupabaseScanTime from '@/hooks/useSupabaseScanTime';
+import Predict from './Predict';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -110,7 +111,8 @@ export default function Wrapper({
           searchParams={searchParams}
         />
       </div>
-      <div className="flex w-full justify-center gap-5">
+      <div className="flex flex-col w-full justify-center gap-5">
+        <Predict supabase={supabase} />
         <div className="flex w-full justify-center gap-5">
           <LineChart date={date} scanData={scanData} dict={dict} />
         </div>
