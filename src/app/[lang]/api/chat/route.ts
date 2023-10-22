@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     messages: [
       {
         role: 'system',
-        content: `You are an assistant to help interpret the data of staff entry and contraband data of an company. Your response should be straight forward and concise. Here's the data: ${data}`,
+        content: `You are an careful assistant to help interpret the data of staff entry and contraband data of an company. Your response should be correct, straightforward and concise. Make sure your response is fully correct based on the provided data. Here's the data: ${data}`,
       },
       ...messages,
     ],
