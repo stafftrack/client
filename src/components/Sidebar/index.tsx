@@ -1,17 +1,20 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { Button } from '@nextui-org/button';
 import Attendance from '../icons/Attendance';
 import Home from '../icons/Home';
 import Security from '../icons/Security';
 import Tab from './Tab';
 import Upload from '../icons/Upload';
+import SwitchLanguage from '../icons/SwitchLanguage';
 
 export default function Sidebar({ dict, lang }: { dict: any; lang: any }) {
   const currentPage = usePathname();
+  const router = useRouter();
 
   return (
-    <div className="h-screen w-72 flex-shrink-0 border-r border-r-[#27282E] text-4xl font-bold text-white">
+    <div className="flex h-screen w-72 flex-shrink-0 flex-col border-r border-r-[#27282E] text-4xl font-bold text-white">
       <h1 className="mb-14 mt-5 text-center">stafftrack</h1>
       <div className="flex w-full flex-col items-center">
         <Tab link={`/${lang}`} isSelected={currentPage === `/${lang}`}>
@@ -39,6 +42,19 @@ export default function Sidebar({ dict, lang }: { dict: any; lang: any }) {
           <Upload />
           {dict.sidebar.upload}
         </Tab>
+      </div>
+      <div className="mb-5 ml-8 mt-auto flex items-center gap-5 text-base font-medium">
+        <Button
+          isIconOnly
+          onClick={() => {
+            const newLang = lang === 'en' ? 'zh' : 'en';
+            const newPage = currentPage.replace(lang, newLang);
+            router.push(newPage);
+          }}
+        >
+          <SwitchLanguage />
+        </Button>
+        {lang === 'en' ? 'Switch Language' : '切換語言'}
       </div>
     </div>
   );
