@@ -21,6 +21,7 @@
     "ai": "^2.2.15",
     "axios": "^1.5.1",
     "chart.js": "^4.4.0",
+    "chartjs-adapter-dayjs-4": "^1.0.4",
     "dayjs": "^1.11.10",
     "framer-motion": "^10.16.4",
     "next": "13.5.4",

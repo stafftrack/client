@@ -18,6 +18,7 @@
     "date": "日期",
     "has_contraband": "攜帶違禁品",
     "contraband": "違禁品",
+    "tool_scan_time": "掃描時間",
     "all": "所有"
   },
   "contrabands": {
@@ -34,13 +35,13 @@
   },
   "chart": {
     "total": "總合",
-    "security":{
+    "security": {
       "title": {
         "shift": "違禁品/班次",
         "day": "違禁品/天"
       }
     },
-    "attendance":{
+    "attendance": {
       "title": {
         "shift": "人流峰值與出勤狀態/班次",
         "day": "人流峰值與出勤狀態/天",
@@ -51,6 +52,9 @@
       "late": "Late",
       "ontime": "On Time"
     }
+  },
+  "scan": {
+    "title": "掃描時間分布圖"
   },
   "preview": {
     "header": "圖片預覽"

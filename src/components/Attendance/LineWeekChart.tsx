@@ -121,7 +121,6 @@ export default function LineWeekChart({
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1,
           maxTicksLimit: 8,
         },
         stacked: true,

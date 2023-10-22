@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, MouseEvent } from 'react';
 import dayjs from 'dayjs';
 import {
   Chart as ChartJS,
@@ -12,7 +12,7 @@ import {
   LineController,
   BarController,
 } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
+import { Chart, getElementAtEvent } from 'react-chartjs-2';
 
 ChartJS.register(
   LinearScale,
@@ -39,6 +39,7 @@ export default function LineWeekChart({
   dict: any;
 }) {
   const [attendData, setAttendData] = useState<AttendData[]>([]);
+  const chartRef = useRef();
   useEffect(() => {
     setAttendData(database);
   }, [database]);
@@ -127,7 +128,6 @@ export default function LineWeekChart({
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1,
           maxTicksLimit: 8,
         },
       },
@@ -142,10 +142,17 @@ export default function LineWeekChart({
     },
   };
 
+  const onClickBar = (event: MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    const chart = chartRef.current;
+    if (chart) {
+      console.log(getElementAtEvent(chart, event as any));
+    }
+  };
+
   return (
     <div
       className="flex w-[60%] flex-col items-center justify-center
-        gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
+          gap-5 rounded-xl border border-[#30303E] bg-[#191a24] p-5 align-middle"
     >
       <div className="text-lg font-semibold text-white">
         {dict.chart.attendance.title.month}
@@ -155,9 +162,8 @@ export default function LineWeekChart({
           type="bar"
           data={data}
           options={options}
-          onClick={() => {
-            console.log('sss');
-          }}
+          ref={chartRef}
+          onClick={(event: any) => onClickBar(event)}
         />
       </div>
     </div>

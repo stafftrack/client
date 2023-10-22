@@ -151,7 +151,6 @@ export default function LineChart({
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1,
           maxTicksLimit: 8,
         },
         stacked: true,
