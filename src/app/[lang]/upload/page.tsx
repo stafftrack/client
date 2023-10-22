@@ -14,6 +14,7 @@ export default function UploadPage() {
   const [zone, setZone] = useState<string>();
   const [datetime, setDatetime] = useState<string>();
 
+  const [toolscantime, setToolscantime] = useState<string>('');
   const [selectImage, setSelectImage] = useState<File | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,7 +27,15 @@ export default function UploadPage() {
   };
 
   const handleSubmit = async () => {
-    if (empId && shift && deptId && zone && datetime && selectImage) {
+    if (
+      empId &&
+      shift &&
+      deptId &&
+      zone &&
+      datetime &&
+      toolscantime &&
+      selectImage
+    ) {
       if (typeof datetime === 'string') {
         const dateParts = datetime.split(' ');
 
@@ -39,7 +48,7 @@ export default function UploadPage() {
           date: dateParts[0],
           arrived_time: dateParts[1],
           image: selectImage!,
-          ToolScanTime: 100,
+          ToolScanTime: parseFloat(toolscantime),
         };
 
         await uploadData(uploadProps);
@@ -77,100 +86,112 @@ export default function UploadPage() {
   ];
 
   return (
-    <div className="flex min-h-screen w-full items-center">
-      <div className="mx-auto flex space-x-4">
-        <div className="mx-auto flex  h-[280px] w-[500px] flex-col   border border-[#30303E]">
-          <Input
-            variant="faded"
-            label="EmpId"
-            className="mb-4 p-2 "
-            classNames={{
-              inputWrapper: 'border border-[#2f3037] bg-[#191a24]',
-            }}
-            value={empId}
-            onChange={(e) => setEmpId(e.target.value)}
-          />
-          <div className="flex flex-wrap">
-            <div className="w-1/2 p-2">
-              <Select
-                label="EmpShift"
-                variant="faded"
-                classNames={{
-                  mainWrapper: 'h-full',
-                  trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
-                  popover: 'border border-[#2f3037] bg-[#191a24]',
-                }}
-                value={shift}
-                onChange={(event) => {
-                  setShift(event.target.value);
-                }}
-              >
-                {EmpShiftSelect.map((empshift) => (
-                  <SelectItem key={empshift.value} value={empshift.value}>
-                    {empshift.label}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="w-1/2 p-2">
-              <Select
-                label="DeptId"
-                variant="faded"
-                classNames={{
-                  mainWrapper: 'h-full',
-                  trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
-                  popover: 'border border-[#2f3037] bg-[#191a24]',
-                }}
-                value={deptId}
-                onChange={(event) => setDeptId(event.target.value)}
-              >
-                {DepIdSelect.map((dept) => (
-                  <SelectItem key={dept.value} value={dept.value}>
-                    {dept.label}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="w-1/2 p-2">
-              <Select
-                label="Zone"
-                variant="faded"
-                classNames={{
-                  mainWrapper: 'h-full',
-                  trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
-                  popover: 'border border-[#2f3037] bg-[#191a24]',
-                }}
-                value={zone}
-                onChange={(event) => setZone(event.target.value)}
-              >
-                {ZoneSelect.map((z) => (
-                  <SelectItem key={z.value} value={z.value}>
-                    {z.label}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="w-1/2 p-2">
-              <Select
-                label="Datetime"
-                variant="faded"
-                classNames={{
-                  mainWrapper: 'h-full',
-                  trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
-                  popover: 'border border-[#2f3037] bg-[#191a24]',
-                }}
-                value={datetime}
-                onChange={(event) => setDatetime(event.target.value)}
-              >
-                {DatetimeSelect.map((dt) => (
-                  <SelectItem key={dt.value} value={dt.value}>
-                    {dt.label}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
+    <div className="flex min-h-screen w-full items-center justify-center">
+      <div className="flex h-[260px] w-[500px] flex-col  items-center justify-center   border border-[#30303E]">
+        <div className="flex flex-wrap">
+          <div className="w-1/2 p-2">
+            <Input
+              variant="faded"
+              label="EmpId"
+              classNames={{
+                inputWrapper: 'border border-[#2f3037] bg-[#191a24] h-full',
+              }}
+              value={empId}
+              onChange={(e) => setEmpId(e.target.value)}
+            />
           </div>
-          <div className="flex justify-between p-2">
+          <div className="w-1/2 p-2">
+            <Input
+              variant="faded"
+              label="ToolScanTime"
+              classNames={{
+                inputWrapper: 'border border-[#2f3037] bg-[#191a24] h-full',
+              }}
+              value={toolscantime}
+              onChange={(e) => setToolscantime(e.target.value)}
+            />
+          </div>
+          <div className="w-1/2 p-2">
+            <Select
+              label="EmpShift"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={shift}
+              onChange={(event) => {
+                setShift(event.target.value);
+              }}
+            >
+              {EmpShiftSelect.map((empshift) => (
+                <SelectItem key={empshift.value} value={empshift.value}>
+                  {empshift.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="w-1/2 p-2">
+            <Select
+              label="DeptId"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={deptId}
+              onChange={(event) => setDeptId(event.target.value)}
+            >
+              {DepIdSelect.map((dept) => (
+                <SelectItem key={dept.value} value={dept.value}>
+                  {dept.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="w-1/2 p-2">
+            <Select
+              label="Zone"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={zone}
+              onChange={(event) => setZone(event.target.value)}
+            >
+              {ZoneSelect.map((z) => (
+                <SelectItem key={z.value} value={z.value}>
+                  {z.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="w-1/2 p-2">
+            <Select
+              label="Datetime"
+              variant="faded"
+              classNames={{
+                mainWrapper: 'h-full',
+                trigger: 'h-full border border-[#2f3037] bg-[#191a24]',
+                popover: 'border border-[#2f3037] bg-[#191a24]',
+              }}
+              value={datetime}
+              onChange={(event) => setDatetime(event.target.value)}
+            >
+              {DatetimeSelect.map((dt) => (
+                <SelectItem key={dt.value} value={dt.value}>
+                  {dt.label}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
+        </div>
+        <div className="flex w-full justify-between p-2">
+          <div>
             <Button
               color="default"
               variant="faded"
@@ -188,22 +209,26 @@ export default function UploadPage() {
               style={{ display: 'none' }}
               onChange={handleFileChange}
             />
-
-            <Button color="default" variant="faded" onClick={handleSubmit}>
-              Post
-            </Button>
           </div>
+
+          <Button color="default" variant="faded" onClick={handleSubmit}>
+            Post
+          </Button>
         </div>
-        <div className="flex h-[280px] items-center justify-center  bg-[#15151e] overflow-hidden">
-          {selectImage && (
-            <Image
-              src={URL.createObjectURL(selectImage)}
-              alt="Uploaded preview"
-              className=" w-70  flex items-center justify-center rounded object-fit: contain"
-              width={300}
-            />
-          )}
-        </div>
+      </div>
+      <div className="h-70 mb-4 ml-6 mt-4 flex items-center justify-center">
+        {selectImage && (
+          <div className="flex h-[260px] items-center justify-center  overflow-hidden bg-[#15151e]">
+            {selectImage && (
+              <Image
+                src={URL.createObjectURL(selectImage)}
+                alt="Uploaded preview"
+                className=" w-70  object-fit: contain flex items-center justify-center rounded"
+                width={300}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

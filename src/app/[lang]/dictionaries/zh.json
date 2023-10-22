@@ -3,7 +3,8 @@
     "home": "首頁",
     "security": "違禁品",
     "attendance": "出席",
-    "upload": "上傳"
+    "upload": "上傳",
+    "maintenance": "維修"
   },
   "filterbar": {
     "input": "以員工ID搜尋",
@@ -52,10 +53,10 @@
       "total": "Total",
       "late": "Late",
       "ontime": "On Time"
+    },
+    "scan": {
+      "title": "掃描時間分布圖"
     }
-  },
-  "scan": {
-    "title": "掃描時間分布圖"
   },
   "preview": {
     "header": "圖片預覽"

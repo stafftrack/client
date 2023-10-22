@@ -3,7 +3,8 @@
     "home": "Home",
     "security": "Security",
     "attendance": "Attendance",
-    "upload": "Upload"
+    "upload": "Upload",
+    "maintenance": "Maintenance"
   },
   "filterbar": {
     "input": "Search Employee ID",
@@ -36,13 +37,13 @@
   },
   "chart": {
     "total": "Total",
-    "security":{
+    "security": {
       "title": {
         "shift": "Contrabands Per Shift",
         "day": "Contrabands Per Day"
       }
     },
-    "attendance":{
+    "attendance": {
       "title": {
         "shift": "CheckIn Flow & Attendance Per Shift",
         "day": "CheckIn Flow & Attendance  Per Day",
@@ -53,8 +54,7 @@
       "late": "Late",
       "ontime": "On Time"
     },
-    "scan":
-    {
+    "scan": {
       "title": "Tool Scan Time"
     }
   },

@@ -11,7 +11,6 @@ import {
   TableCell,
   Input,
 } from '@nextui-org/react';
-import ChatRoom from '@/components/ChatRoom';
 import SearchIcon from '@/components/Fiter/SearchIcon';
 import CustomSelect from '@/components/Security/CustomSelect';
 import LineChart from '@/components/Maintenance/LineChart';
@@ -69,11 +68,10 @@ export default function Wrapper({
     date,
     inputValue,
     null,
-  )
+  );
 
-    return (
+  return (
     <div className="flex w-full flex-col gap-5 px-10 pt-10">
-      <ChatRoom data={data} />
       <div className="flex h-12 gap-5">
         <Input
           aria-label="Employee ID input"
@@ -113,18 +111,18 @@ export default function Wrapper({
         />
       </div>
       <div className="flex w-full justify-center gap-5">
-      <div className="flex w-full justify-center gap-5">
-        <LineChart date={date} scanData={scanData} dict={dict} />
-      </div>
+        <div className="flex w-full justify-center gap-5">
+          <LineChart date={date} scanData={scanData} dict={dict} />
+        </div>
       </div>
       <Table
         aria-label="Table with employee security data"
-        selectionMode="single"
         classNames={{
           wrapper:
-            'w-full table-fixed max-h-[38rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
+            'w-full table-fixed max-h-[39.5rem] border border-[#2f3037] rounded-md p-0 mb-5 bg-[#191a24] text-white',
           th: 'text-base bg-transparent text-white',
           td: 'border-t border-t-[#2f3037]',
+          tr: 'hover:bg-[#1f212d] transition-all',
         }}
         onRowAction={(row) => {
           const queryEmpId = row.toString().split('-')[1];
@@ -136,7 +134,9 @@ export default function Wrapper({
           <TableColumn className="w-20">{dict.common.zone}</TableColumn>
           <TableColumn className="w-20">{dict.common.time}</TableColumn>
           <TableColumn className="w-20">{dict.common.date}</TableColumn>
-          <TableColumn className="w-32">{dict.common.tool_scan_time}</TableColumn>
+          <TableColumn className="w-32">
+            {dict.common.tool_scan_time}
+          </TableColumn>
         </TableHeader>
         <TableBody>
           {data.map((d) => (
